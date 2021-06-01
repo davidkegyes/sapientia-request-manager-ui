@@ -1,0 +1,65 @@
+.requestForm {
+    padding: 3rem !important;
+    -webkit-box-shadow: 0px 3px 7px -1px rgb(0 0 0 / 48%);
+    -moz-box-shadow: 0px 3px 7px -1px rgba(0,0,0,0.48);
+    box-shadow: 0px 3px 7px -1px rgb(0 0 0 / 48%);
+}
+
+.requestForm .title {
+    text-align: center;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: x-large;
+}
+
+.requestForm input {
+    border: none;
+    border-bottom: 1px solid #6b6b6b;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.requestForm input[type=number] {
+  -moz-appearance: textfield;
+  width: 40px;
+}
+
+.requestForm input[type=date] {
+    width: 150px;
+}
+
+.requestForm .body {
+    text-indent: 5%;
+}
+
+.requestForm .sigCanvas{
+    width: 15rem;
+    height: 10rem;
+}
+.requestForm .sigCanvasContainer {
+    position: relative;
+}
+.requestForm .sigCanvasContainer .canvasControl {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    border: none;
+    background-color: white;
+    font-size: 30px;
+    padding: 0;
+}
+.requestForm .sigCanvasContainer:hover{
+    border: 1px solid black;
+}
+
+.requestForm .sigCanvasContainer:hover .hide{
+    display: block;
+}
