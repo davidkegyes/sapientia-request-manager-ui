@@ -2,153 +2,213 @@ import React, { Component } from "react";
 import { Container, Row, Button, Col, Alert } from "react-bootstrap";
 import RequestForm from "../components/RequestForm"
 import UploadComponent from "../components/UploadComponent"
-import './RequestPage.css'
-import RequestService from "../services/RequestService";
 import LoadingModal from "../components/LoadingModal";
-import RequestUploadSuccess from "./RequestUploadSuccess";
+import RequestService from "../services/RequestService";
 import RequestPDFService from '../services/RequestPDFService';
-import moment from "moment";
+import AttachmentService from "../services/AttachmentService";
+import config from "../config";
+import './RequestPage.css'
+
 export default class RequestPage extends Component {
 
-    initialState = { request: {} , errors: [], loading: false }
+    initialState = {
+        loading: false, 
+        request: {}, 
+        refNumber: ''
+    }
+    requestForm = {}
+    uploadComponents = [];
 
     constructor(props) {
         super(props);
         this.pdfService = new RequestPDFService();
-        this.initialState.request = props.template;
-        this.state = { request: props.template, errors: [], loading: false };
-        this.uploadApplication = this.uploadApplication.bind(this);
-        this.uploadApplicationError = this.uploadApplication.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.isValid = this.isValid.bind(this);
-        this.conditionalRender  = this.conditionalRender.bind(this);
+        this.state = { ...this.initialState };
+        this.state.request = props.template;
+
+
+        this.uploadRequest = this.uploadRequest.bind(this);
+        this.getValidatedRequest = this.getValidatedRequest.bind(this);
         this.reset = this.reset.bind(this);
         this.uploadService = props.uploadService;
+
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.handleAttachmentChange = this.handleAttachmentChange.bind(this);
+
+        this.isSuccess = this.isSuccess.bind(this);
     }
 
-    isValid() {
-        let errors = [];
-        this.state.request.upload.forEach((doc) => {
-            if (doc.value === undefined) {
-                errors.push("Documentul " + doc.name + " trebuie incarcat!");
-            }
-        });
-        this.state.request.form.forEach((part) => {
-            if (part.variables !== undefined) {
-                part.variables.forEach((variable) => {
-                    if (variable.value === undefined) {
-                        errors.push(variable.error);
-                    }
-                });
-            }
-            if (part.type === 'signature' && part.value === undefined) {
-                errors.push("The request must be signed!");
-                // } else if (part.type === 'customText' && part.value === undefined) {
-                // errors.push("The request must be signed!");
-            }
-
-        });
-        return errors;
-    }
-
-    handleChange(event) {
-        const { name, value, type, files } = event.target;
+    getValidatedRequest() {
+        let hasErrors = false;
         let tmpRequest = this.state.request;
-        if (type === 'file') {
-            for (let i in tmpRequest.upload) {
-                if (tmpRequest.upload[i].name === name) {
-                    tmpRequest.upload[i].value = files[0];
-                    break;
+        for (let i in tmpRequest.attachmentList) {
+            tmpRequest.attachmentList[i].errors = [];
+            if (tmpRequest.attachmentList[i].value === undefined) {
+                tmpRequest.attachmentList[i].errors.push("Fisierul \"" + tmpRequest.attachmentList[i].name + "\" trebuie incarcat!");
+                hasErrors = true;
+            }else if (tmpRequest.attachmentList[i].value.size/1024 > config.rest.uploadFileSizeLimit) {
+                tmpRequest.attachmentList[i].errors.push("Marimea fisierului \"" + tmpRequest.attachmentList[i].name + "\" depaseste limita de " + config.rest.uploadFileSizeLimit + " KB !");
+                hasErrors = true;
+            }
+            // TODO more checks if required;
+        }
+
+        tmpRequest.form.errors = [];
+        for (let i in tmpRequest.form) {
+            if (tmpRequest.form[i].variables !== undefined) {
+                for (let j in tmpRequest.form[i].variables) {
+                    if (tmpRequest.form[i].variables[j].value === undefined) {
+                        tmpRequest.form.errors.push(tmpRequest.form[i].variables[j].error);
+                        hasErrors = true;
+                    }
                 }
             }
-        } else {
-            let formParts = tmpRequest.form;
-            for (let i in formParts) {
-                if (type === 'dateAndSignature' && formParts[i].type === type) {
-                    formParts[i].signatureValue = value;
-                    formParts[i].dateValue = moment().format("YYYY-MM-DD");
-                    break;
-                } else if (type === 'textarea' && formParts[i].type === 'customText' && formParts[i].name === name) {
-                    formParts[i].value = value;
-                    break;
-                } else {
-                    if (formParts[i].variables === undefined) {
-                        continue;
-                    }
-                    let filled = false;
-                    for (let v in formParts[i].variables) {
-                        if (formParts[i].variables[v].name === name) {
-                            formParts[i].variables[v].value = value;
-                            filled = true;
-                            break;
-                        }
-                    }
-                    if (filled) {
-                        break;
-                    }
-                }
+            if (tmpRequest.form[i].type === 'dateAndSignature' && tmpRequest.form[i].signatureValue === undefined) {
+                tmpRequest.form.errors.push("The request must be signed!");
+                hasErrors = true;
+            }
+
+        };
+        tmpRequest.hasErrors = hasErrors;
+        return tmpRequest;
+    }
+
+    handleFormChange(requestForm) {
+        let tmpRequest = { ...this.state.request };
+        tmpRequest.form = requestForm;
+        this.setState({ request: tmpRequest });
+    }
+
+    handleAttachmentChange(attachment) {
+        let tmpRequest = { ...this.state.request };
+        for (let i in tmpRequest.attachmentList) {
+            if (tmpRequest.attachmentList[i].name === attachment.name) {
+                tmpRequest.attachmentList[i] = attachment;
             }
         }
         this.setState({ request: tmpRequest });
     }
 
-    uploadApplication() {
-        let errors = this.isValid();
-        if (errors.length > 0) {
-            this.setState({ errors: errors });
-        } else {
-            this.pdfService.getRequestPdfFile(this.state.request.form, this.state.request.name).then((file) =>{
-                RequestService.uploadRequest(this.state.request, file, this.uploadApplicationError)
-                    .then((res) => { 
-                        console.log(res); 
-                        this.setState({ loading: false, errors: [res.error], success: true, refNumber: res.referenceNumber })
-                    })
-                    .catch((error) => { console.log(error); this.setState({ errors: [error.message], loading: false }) });
-                this.setState({ loading: true })
-            });
+    uploadRequest() {
+        let request = this.getValidatedRequest();
+        if (!request.hasErrors) {
+            this.setState({ loading: true });
+            if (this.state.refNumber !== '') {
+                this.uploadAttachments(this.state.refNumber);
+            } else {
+                this.setState({ loading: true });
+                this.pdfService.getRequestPdfFile(this.state.request.form, this.state.request.name)
+                    .then((file) => {
+                        RequestService.uploadRequest(this.state.request, file)
+                            .then((refNumber) => {
+                                if (this.state.request.attachmentList && this.state.request.attachmentList.length > 0) {
+                                    this.uploadAttachments(refNumber);
+                                } else {
+                                    this.setState({ loading: false, refNumber: refNumber })
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                let tmp = { ...this.state.request };
+                                tmp.form.errors = ["Error during the request upload"];
+                                this.setState({ loading: false, request: tmp })
+                            });
+                        this.setState({ loading: true })
+                    }).catch((error) => {
+                        console.log(error)
+                        let tmp = { ...this.state.request };
+                        tmp.form.errors = ["Error during the pdf generation, please report this error."];
+                        this.setState({ loading: false, request: tmp })
+                    });
+            }
         }
+        this.setState({ request: request })
     }
 
-    reset(){
-        // not working
-        this.setState(this.initialState);
-        this.forceUpdate();
+    uploadAttachments(refNumber) {
+        let attList = this.state.request.attachmentList;
+        let promises = []
+        for (let i in attList) {
+            if (attList[i].uploadSuccess) {
+                continue
+            }
+            promises.push(AttachmentService.upload(refNumber, attList[i]))
+        }
+        Promise.all(promises)
+            .then((res) => {
+                let tmp = { ...this.state.request };
+                let uploadSuccess = true;//res.every(u => u.uploadSuccess === true); 
+                for (let i in res) {
+                    uploadSuccess = uploadSuccess && res[i].uploadSuccess;
+                    for (let j in tmp.attachmentList) {
+                        if (res[i].name === tmp.attachmentList[j].name) {
+                            tmp[j] = res[i];
+                        }
+                    }
+                }
+                this.setState({ loading: false, request: tmp, attUploadSuccess: uploadSuccess, refNumber: refNumber })
+            })
     }
 
-    conditionalRender () {
-        if (this.state.success) {
-            return (<RequestUploadSuccess refNumber={this.state.refNumber} errors={this.state.errors} />);
-        } else {
-            return (
-                <>
-                    {this.state.errors.map((error) => (
-                        <Row className="rowSpace">
-                            <Col>
-                                <Alert key={error} variant='danger'>{error}</Alert>
-                            </Col>
-                        </Row>
-                    ))}
-                    <RequestForm request={this.state.request.form} handleChange={this.handleChange} />
-                    <UploadComponent upload={this.state.request.upload} handleChange={this.handleChange} />
-                    <Row className="rowSpace formMainControls">
-                        <Col><Button variant="primary" onClick={() => this.pdfService.downloadPdf(this.state.request.form, this.state.request.name)}>Download without Sending</Button></Col>
-                        <Col><Button variant="primary" onClick={this.reset}>Reset</Button></Col>
-                        <Col xs="auto"><Button variant="success" onClick={(e) => this.uploadApplication(this.state.request)}>Send</Button></Col>
-                    </Row>
-                </>
-            )
+
+    reset() {
+        let resetTemplate = { ...this.state.request };
+        for (let i in resetTemplate.form) {
+            let formPart = resetTemplate.form[i];
+            if (formPart.type === 'text' && formPart.variables) {
+                for (let j in formPart.variables) {
+                    formPart.variables[j].value = undefined;
+                }
+            } else if (formPart.type === 'customText') {
+                formPart.value = undefined;
+            }
+            // else if (formPart.type === 'dateAndSignature') {
+            //     formPart.signatureValue = undefined;
+            // }
         }
+        // sigPad.clear();
+        this.setState({ request: resetTemplate, errors: [] });
+    }
+
+    isSuccess(){
+        return !(this.state.refNumber === '' || (this.state.attUploadSuccess === false && this.state.request.attachmentList));
     }
 
     render() {
         return (
             <Container>
-                <Row className="rowSpace">
-                    <Col>
-                        <Button onClick={this.props.close}>Back To Templates</Button>
+                <Row>
+                    <Col><h2>{this.state.request.name}</h2></Col>
+                    <Col md='auto'>
+                        <Button onClick={this.props.close}>Vissza a kérvényekhez</Button>
                     </Col>
                 </Row>
-                {this.conditionalRender ()}
+                { this.state.refNumber !== '' &&
+                    <Alert variant={this.isSuccess() ? 'success' : 'warning'}>
+                        <Alert.Heading>{this.isSuccess() ? 'Sikeres feltöltés' : 'Hibás feltöltés'}</Alert.Heading>
+                        <p>Request form uploaded successfully with reference number {this.state.refNumber}</p>
+                        {this.state.attUploadSuccess === false &&
+                            <>
+                                <p><strong>!!!</strong> Error with the attachments. Please try to choose a different file and/or send again!</p>
+                                <p>Or you can can retry to attach the required documents on the Request review page.</p>
+                            </>
+                        }
+                    </Alert>}
+                { this.state.refNumber === '' && <RequestForm form={this.state.request.form} onChange={this.handleFormChange} />}
+                { (this.state.request.attachmentList && this.state.request.attachmentList.length > 0) &&
+                    this.state.request.attachmentList.map(att => {
+                        return <UploadComponent key={att.name} doc={att} upload={this.state.upload} onChange={this.handleAttachmentChange} />
+                    })
+                }
+                <Row className="rowSpace formMainControls">
+                    { this.state.refNumber === '' &&
+                        <>
+                            <Col><Button variant="primary" onClick={() => this.pdfService.downloadPdf(this.state.request.form, this.state.request.name)}>Kérvény Letöltése küldés nélkül</Button></Col>
+                            {/* <Col><Button variant="primary" onClick={this.reset}>Reset</Button></Col> */}
+                        </>}
+                    { !this.isSuccess() && 
+                        <Col xs="auto"><Button variant="success" onClick={(e) => this.uploadRequest(this.state.request)}>Küldés</Button></Col>
+                    }
+                </Row>
                 <LoadingModal show={this.state.loading} />
             </Container>
         );

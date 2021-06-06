@@ -44,14 +44,14 @@ export default class Header extends Component {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Item>
-                                <Nav.Link as={NavLink} exact to="/">Request Templates</Nav.Link>
+                                <Nav.Link as={NavLink} exact to="/">Kérvények</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={NavLink} to="/myRequests">My Requests</Nav.Link>
+                                <Nav.Link as={NavLink} to="/myRequests">Saját kérvények</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item>
+                            {/* <Nav.Item>
                                 <Nav.Link as={NavLink} to="/adminPage">Admin</Nav.Link>
-                            </Nav.Item>
+                            </Nav.Item> */}
                             {/* <Nav.Item>
                                 <Button onClick={this.props.handleLogout}>Logout</Button>
                             </Nav.Item> */}

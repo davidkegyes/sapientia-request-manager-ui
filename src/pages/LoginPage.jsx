@@ -40,13 +40,12 @@ export default function LoginPage(props) {
 
     function refreshTokenSetup(res) {
         // Timing to renew access token
-        let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
-        console.log(refreshTiming,res);
+        let refreshTiming = (res.tokenObj.expires_in || 3599) * 1000;
+        console.log("refreshToken");
         const refreshToken = async () => {
             const newAuthRes = await res.reloadAuthResponse();
-            refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-            console.log('newAuthRes:', newAuthRes);
-            AuthorizationService.storeUserAndToken(newAuthRes.id_token);
+            refreshTiming = (newAuthRes.expires_in || 3599) * 1000;
+            AuthorizationService.storeToken(newAuthRes.id_token);
             setTimeout(refreshToken, refreshTiming);
         };
         setTimeout(refreshToken, refreshTiming);
@@ -81,10 +80,9 @@ export default function LoginPage(props) {
             <Row className="align-items-center">
                 <Col>
                     <Jumbotron>
-                        <h1>Sapientia Application Manager</h1>
-                        <p>
-                            Aenean velit ipsum, tempus eget enim sit amet, vestibulum volutpat dolor. Nulla at nunc placerat, fermentum ante a, euismod neque. Aenean fermentum felis et augue pretium eleifend. Suspendisse potenti.
-                            </p>
+                        <h1>Sapientia Erdélyi Magyar Tudományegyetem</h1>
+                        <h2>Kérvény kezelő alkalmazása</h2>
+                        <p>A bejelentkezéshez kattintson a Login gombra majd válassza ki a Google bejelentkezéshes az egyetemtől kapott email címet.</p>
                         <p>
                             <GoogleLogin
                                 clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"

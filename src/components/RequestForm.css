@@ -1,8 +1,5 @@
 .requestForm {
     padding: 3rem !important;
-    -webkit-box-shadow: 0px 3px 7px -1px rgb(0 0 0 / 48%);
-    -moz-box-shadow: 0px 3px 7px -1px rgba(0,0,0,0.48);
-    box-shadow: 0px 3px 7px -1px rgb(0 0 0 / 48%);
 }
 
 .requestForm .title {
@@ -38,6 +35,10 @@ input::-webkit-inner-spin-button {
 
 .requestForm .body {
     text-indent: 5%;
+}
+
+.requestForm textarea {
+    text-indent: 0 !important;
 }
 
 .requestForm .sigCanvas{

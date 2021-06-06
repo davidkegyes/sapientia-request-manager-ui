@@ -5,14 +5,18 @@ config.rest = {};
 config.rest.baseUrl = REACT_APP_REST_BASE_URL;
 config.rest.getUserDetails = config.rest.baseUrl + "user/details";
 
+config.rest.attachmentUpload = config.rest.baseUrl + "attachment/upload";
+config.rest.attachmentList = config.rest.baseUrl + "attachment/list";
+
+config.rest.approveRequest = config.rest.baseUrl + "request/approve";
+
 config.rest.getRequestTemplates = config.rest.baseUrl + "request/templates";
-config.rest.documentUpload = config.rest.baseUrl + "request/attachment";
 config.rest.requestDataSave = config.rest.baseUrl + "request/save";
-config.rest.getRequestList = config.rest.baseUrl + "request/list";
 config.rest.getRequestByRef = config.rest.baseUrl + "request"
-config.rest.getRequestAttachmentList = config.rest.baseUrl + "request/attachments"
+config.rest.requestList = config.rest.baseUrl + "request/list"
+
 config.rest.uploadRequired = config.rest.baseUrl + "request/uploadRequired"
 
-config.rest.getNewReqistryNumber = config.rest.baseUrl + "registry/getNewReqistryNumber";
+config.rest.uploadFileSizeLimit = 1024;
 
 export default config;

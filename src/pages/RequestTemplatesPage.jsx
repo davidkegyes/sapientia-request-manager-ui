@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Button, CardDeck, Card } from "react-bootstrap";
+import { Container, Button, Card, CardColumns } from "react-bootstrap";
 import RequestTemplateService from '../services/RequestTemplateService';
 import RequestPage from './RequestPage';
 
@@ -24,36 +24,36 @@ export default function RequesTemplatesPage(props) {
     }
 
     if (templateInUse !== undefined) {
-        return (<RequestPage template={templateInUse.template} close={closeRequestPage} />);
+        return (<RequestPage key={Math.random()} template={templateInUse.template} close={closeRequestPage} />);
     }
-
-
 
     return (
         <Container>
-            <h1>Request Templates</h1>
-            <CardDeck>
+            <h1>Kérvények</h1>
+            <CardColumns>
                 {templates.map((template, i) => {
-                    return (<Card key={i}>
-                        <Card.Body>
-                            <Card.Title>{template.name}</Card.Title>
-                            <Card.Text>{template.description}</Card.Text>
-                            {template.upload &&
-                                <div>
-                                    <Card.Text>Documente necesare:</Card.Text>
-                                    <ul>
-                                        {template.upload.map((doc, i) => {
-                                            return (<li key={i}>{doc.name}</li>)
-                                        })}
-                                    </ul>
-                                </div>}
-                        </Card.Body>
-                        <Card.Footer className="text-center">
-                            <Button variant="primary" onClick={() => setTemplateInUse({ template })}>Use</Button>
-                        </Card.Footer>
-                    </Card>)
+                    return (
+                            <Card key={i} className="box">
+                                <Card.Body>
+                                    <Card.Title>{template.name}</Card.Title>
+                                    <Card.Text>{template.description}</Card.Text>
+                                    {(template.attachmentList && template.attachmentList.length > 0) &&
+                                        <div>
+                                            <Card.Text>Documente necesare:</Card.Text>
+                                            <ul>
+                                                {template.attachmentList.map((doc, i) => {
+                                                    return (<li key={i}>{doc.name}</li>)
+                                                })}
+                                            </ul>
+                                        </div>}
+                                    <div className="d-flex align-items-right justify-content-center">
+                                        <Button variant="primary" onClick={() => setTemplateInUse({ template })}>Kitöltés</Button>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        )
                 })}
-            </CardDeck>
+            </CardColumns>
         </Container>
     );
 }

@@ -13,7 +13,7 @@ export default function MyRequestsPage(props) {
 
     return (
         <Container>
-            <h1>Requests</h1>
+            <h1>Saját kérvények</h1>
             { (myRequests === undefined || myRequests.lenght === 0) && <span>No requests found</span>}
             { myRequests && myRequests.map(request => {
                 return (
@@ -27,7 +27,12 @@ export default function MyRequestsPage(props) {
                                             <Card.Text>Ref: {request.referenceNumber}</Card.Text>
                                             <small className="text-muted">Created {request.createDateTime}</small>
                                         </Col>
-                                        <Col xs={6} sm={2} className="d-flex align-items-center"><Badge variant="primary">Status</Badge></Col>
+                                        <Col xs={6} sm={2} className="d-flex align-items-center">
+                                            { request.status === 'NEW' && <Badge variant="primary">{request.status}</Badge>}
+                                            { request.status === 'REJECTED' && <Badge variant="danger">{request.status}</Badge>}
+                                            { request.status === 'APPROVED' && <Badge variant="success">{request.status}</Badge>}
+                                            { request.status === 'MULTIPLE_APPROVE_REQUIRED' && <Badge variant="warning">{request.status}</Badge>}
+                                        </Col>
                                         <Col xs={6} sm={2} className='d-flex align-items-center'>
                                             <NavLink to={{
                                                 pathname: "/inspect/" + encodeURIComponent(request.referenceNumber),
