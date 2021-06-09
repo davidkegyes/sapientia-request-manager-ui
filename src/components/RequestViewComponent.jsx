@@ -1,14 +1,13 @@
 import React from 'react'
-import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Badge } from 'react-bootstrap';
 import DocumentViewComponent from '../components/DocumentViewComponent';
-import LoadingModal from './LoadingModal'
 import LoadingComponent from './LoadingComponent'
 import RequestService from '../services/RequestService'
 import { useAsyncRequest } from '../services/hooks'
 
-export default function RequestViewComponent({ referenceNumber }) {
+export default function RequestViewComponent({ referenceNumber, test }) {
 
-    const { data, error, isLoading } = useAsyncRequest(RequestService.getRequestByRef, referenceNumber);
+    const { data, isLoading } = useAsyncRequest(RequestService.getRequestByRef, referenceNumber);
 
     if (isLoading === true || data === null) {
         return <LoadingComponent text='Loading request' />
@@ -24,19 +23,7 @@ export default function RequestViewComponent({ referenceNumber }) {
                         {data.status === 'APPROVED' && <Badge variant="success">{data.status}</Badge>}
                         {data.status === 'MULTIPLE_APPROVE_REQUIRED' && <Badge variant="warning">{data.status}</Badge>}
                     </h3>
-                </Col>
-                <Col>
-                    <Row>
-                        <Col md='auto'>
-                            <Button variant="outline-danger">Elutasítás</Button>
-                        </Col>
-                        <Col md='auto'>
-                            <Button variant="outline-warning">Tobblépcsős elfogadás</Button>
-                        </Col>
-                        <Col md='auto'>
-                            <Button variant="outline-success">Elfogadás</Button>
-                        </Col>
-                    </Row>
+                    <h3>{test}</h3>
                 </Col>
             </Row>
             <Row>

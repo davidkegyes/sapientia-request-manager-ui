@@ -91,7 +91,7 @@ export default function LoginPage(props) {
                                 onFailure={errorResponseGoogle}
                                 cookiePolicy={'single_host_origin'}
                             // autoLoad={true}
-                            // isSignedIn={true}
+                            isSignedIn={true}
                             />
                         </p>
                     </Jumbotron>

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Container, Button, Card, CardColumns } from "react-bootstrap";
+import { Container, Button, Card, CardColumns, Row, Col } from "react-bootstrap";
 import RequestTemplateService from '../services/RequestTemplateService';
 import RequestPage from './RequestPage';
+import UploadComponent  from '../components/UploadComponenet';
 
 export default function RequesTemplatesPage(props) {
 

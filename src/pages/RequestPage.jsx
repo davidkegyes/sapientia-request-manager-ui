@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Row, Button, Col, Alert } from "react-bootstrap";
 import RequestForm from "../components/RequestForm"
-import UploadComponent from "../components/UploadComponent"
+import RequestFormUploadComponent from "../components/RequestFormUploadComponent"
 import LoadingModal from "../components/LoadingModal";
 import RequestService from "../services/RequestService";
 import RequestPDFService from '../services/RequestPDFService';
@@ -17,7 +17,7 @@ export default class RequestPage extends Component {
         refNumber: ''
     }
     requestForm = {}
-    uploadComponents = [];
+    RequestFormUploadComponents = [];
 
     constructor(props) {
         super(props);
@@ -196,7 +196,7 @@ export default class RequestPage extends Component {
                 { this.state.refNumber === '' && <RequestForm form={this.state.request.form} onChange={this.handleFormChange} />}
                 { (this.state.request.attachmentList && this.state.request.attachmentList.length > 0) &&
                     this.state.request.attachmentList.map(att => {
-                        return <UploadComponent key={att.name} doc={att} upload={this.state.upload} onChange={this.handleAttachmentChange} />
+                        return <RequestFormUploadComponent key={att.name} doc={att} upload={this.state.upload} onChange={this.handleAttachmentChange} />
                     })
                 }
                 <Row className="rowSpace formMainControls">

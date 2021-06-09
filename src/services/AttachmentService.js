@@ -7,6 +7,21 @@ const AttachmentService = {
         return await RestTemplate.get(config.rest.attachmentList + '/' + referenceNumber);
     },
 
+    delete: async (referenceNumber) => {
+        return await RestTemplate.delete(config.rest.attachmentDelete + '/' + referenceNumber)
+    },
+
+    uploadAttachment: async (refNumber, name, file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('name', name);
+        formData.append('requestReferenceNumber', refNumber);
+        const headers = {
+            'Content-Type': 'multipart/form-data'
+        }
+        return RestTemplate.post(config.rest.attachmentUpload, formData, headers);
+    },
+
     upload : async (refNumber, attachment) => {
         const formData = new FormData();
         formData.append('file', attachment.value);

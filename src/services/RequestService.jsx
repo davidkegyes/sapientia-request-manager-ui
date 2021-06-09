@@ -17,8 +17,16 @@ export const RequestService = {
         return RestTemplate.post(config.rest.requestDataSave, formData, headers);
     },
 
-    getRequestList: async () => {
-        return await RestTemplate.get(config.rest.requestList);
+    approve: async (referenceNumber) => {
+        return RestTemplate.post(config.rest.approveRequest + "/" + referenceNumber);
+    },
+
+    reject: async (referenceNumber) => {
+        return RestTemplate.post(config.rest.rejectRequest + "/" + referenceNumber);
+    },
+
+    getrequestInfoList: async () => {
+        return await RestTemplate.get(config.rest.requestInfoList);
     },
 
     getRequestByRef: async (referenceNumber) => {

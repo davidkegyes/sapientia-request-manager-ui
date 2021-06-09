@@ -37,6 +37,10 @@ export const RestTemplate = {
 
     post: async (url, body, headers) => {
         return executeRequest('post', url, body, headers);
+    },
+
+    delete: async (url, body, headers) => {
+        return executeRequest("delete", url, body, headers);
     }
 }
 

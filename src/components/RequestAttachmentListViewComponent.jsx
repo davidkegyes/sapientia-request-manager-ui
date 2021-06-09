@@ -7,7 +7,7 @@ import { useAsyncRequest } from '../services/hooks'
 
 export default function RequestAttachmentListViewComponent({ referenceNumber }) {
 
-    const { data, error, isLoading } = useAsyncRequest(AttachmentService.getListForRequestReferenceNumber, referenceNumber);
+    const { data, isLoading } = useAsyncRequest(AttachmentService.getListForRequestReferenceNumber, referenceNumber);
 
     if (isLoading === true) {
         return <LoadingComponent text='Loading request Attachments' />
