@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React from 'react'
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import logo from '../assets/logo_hu.png'
@@ -30,13 +30,12 @@ const Styles = styled.div`
       height:80px;
   }
 `;
-export default class Header extends Component {
+export default function NavigationBar () {
 
-    render() {
-        return (
-            <Styles>
-                <Navbar expand="md">
-                    <Container>
+    return (
+        <Styles>
+            <Navbar expand="md">
+                <Container>
                     <Navbar.Brand href="/">
                         <img src={logo} className="logo" title="Sapientia EMTE" alt="Sapientia EMTE" />
                     </Navbar.Brand>
@@ -57,10 +56,8 @@ export default class Header extends Component {
                             </Nav.Item> */}
                         </Nav>
                     </Navbar.Collapse>
-                    </Container>
-                </Navbar>
-            </Styles>
-        );
-    }
-
+                </Container>
+            </Navbar>
+        </Styles>
+    );
 }

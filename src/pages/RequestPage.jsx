@@ -136,7 +136,7 @@ export default class RequestPage extends Component {
         Promise.all(promises)
             .then((res) => {
                 let tmp = { ...this.state.request };
-                let uploadSuccess = true;//res.every(u => u.uploadSuccess === true); 
+                let uploadSuccess = true; 
                 for (let i in res) {
                     uploadSuccess = uploadSuccess && res[i].uploadSuccess;
                     for (let j in tmp.attachmentList) {
@@ -187,10 +187,10 @@ export default class RequestPage extends Component {
                         <Alert.Heading>{this.isSuccess() ? 'Sikeres feltöltés' : 'Hibás feltöltés'}</Alert.Heading>
                         <p>Request form uploaded successfully with reference number {this.state.refNumber}</p>
                         {this.state.attUploadSuccess === false &&
-                            <>
+                            <div>
                                 <p><strong>!!!</strong> Error with the attachments. Please try to choose a different file and/or send again!</p>
                                 <p>Or you can can retry to attach the required documents on the Request review page.</p>
-                            </>
+                            </div>
                         }
                     </Alert>}
                 { this.state.refNumber === '' && <RequestForm form={this.state.request.form} onChange={this.handleFormChange} />}
@@ -201,10 +201,10 @@ export default class RequestPage extends Component {
                 }
                 <Row className="rowSpace formMainControls">
                     { this.state.refNumber === '' &&
-                        <>
+                        <div>
                             <Col><Button variant="primary" onClick={() => this.pdfService.downloadPdf(this.state.request.form, this.state.request.name)}>Kérvény Letöltése küldés nélkül</Button></Col>
                             {/* <Col><Button variant="primary" onClick={this.reset}>Reset</Button></Col> */}
-                        </>}
+                        </div>}
                     { !this.isSuccess() && 
                         <Col xs="auto"><Button variant="success" onClick={(e) => this.uploadRequest(this.state.request)}>Küldés</Button></Col>
                     }

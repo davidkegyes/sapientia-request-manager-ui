@@ -1,29 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Alert, Badge } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import LoadingModal from '../components/LoadingModal'
 import RequestService from '../services/RequestService'
 import DocumentViewComponent from '../components/DocumentViewComponent';
-import RestTemplate from '../services/RestTemplate';
-import config from '../config'
 import AttachmentService from '../services/AttachmentService';
 import UploadComponent from '../components/UploadComponenet';
 
 const splitRequestObject = (request) => {
-    let requestInfo = { ...request };
-    delete requestInfo.document;
-    delete requestInfo.documentType;
-    let requestDocument = { documentType: request.documentType, document: request.document }
-    return { requestInfo, requestDocument };
+    let info = { ...request };
+    delete info.document;
+    delete info.documentType;
+    let doc = { documentType: request.documentType, document: request.document }
+    return { info, doc };
 }
 
 export default function RequestInspectorPage() {
 
     const params = useParams();
 
-    // const { data, callError, isLoading } = useAsyncRequest(RequestService.getRequestByRef, params.ref);
-    // const [request, setRequest] = useState(data);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [requestInfo, setRequestInfo] = useState(null);
@@ -31,38 +27,40 @@ export default function RequestInspectorPage() {
     const [attachmentList, setAttachMentList] = useState(null);
     const [action, setAction] = useState({ type: "INIT" });
 
+    const onUpload = useCallback( async () => {
+        setLoading(true);
+        setAttachMentList(await AttachmentService.getListForRequestReferenceNumber(params.ref));
+        setLoading(false);
+    })
 
     useEffect(() => {
         async function doAction() {
-            console.log("In use effect");
             setLoading(true);
             try {
                 switch (action.type) {
                     case "INIT":
                         const request = await RequestService.getRequestByRef(params.ref);
-                        const { requestInfo, requestDocument } = splitRequestObject(request);
-                        setRequestInfo(requestInfo);
-                        setRequestDocument(requestDocument);
+                        const { info, doc } = splitRequestObject(request);
+                        setRequestInfo(info);
+                        setRequestDocument(doc);
                         setAttachMentList(await AttachmentService.getListForRequestReferenceNumber(params.ref));
                         break;
                     case "APPROVE":
                         await RequestService.approve(params.ref);
+                        setRequestInfo(await RequestService.getRequestInfo(params.ref));
                         break;
                     case "REJECT":
                         await RequestService.reject(params.ref);
+                        setRequestInfo(await RequestService.getRequestInfo(params.ref));
                         break;
                     case "DELETE_ATTACHMENT":
                         await AttachmentService.delete(action.value);
                         setAttachMentList(attachmentList.filter((o) => o.uuid !== action.value))
                         break;
-                    case "RELOAD_ATTACHMENTS":
-                        break;
                     default:
                         setLoading(false);
                         break;
                 }
-                if (action !== "INIT")
-                    RestTemplate.get(config.rest.requestInfo + "/" + params.ref).then(res => setRequestInfo(res));
             } catch (error) {
                 console.log(error);
                 setError(error);
@@ -70,9 +68,9 @@ export default function RequestInspectorPage() {
             setLoading(false);
         }
         doAction();
-    }, [action, params.ref])
+    }, [action])
 
-    if (requestInfo === null) {
+    if (requestInfo === null || requestInfo === undefined) {
         return (<LoadingModal show={true} />);
     }
 
@@ -96,10 +94,10 @@ export default function RequestInspectorPage() {
             </Row>
             <LoadingModal show={loading} />
             {requestInfo.status === "NEW" &&
-                <>
+                <Container fluid>
                     <Row className="rowSpace">
                         <Col>
-                            <UploadComponent referenceNumber={requestInfo.referenceNumber} />
+                            <UploadComponent referenceNumber={requestInfo.referenceNumber} onUpload={onUpload} />
                         </Col>
                     </Row>
                     <Row className="rowSpace justify-content-center">
@@ -113,7 +111,7 @@ export default function RequestInspectorPage() {
                             <Button variant="success" onClick={() => { setAction({ type: 'APPROVE' }) }}>Elfogadás</Button>
                         </Col>
                     </Row>
-                </>
+                </Container>
             }
             { error &&
                 <Row>
@@ -130,7 +128,7 @@ export default function RequestInspectorPage() {
                 </Row>
             }
             {attachmentList &&
-                <>
+                <Container fluid>
                     <Row>
                         <Col><h3>Csatolmányok</h3></Col>
                     </Row>
@@ -141,8 +139,8 @@ export default function RequestInspectorPage() {
                     }
                     {attachmentList.map((att) => {
                         return (
-                            <>
-                                <Row>
+                            <Container fluid className="box rowSpace">
+                                <Row className="rowSpace">
                                     {requestInfo.status === "NEW" &&
                                         <Col md='auto'>
                                             <Button variant="outline-danger" onClick={() => { setAction({ type: "DELETE_ATTACHMENT", value: att.uuid }) }}>Törlés</Button>
@@ -157,9 +155,9 @@ export default function RequestInspectorPage() {
                                         <DocumentViewComponent documentType={att.type} document={att.value} />
                                     </Col>
                                 </Row>
-                            </>);
+                            </Container>);
                     })}
-                </>
+                </Container>
             }
         </Container>
     )

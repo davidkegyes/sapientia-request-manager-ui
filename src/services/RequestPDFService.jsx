@@ -1,4 +1,5 @@
 
+import React from 'react'
 import { pdf, Document, Page, Text, Image, StyleSheet, View } from '@react-pdf/renderer'
 import { saveAs } from 'file-saver';
 
