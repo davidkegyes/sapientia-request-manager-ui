@@ -3,27 +3,30 @@ import Jumbotron from 'react-bootstrap/Jumbotron'
 import GoogleLogin from 'react-google-login';
 import AuthorizationService from '../services/AuthorizationService'
 import UserService from '../services/UserService'
-import { Container, Row, Col, Alert } from "react-bootstrap";
+import { Container, Row, Col, Alert, Form } from "react-bootstrap";
 import LoadingModal from '../components/LoadingModal'
 import './LoginPage.css';
 import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import logo from '../assets/logo_hu.png'
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage(props) {
 
     let history = useHistory();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(undefined);
+    const { t } = useTranslation();
 
     if (props.user) {
         return <Redirect to={
             {
-              pathname: history.location.state.from.pathname,
-              state: {
-                from: props.location
-              }
+                pathname: history.location.state.from.pathname,
+                state: {
+                    from: props.location
+                }
             }
-          } />
+        } />
     }
 
     let token = localStorage.getItem('token');
@@ -76,27 +79,34 @@ export default function LoginPage(props) {
     }
 
     return (
-        <Container>
-            <Row className="align-items-center">
-                <Col>
-                    <Jumbotron>
-                        <h1>Sapientia Erdélyi Magyar Tudományegyetem</h1>
-                        <h2>Kérvény kezelő alkalmazása</h2>
-                        <p>A bejelentkezéshez kattintson a Login gombra majd válassza ki a Google bejelentkezéshes az egyetemtől kapott email címet.</p>
+        <Container className="box d-flex justify-content-center align-items-center">
+            <Form>
+                <Row >
+                    <Col className="d-flex align-items-center justify-content-center">
+                        <img src={logo} className="loginLogo" title="Sapientia EMTE" alt="Sapientia EMTE" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="d-flex align-items-center justify-content-center">
+                        <p>{t("page.login.hint")}</p>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="d-flex align-items-center justify-content-center">
                         <p>
                             <GoogleLogin
                                 clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"
-                                buttonText="Login"
+                                buttonText={t("page.login.button")}
                                 onSuccess={succesResponseGoogle}
                                 onFailure={errorResponseGoogle}
                                 cookiePolicy={'single_host_origin'}
                             // autoLoad={true}
-                            isSignedIn={true}
+                            // isSignedIn={true}
                             />
                         </p>
-                    </Jumbotron>
-                </Col>
-            </Row>
+                    </Col>
+                </Row>
+            </Form>
             { error !== undefined &&
                 <Row>
                     <Col>

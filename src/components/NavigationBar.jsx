@@ -1,8 +1,10 @@
 import React from 'react'
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import logo from '../assets/logo_hu.png'
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import { GoogleLogout } from 'react-google-login';
 
 const Styles = styled.div`
   .navbar {
@@ -30,7 +32,9 @@ const Styles = styled.div`
       height:80px;
   }
 `;
-export default function NavigationBar () {
+export default function NavigationBar( {handleLogout}) {
+
+    const { t } = useTranslation();
 
     return (
         <Styles>
@@ -43,18 +47,18 @@ export default function NavigationBar () {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Item>
-                                <Nav.Link as={NavLink} exact to="/">Kérvények</Nav.Link>
+                                <Nav.Link as={NavLink} exact to="/">{t("nav.requestTemplates")}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={NavLink} to="/myRequests">Saját kérvények</Nav.Link>
+                                <Nav.Link as={NavLink} to="/myRequests">{t("nav.myRequests")}</Nav.Link>
                             </Nav.Item>
-                            {/* <Nav.Item>
-                                <Nav.Link as={NavLink} to="/adminPage">Admin</Nav.Link>
-                            </Nav.Item> */}
-                            {/* <Nav.Item>
-                                <Button onClick={this.props.handleLogout}>Logout</Button>
-                            </Nav.Item> */}
                         </Nav>
+                        <GoogleLogout
+                            clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"
+                            buttonText={t("nav.logout")}
+                            onLogoutSuccess={handleLogout}
+                        >
+                        </GoogleLogout>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

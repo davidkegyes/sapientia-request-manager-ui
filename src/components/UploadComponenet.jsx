@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 export default function UploadComponent({ referenceNumber, onUpload, requiredDocuments }) {
 
     const getFileList = () => {
-        if (requiredDocuments !== undefined && requiredDocuments !== undefined && referenceNumber.length > 0) {
+        if (requiredDocuments !== undefined && requiredDocuments !== undefined && requiredDocuments.length > 0) {
             let files = [];
             for (let i = 0; i < requiredDocuments.length; i++) {
                 files.push({ id: uuid(), name: requiredDocuments[i], file: null, required: true });

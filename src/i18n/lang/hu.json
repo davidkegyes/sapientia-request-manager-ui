@@ -1,0 +1,45 @@
+{
+    "title": "Sapientia Erdélyi Magyar Tudományegyetem",
+    "loading": "...Betöltés",
+    "nav": {
+        "requestTemplates": "Kérvények",
+        "myRequests": "Kérvényeim",
+        "logout": "Kijelentkezés"
+    },
+    "page": {
+        "login": {
+            "hint": "Bejelentkezéshez használja az egyetemtől kapott emailcímet.",
+            "button": "Bejelentkezés Google fiokkal"
+        },
+        "myRequests": {
+            "title": "Kérvényeim",
+            "noRequestFound": "Nincsenek kervények.",
+            "openRequest": "Megnyitás"
+        },
+        "requestTemplates": {
+            "title": "Kérvények",
+            "useTemplate": "Kitöltés"
+        },
+        "requestInspector": {
+            "button": {
+                "backToMyRequests": "Vissza a kérvényeimhez",
+                "approve": "Elfogadás",
+                "reject": "Elutasítás"
+            },
+            "attachmentsTitle": "Csatolmányok",
+            "noAttachments" : "Nincsenek csatolmányok"
+        }
+    },
+    "request": {
+        "status": {
+            "approved": "Elfogadva",
+            "rejected": "Elutasítva",
+            "new": "Új"
+        },
+        "referenceNumber": "Referencia szám",
+        "officialReferenceNumber": "Iktatószám",
+        "creationDate": "Létrehozva {{date, YYYY/MM/DD, hh:mm:ss}}",
+        "lastUpdate": "Módositva {{date, YYYY/MM/DD, hh:mm:ss}}",
+        "requiredDocuments": "Szükséges dokumentumok"
+    }
+}

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Container, Button, Card, CardColumns} from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import RequestDocumentUploadComponent from "../components/RequestDocumentUploadComponent";
 import RequestTemplateService from '../services/RequestTemplateService';
 import RequestPage from './RequestPage';
 
 export default function RequesTemplatesPage() {
 
+    const {t} = useTranslation();
     let [templates, setTemplates] = useState([]);
     let [templateInUse, setTemplateInUse] = useState(undefined)
 
@@ -29,7 +32,7 @@ export default function RequesTemplatesPage() {
 
     return (
         <Container>
-            <h1>Kérvények</h1>
+            <h1>{t("page.requestTemplates.title")}</h1>
             <CardColumns>
                 {templates.map((template, i) => {
                     return (
@@ -39,7 +42,7 @@ export default function RequesTemplatesPage() {
                                     <Card.Text>{template.description}</Card.Text>
                                     {(template.attachmentList && template.attachmentList.length > 0) &&
                                         <div>
-                                            <Card.Text>Documente necesare:</Card.Text>
+                                            <Card.Text>{t("request.requiredDocuments")}:</Card.Text>
                                             <ul>
                                                 {template.attachmentList.map((doc, i) => {
                                                     return (<li key={i}>{doc.name}</li>)
@@ -47,7 +50,7 @@ export default function RequesTemplatesPage() {
                                             </ul>
                                         </div>}
                                     <div className="d-flex align-items-right justify-content-center">
-                                        <Button variant="primary" onClick={() => setTemplateInUse({ template })}>Kitöltés</Button>
+                                        <Button variant="outline-info" onClick={() => setTemplateInUse({ template })}>{t("page.requestTemplates.useTemplate")}</Button>
                                     </div>
                                 </Card.Body>
                             </Card>

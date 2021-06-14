@@ -7,6 +7,7 @@ import RequestService from '../services/RequestService'
 import DocumentViewComponent from '../components/DocumentViewComponent';
 import AttachmentService from '../services/AttachmentService';
 import UploadComponent from '../components/UploadComponenet';
+import { useTranslation } from 'react-i18next';
 
 const splitRequestObject = (request) => {
     let info = { ...request };
@@ -26,8 +27,9 @@ export default function RequestInspectorPage() {
     const [requestDocument, setRequestDocument] = useState(null);
     const [attachmentList, setAttachMentList] = useState(null);
     const [action, setAction] = useState({ type: "INIT" });
+    const { t } = useTranslation();
 
-    const onUpload = useCallback( async () => {
+    const onUpload = useCallback(async () => {
         setLoading(true);
         setAttachMentList(await AttachmentService.getListForRequestReferenceNumber(params.ref));
         setLoading(false);
@@ -76,39 +78,35 @@ export default function RequestInspectorPage() {
 
     return (
         <Container>
+            <LoadingModal show={loading} />
             <Row>
                 <Col md="auto">
                     <h3>
-                        {requestInfo.status === 'NEW' && <Badge variant="primary">{requestInfo.status}</Badge>}
-                        {requestInfo.status === 'REJECTED' && <Badge variant="danger">{requestInfo.status}</Badge>}
-                        {requestInfo.status === 'APPROVED' && <Badge variant="success">{requestInfo.status}</Badge>}
-                        {requestInfo.status === 'MULTIPLE_APPROVE_REQUIRED' && <Badge requestInfo="warning">{requestInfo.status}</Badge>}
+                        {requestInfo.status === 'NEW' && <Badge variant="primary">{t("request.status.new")}</Badge>}
+                        {requestInfo.status === 'REJECTED' && <Badge variant="danger">{t("request.status.rejected")}</Badge>}
+                        {requestInfo.status === 'APPROVED' && <Badge variant="success">{t("request.status.approved")}</Badge>}
                     </h3>
                 </Col>
                 <Col md="auto">
                     <h2>{requestInfo.name}</h2>
                 </Col>
                 <Col className='d-flex align-items-center'>
-                    <NavLink to="/myRequests" className='btn btn-outline-info ml-auto'>Vissza a kérvényeimhez</NavLink>
+                    <NavLink to="/myRequests" className='btn btn-outline-info ml-auto'>{t("page.requestInspector.button.backToMyRequests")}</NavLink>
                 </Col>
             </Row>
-            <LoadingModal show={loading} />
             {requestInfo.status === "NEW" &&
                 <Container fluid>
                     <Row className="rowSpace">
                         <Col>
-                            <UploadComponent referenceNumber={requestInfo.referenceNumber} onUpload={onUpload} />
+                            <UploadComponent requiredDocuments={requestInfo.attachmentRequestList} referenceNumber={requestInfo.referenceNumber} onUpload={onUpload} />
                         </Col>
                     </Row>
                     <Row className="rowSpace justify-content-center">
                         <Col md='auto'>
-                            <Button variant="danger" onClick={() => setAction({ type: "REJECT" })}>Elutasítás</Button>
+                            <Button variant="danger" onClick={() => setAction({ type: "REJECT" })}>{t("page.requestInspector.button.reject")}</Button>
                         </Col>
                         <Col md='auto'>
-                            <Button variant="warning" disabled>Tobblépcsős elfogadás</Button>
-                        </Col>
-                        <Col md='auto'>
-                            <Button variant="success" onClick={() => { setAction({ type: 'APPROVE' }) }}>Elfogadás</Button>
+                            <Button variant="success" onClick={() => { setAction({ type: 'APPROVE' }) }}>{t("page.requestInspector.button.approve")}</Button>
                         </Col>
                     </Row>
                 </Container>
@@ -130,11 +128,11 @@ export default function RequestInspectorPage() {
             {attachmentList &&
                 <Container fluid>
                     <Row>
-                        <Col><h3>Csatolmányok</h3></Col>
+                        <Col><h3>{t("page.requestInspector.attachmentsTitle")}</h3></Col>
                     </Row>
                     {attachmentList.length === 0 &&
                         <Row>
-                            <Col><Alert variant="info">Nincsenek Csatolmányok</Alert></Col>
+                            <Col><Alert variant="info">{t("page.requestInspector.noAttachments")}</Alert></Col>
                         </Row>
                     }
                     {attachmentList.map((att) => {
