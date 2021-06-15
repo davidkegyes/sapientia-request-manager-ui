@@ -5,7 +5,7 @@ import logo from '../assets/logo_hu.png'
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { GoogleLogout } from 'react-google-login';
-
+import LanguageSelectorComponent from './LanguageSelectorComponent'
 const Styles = styled.div`
   .navbar {
     margin-bottom: 15px;
@@ -53,6 +53,7 @@ export default function NavigationBar( {handleLogout}) {
                                 <Nav.Link as={NavLink} to="/myRequests">{t("nav.myRequests")}</Nav.Link>
                             </Nav.Item>
                         </Nav>
+                        <LanguageSelectorComponent />
                         <GoogleLogout
                             clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"
                             buttonText={t("nav.logout")}

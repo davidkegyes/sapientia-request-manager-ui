@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import LoadingModal from './LoadingModal';
 import { Button, Container, Row, Col, Form, Alert } from 'react-bootstrap'
 import { v4 as uuid } from 'uuid';
+import { useTranslation } from 'react-i18next';
 
-export default function RequestDocumentUploadComponent({ referenceNumber }) {
+export default function DocumentUploadRequestComponent ({ referenceNumber }) {
 
+    const {t} = useTranslation();
     const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState([{ id: uuid(), name: '' }]);
 
@@ -60,13 +62,13 @@ export default function RequestDocumentUploadComponent({ referenceNumber }) {
                             <Col lg={7}>
                                 <Form.Control placeholder="Dokumentum neve" key={f.id} id={f.id} value={f.name} onChange={onFileNameChange} />
                             </Col>
-                            <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>Még egy dokumentum</Button></Col>
+                            <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>{t("component.documentUploadRequest.addDocument")}</Button></Col>
                         </Row>
                     </Container>
                 ))}
             </Form>
             <Row className="rowSpace justify-content-center">
-                <Col xs="auto"><Button variant="outline-success" type="submit" disabled={referenceNumber === undefined}>Dokumentum igenylese</Button></Col>
+                <Col xs="auto"><Button variant="outline-success" type="submit" disabled={referenceNumber === undefined}>{t("component.documentUploadRequest.requestDocument", {count: fileList.length})}</Button></Col>
             </Row>
         </Container>
     );

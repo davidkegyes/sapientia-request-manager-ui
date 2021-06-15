@@ -6,7 +6,8 @@ import LoadingModal from '../components/LoadingModal'
 import RequestService from '../services/RequestService'
 import DocumentViewComponent from '../components/DocumentViewComponent';
 import AttachmentService from '../services/AttachmentService';
-import UploadComponent from '../components/UploadComponenet';
+import UploadComponent from '../components/UploadComponent';
+import DocumentUploadRequestComponent from '../components/DocumentUploadRequestComponent'
 import { useTranslation } from 'react-i18next';
 
 const splitRequestObject = (request) => {
@@ -96,6 +97,11 @@ export default function RequestInspectorPage() {
             </Row>
             {requestInfo.status === "NEW" &&
                 <Container fluid>
+                    <Row className="rowSpace">
+                        <Col>
+                            {/* <DocumentUploadRequestComponent referenceNumber={requestInfo.referenceNumber}/> */}
+                        </Col>
+                    </Row>
                     <Row className="rowSpace">
                         <Col>
                             <UploadComponent requiredDocuments={requestInfo.attachmentRequestList} referenceNumber={requestInfo.referenceNumber} onUpload={onUpload} />

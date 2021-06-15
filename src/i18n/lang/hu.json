@@ -1,4 +1,5 @@
 {
+    "language" : "Magyar",
     "title": "Sapientia Erdélyi Magyar Tudományegyetem",
     "loading": "...Betöltés",
     "nav": {
@@ -28,6 +29,21 @@
             },
             "attachmentsTitle": "Csatolmányok",
             "noAttachments" : "Nincsenek csatolmányok"
+        }
+    },
+    "component" : {
+        "documentUploadRequest" : {
+            "addDocument" : "Még egy",
+            "requestDocument" : "Dokumentum igenylese",
+            "requestDocument_plural" : "Dokumentumok igenylese"
+        },
+        "documentUpload" : {
+            "addDocument" :"Még egy dokumentum",
+            "uploadDocument" : "Feltöltés",
+            "documentNamePlaceholder" : "Dokumentum",
+            "noSelectedFile" : "Nincs kiválasztott dokumentum",
+            "noSelectedFileError" : "Kérem valasszon egy feltoltendő dokumentumot!",
+            "browseFiles" : "Keresés"
         }
     },
     "request": {

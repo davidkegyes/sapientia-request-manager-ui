@@ -1,1 +1,46 @@
-{}
+{
+    "language" : "English",
+    "title": "Sapientia Erdélyi Magyar Tudományegyetem",
+    "loading": "...Loading",
+    "nav": {
+        "requestTemplates": "Request Templates",
+        "myRequests": "My Requests",
+        "logout": "Logout"
+    },
+    "page": {
+        "login": {
+            "hint": "Login with the provided email from the Universisty",
+            "button": "Login with Google"
+        },
+        "myRequests": {
+            "title": "My Requests",
+            "noRequestFound": "No request found.",
+            "openRequest": "Open"
+        },
+        "requestTemplates": {
+            "title": "Request Templates",
+            "useTemplate": "Fill"
+        },
+        "requestInspector": {
+            "button": {
+                "backToMyRequests": "Back To My Requests",
+                "approve": "Approve",
+                "reject": "Reject"
+            },
+            "attachmentsTitle": "Attachments",
+            "noAttachments" : "No attachment found"
+        }
+    },
+    "request": {
+        "status": {
+            "approved": "Approved",
+            "rejected": "Rejected",
+            "new": "New"
+        },
+        "referenceNumber": "Reference number",
+        "officialReferenceNumber": "Official reference number",
+        "creationDate": "Created {{date, YYYY/MM/DD, hh:mm:ss}}",
+        "lastUpdate": "Updated {{date, YYYY/MM/DD, hh:mm:ss}}",
+        "requiredDocuments": "Required documents"
+    }
+}

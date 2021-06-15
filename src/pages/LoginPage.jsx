@@ -10,6 +10,7 @@ import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import logo from '../assets/logo_hu.png'
 import { useTranslation } from 'react-i18next';
+import LanguageSelectorComponent from "../components/LanguageSelectorComponent";
 
 export default function LoginPage(props) {
 
@@ -79,37 +80,38 @@ export default function LoginPage(props) {
     }
 
     return (
-        <Container className="box d-flex justify-content-center align-items-center">
-            <Form>
-                <Row >
-                    <Col className="d-flex align-items-center justify-content-center">
-                        <img src={logo} className="loginLogo" title="Sapientia EMTE" alt="Sapientia EMTE" />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col className="d-flex align-items-center justify-content-center">
-                        <p>{t("page.login.hint")}</p>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col className="d-flex align-items-center justify-content-center">
-                        <p>
-                            <GoogleLogin
-                                clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"
-                                buttonText={t("page.login.button")}
-                                onSuccess={succesResponseGoogle}
-                                onFailure={errorResponseGoogle}
-                                cookiePolicy={'single_host_origin'}
-                            // autoLoad={true}
-                            // isSignedIn={true}
-                            />
-                        </p>
-                    </Col>
-                </Row>
-            </Form>
+        <Container className="box">
+            <Row >
+                <Col className="d-flex align-items-center justify-content-center">
+                    <img src={logo} className="loginLogo" title="Sapientia EMTE" alt="Sapientia EMTE" />
+                </Col>
+            </Row>
+            <Row>
+                <Col className="d-flex align-items-center justify-content-center">
+                    <p>{t("page.login.hint")}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col className="d-flex align-items-center justify-content-center">
+                    <p>
+                        <GoogleLogin
+                            clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"
+                            buttonText={t("page.login.button")}
+                            onSuccess={succesResponseGoogle}
+                            onFailure={errorResponseGoogle}
+                            cookiePolicy={'single_host_origin'}
+                        // autoLoad={true}
+                        // isSignedIn={true}
+                        />
+                    </p>
+                </Col>
+            </Row>
+            <Row>
+                <Col className="d-flex align-items-center justify-content-center"><LanguageSelectorComponent /></Col>
+            </Row>
             { error !== undefined &&
                 <Row>
-                    <Col>
+                    <Col className="d-flex align-items-center justify-content-center">
                         <Alert key={error} variant='danger'>{error}</Alert>
                     </Col>
                 </Row>}

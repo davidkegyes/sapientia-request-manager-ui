@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Container, Button, Card, CardColumns} from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import RequestDocumentUploadComponent from "../components/RequestDocumentUploadComponent";
 import RequestTemplateService from '../services/RequestTemplateService';
 import RequestPage from './RequestPage';
 

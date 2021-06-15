@@ -3,6 +3,7 @@ import { Button, Container, Row, Col, Form, Alert } from 'react-bootstrap'
 import LoadingModal from './LoadingModal';
 import AttachmentService from '../services/AttachmentService'
 import { v4 as uuid } from 'uuid';
+import { useTranslation } from 'react-i18next';
 
 export default function UploadComponent({ referenceNumber, onUpload, requiredDocuments }) {
 
@@ -17,9 +18,10 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
         return [{ id: uuid(), name: '', file: null }];
     }
 
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState(getFileList());
-
+    const [validated, setValidated] = useState(false);
 
     const removeFile = (file) => {
         if (fileList.length === 1) {
@@ -58,40 +60,44 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
     const upload = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        setLoading(true);
-        let promises = [];
-        for (let i in fileList) {
-            if (fileList[i].success) {
-                continue
+        const form = event.currentTarget;
+        if (form.checkValidity() === true) {
+            setLoading(true);
+            let promises = [];
+            for (let i in fileList) {
+                if (fileList[i].success) {
+                    continue
+                }
+                promises.push(AttachmentService.uploadAttachment(referenceNumber, fileList[i].name, fileList[i].file))
             }
-            promises.push(AttachmentService.uploadAttachment(referenceNumber, fileList[i].name, fileList[i].file))
-        }
-        Promise.allSettled(promises)
-            .then((res) => {
-                let errList = [];
-                for (let i in fileList) {
-                    if (res[i].status === 'fulfilled') {
-                        onUpload(fileList[i])
-                        continue;
+            Promise.allSettled(promises)
+                .then((res) => {
+                    let errList = [];
+                    for (let i in fileList) {
+                        if (res[i].status === 'fulfilled') {
+                            onUpload(fileList[i])
+                            continue;
+                        }
+                        let msg = res[i].reason.message;
+                        try {
+                            msg = res[i].reason.response.data.message;
+                        } catch (any) { }
+                        errList.push({ ...fileList[i], error: msg });
                     }
-                    let msg = res[i].reason.message;
-                    try {
-                        msg = res[i].reason.response.data.message;
-                    } catch (any) { }
-                    errList.push({ ...fileList[i], error: msg });
-                }
-                if (errList.length === 0) {
-                    setFileList([{ id: uuid(), name: '', file: null }])
-                } else {
-                    setFileList(errList);
-                }
-                setLoading(false);
-            });
+                    if (errList.length === 0) {
+                        setFileList([{ id: uuid(), name: '', file: null }])
+                    } else {
+                        setFileList(errList);
+                    }
+                    setLoading(false);
+                });
+            setValidated(true);
+        }
     }
     return (
         <Container fluid className="box">
             <LoadingModal show={loading} />
-            <Form onSubmit={upload}>
+            <Form noValidate validated={validated} onSubmit={upload}>
                 {fileList.map((f) => (
                     <Container fluid>
                         {f.error &&
@@ -103,10 +109,17 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
                         }
                         <Row className="rowSpace">
                             <Col lg={5}>
-                                <Form.File required key={f.id} id={f.id} onChange={onFileAdd} accept=".jpg, .jpeg, .pdf" />
+                                <Form.File custom
+                                    key={f.id} id={f.id}                         >
+                                    <Form.File.Input required onChange={onFileAdd} accept=".jpg, .jpeg, .pdf" />
+                                    <Form.File.Label data-browse={t("component.documentUpload.browseFiles")}>
+                                        {f.file ? f.file.name : t("component.documentUpload.noSelectedFile")}
+                                    </Form.File.Label>
+                                    <Form.Control.Feedback type="invalid">{t("component.documentUpload.noSelectedFileError")}</Form.Control.Feedback>
+                                </Form.File>
                             </Col>
                             <Col lg={6}>
-                                <Form.Control placeholder="Dokumentum neve" key={f.id} id={f.id} value={f.name} onChange={onFileNameChange} disabled={f.required} />
+                                <Form.Control placeholder={t("component.documentUpload.documentNamePlaceholder")} key={f.id} id={f.id} value={f.name} onChange={onFileNameChange} disabled={f.required} />
                             </Col>
                             <Col lg={1}>
                                 {!f.required &&
@@ -120,8 +133,8 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
                 ))}
 
                 <Row className="rowSpace justify-content-center">
-                    <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>Hozzáadás</Button></Col>
-                    <Col xs="auto"><Button variant="outline-success" type="submit" disabled={referenceNumber === undefined}>Feltöltés</Button></Col>
+                    <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>{t("component.documentUpload.addDocument")}</Button></Col>
+                    <Col xs="auto"><Button variant="outline-success" type="submit" disabled={referenceNumber === undefined}>{t("component.documentUpload.uploadDocument")}</Button></Col>
                 </Row>
             </Form>
         </Container>
