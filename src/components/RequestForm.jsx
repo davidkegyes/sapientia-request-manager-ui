@@ -48,7 +48,11 @@ export default function RequestForm({ form, onChange }) {
                         <label>{part.signatureText}</label>
 
                         <div className="sigCanvasContainer">
-                            <SignatureCanvas penColor='blue' canvasProps={{ className: 'sigCanvas' }} ref={(ref) => { sigPad = ref }} onEnd={() => { handleChange({ target: { name: part.type, value: sigPad.getTrimmedCanvas().toDataURL(), type: part.type } }) }} />
+                            <SignatureCanvas 
+                            penColor='blue' 
+                            canvasProps={{ className: 'sigCanvas' }} 
+                            ref={(ref) => { sigPad = ref }} 
+                            onEnd={() => { handleChange({ target: { name: part.type, value: sigPad.getTrimmedCanvas().toDataURL(), type: part.type } }) }} />
                             <button type="button" className="close canvasControl hide" aria-label="Clear" onClick={() => { sigPad.clear(); handleChange({ target: { name: part.type, value: undefined, type: part.type } }) }}>
                                 <span aria-hidden="false">&times;</span>
                             </button>

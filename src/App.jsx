@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import MyRequestsPage from './pages/MyRequestsPage'
 import RequestInspectorPage from './pages/RequestInspectorPage'
 import CustomRequestPage from './pages/CustomRequestPage'
+import RequestTemplateEditorPage from './pages/RequestTemplateEditorPage'
 import './App.css'
 import { useTranslation } from 'react-i18next';
 
@@ -34,9 +35,11 @@ export default function App() {
       <React.Fragment>
         <Router>
           {user && <NavigationBar handleLogout={handleLogout}/>}
+          {/* <NavigationBar handleLogout={handleLogout}/> */}
           <Switch>
             <Route path="/login" component={() => <LoginPage user={user} handleLogin={handleLogin} />} />
             <ProtectedRoute exact path="/" user={user} component={RequestTemplatesPage} />
+            <ProtectedRoute path="/createRequestTemplate" user={user} component={RequestTemplateEditorPage} />
             <ProtectedRoute path="/customRequest" user={user} component={CustomRequestPage} />
             <ProtectedRoute path="/myRequests" user={user} component={MyRequestsPage} />
             <ProtectedRoute path="/inspect/:ref" user={user} component={RequestInspectorPage} />
