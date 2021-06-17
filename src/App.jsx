@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NavigationBar from './components/NavigationBar'
 import RequestTemplatesPage from './pages/RequestTemplatesPage'
-import AdminPage from './pages/AdminPage'
 import LoginPage from './pages/LoginPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import MyRequestsPage from './pages/MyRequestsPage'
 import RequestInspectorPage from './pages/RequestInspectorPage'
+import CustomRequestPage from './pages/CustomRequestPage'
 import './App.css'
-import { Suspense } from "react";
 import { useTranslation } from 'react-i18next';
 
 
@@ -38,6 +37,7 @@ export default function App() {
           <Switch>
             <Route path="/login" component={() => <LoginPage user={user} handleLogin={handleLogin} />} />
             <ProtectedRoute exact path="/" user={user} component={RequestTemplatesPage} />
+            <ProtectedRoute path="/customRequest" user={user} component={CustomRequestPage} />
             <ProtectedRoute path="/myRequests" user={user} component={MyRequestsPage} />
             <ProtectedRoute path="/inspect/:ref" user={user} component={RequestInspectorPage} />
             {/* // TODO Notfound page */}

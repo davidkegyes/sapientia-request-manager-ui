@@ -4,8 +4,9 @@ import LoadingModal from './LoadingModal';
 import AttachmentService from '../services/AttachmentService'
 import { v4 as uuid } from 'uuid';
 import { useTranslation } from 'react-i18next';
+import config from '../config';
 
-export default function UploadComponent({ referenceNumber, onUpload, requiredDocuments }) {
+export default function UploadComponent({ referenceNumber, requiredDocuments, onUpload, onUploadSuccess }) {
 
     const getFileList = () => {
         if (requiredDocuments !== undefined && requiredDocuments !== undefined && requiredDocuments.length > 0) {
@@ -21,7 +22,6 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState(getFileList());
-    const [validated, setValidated] = useState(false);
 
     const removeFile = (file) => {
         if (fileList.length === 1) {
@@ -57,11 +57,25 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
         setFileList(tmp);
     }
 
+    const validateFiles = () => {
+        let tmp = [...fileList];
+        for (let i in tmp) {
+            if (tmp[i].file === null) {
+                tmp[i].error = t("component.documentUpload.noSelectedFileError");
+            } else if (tmp[i].file.size / 1024 > config.rest.uploadFileSizeLimit ) {
+                tmp[i].error = t("component.documentUpload.selectedFileSizeError", {sizeLimit: config.rest.uploadFileSizeLimit + " KB"});
+            } else {
+                tmp[i].error = null;
+            }
+        }
+        return tmp;
+    }
+
     const upload = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        const form = event.currentTarget;
-        if (form.checkValidity() === true) {
+        const validatedFiles = validateFiles();
+        if (validatedFiles.every( (f) => f.error === null) === true) {
             setLoading(true);
             let promises = [];
             for (let i in fileList) {
@@ -75,7 +89,8 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
                     let errList = [];
                     for (let i in fileList) {
                         if (res[i].status === 'fulfilled') {
-                            onUpload(fileList[i])
+                            if (onUpload)
+                                onUpload(fileList[i])
                             continue;
                         }
                         let msg = res[i].reason.message;
@@ -85,37 +100,35 @@ export default function UploadComponent({ referenceNumber, onUpload, requiredDoc
                         errList.push({ ...fileList[i], error: msg });
                     }
                     if (errList.length === 0) {
+                        if (onUploadSuccess) {
+                            onUploadSuccess();
+                        }
                         setFileList([{ id: uuid(), name: '', file: null }])
                     } else {
                         setFileList(errList);
                     }
                     setLoading(false);
                 });
-            setValidated(true);
+        }else {
+            setFileList(validateFiles);
         }
     }
+
     return (
         <Container fluid className="box">
             <LoadingModal show={loading} />
-            <Form noValidate validated={validated} onSubmit={upload}>
+            <Form noValidate onSubmit={upload}>
                 {fileList.map((f) => (
                     <Container fluid>
-                        {f.error &&
-                            <Row>
-                                <Col>
-                                    <Alert variant="danger">{f.error}</Alert>
-                                </Col>
-                            </Row>
-                        }
                         <Row className="rowSpace">
                             <Col lg={5}>
                                 <Form.File custom
-                                    key={f.id} id={f.id}                         >
-                                    <Form.File.Input required onChange={onFileAdd} accept=".jpg, .jpeg, .pdf" />
+                                    key={f.id} id={f.id}>
+                                    <Form.File.Input isInvalid={!!f.error} onChange={onFileAdd} accept=".jpg, .jpeg, .pdf"/>
                                     <Form.File.Label data-browse={t("component.documentUpload.browseFiles")}>
                                         {f.file ? f.file.name : t("component.documentUpload.noSelectedFile")}
                                     </Form.File.Label>
-                                    <Form.Control.Feedback type="invalid">{t("component.documentUpload.noSelectedFileError")}</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">{f.error}</Form.Control.Feedback>
                                 </Form.File>
                             </Col>
                             <Col lg={6}>

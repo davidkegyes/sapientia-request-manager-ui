@@ -7,7 +7,6 @@ import RequestService from '../services/RequestService'
 import DocumentViewComponent from '../components/DocumentViewComponent';
 import AttachmentService from '../services/AttachmentService';
 import UploadComponent from '../components/UploadComponent';
-import DocumentUploadRequestComponent from '../components/DocumentUploadRequestComponent'
 import { useTranslation } from 'react-i18next';
 
 const splitRequestObject = (request) => {

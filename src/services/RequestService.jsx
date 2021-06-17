@@ -9,11 +9,23 @@ export const RequestService = {
         formData.append('name', request.name);
         formData.append('templateId', request.id);
         formData.append('json', JSON.stringify(request));
-    
+
         const headers = {
             'Content-Type': 'multipart/form-data'
         }
-    
+
+        return RestTemplate.post(config.rest.requestDataSave, formData, headers);
+    },
+
+    uploadCustomRequest: async (requestName, requestDocument) => {
+        const formData = new FormData();
+        formData.append('file', requestDocument);
+        formData.append('name', requestName);
+
+        const headers = {
+            'Content-Type': 'multipart/form-data'
+        }
+
         return RestTemplate.post(config.rest.requestDataSave, formData, headers);
     },
 
@@ -25,7 +37,7 @@ export const RequestService = {
         return RestTemplate.post(config.rest.rejectRequest + "/" + referenceNumber);
     },
 
-    getRequestInfo : async (referenceNumber) => {
+    getRequestInfo: async (referenceNumber) => {
         return await RestTemplate.get(config.rest.requestInfo + "/" + referenceNumber);
     },
 

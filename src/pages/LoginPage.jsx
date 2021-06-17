@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Jumbotron from 'react-bootstrap/Jumbotron'
 import GoogleLogin from 'react-google-login';
 import AuthorizationService from '../services/AuthorizationService'
 import UserService from '../services/UserService'
-import { Container, Row, Col, Alert, Form } from "react-bootstrap";
+import { Container, Row, Col, Alert } from "react-bootstrap";
 import LoadingModal from '../components/LoadingModal'
 import './LoginPage.css';
 import { Redirect } from "react-router-dom";
@@ -101,7 +100,7 @@ export default function LoginPage(props) {
                             onFailure={errorResponseGoogle}
                             cookiePolicy={'single_host_origin'}
                         // autoLoad={true}
-                        // isSignedIn={true}
+                        isSignedIn={true}
                         />
                     </p>
                 </Col>

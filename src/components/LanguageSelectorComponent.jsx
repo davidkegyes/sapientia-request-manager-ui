@@ -6,14 +6,14 @@ import './LanguageSelectorComponent.css'
 // Dropdown needs access to the DOM node in order to position the Menu
 const SelectorTogle = React.forwardRef(({ children, onClick }, ref) => (
     <a
-        href=""
+        href="#"
         ref={ref}
         onClick={(e) => {
             e.preventDefault();
             onClick(e);
         }}
     >
-        <i class="fa fa-globe"></i>{" "}
+        <i className="fa fa-globe"></i>{" "}
         {children}
     </a>
 ));

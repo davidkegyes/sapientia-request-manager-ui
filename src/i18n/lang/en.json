@@ -2,11 +2,6 @@
     "language" : "English",
     "title": "Sapientia Erdélyi Magyar Tudományegyetem",
     "loading": "...Loading",
-    "nav": {
-        "requestTemplates": "Request Templates",
-        "myRequests": "My Requests",
-        "logout": "Logout"
-    },
     "page": {
         "login": {
             "hint": "Login with the provided email from the Universisty",

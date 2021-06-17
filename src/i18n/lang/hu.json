@@ -2,11 +2,6 @@
     "language" : "Magyar",
     "title": "Sapientia Erdélyi Magyar Tudományegyetem",
     "loading": "...Betöltés",
-    "nav": {
-        "requestTemplates": "Kérvények",
-        "myRequests": "Kérvényeim",
-        "logout": "Kijelentkezés"
-    },
     "page": {
         "login": {
             "hint": "Bejelentkezéshez használja az egyetemtől kapott emailcímet.",
@@ -29,9 +24,27 @@
             },
             "attachmentsTitle": "Csatolmányok",
             "noAttachments" : "Nincsenek csatolmányok"
+        },
+        "customRequest" : {
+            "title" : "Egyéni kérvény",
+            "description" : "Egyéni kérvény feltöltése. Akkor használja ezt a funkciót ha nem talált megfelelő kérvény sablont.",
+            "requestName" : "Kérvény név",
+            "requestNameError" : "Kérem adjon meg egy tetszőleges kérvény nevet.",
+            "requestNamePlaceholder" : "Pl.: Kérvény az Egyetemi jogviszonyt igazoló igazolás kibocsátására",
+            "requestNameInfo" : "A megadott kérvény neve segít a feltöltött kérvény azonositásában.",
+            "requestFileInfo" : "Feltöltendő dokumentumonak jól olvashatónak kell lennie illetve a mai dátum és aláírásnak is szerepelnie kell rajta. File tipus: .jpeg/.jpg, .pdf",
+            "noSelectedFile" : "Nincs kiválasztott dokumentum",
+            "noSelectedFileError" : "Kérem valasszon egy feltoltendő dokumentumot!",
+            "selectedFileSizeError" : "A megadott dokumentum meghaladja a maximum {{sizeLimit}} méretet.",
+            "browseFiles" : "Keresés",
+            "uploadButton" : "Feltöltés",
+            "attachmentUploadTitle" : "Csatolmáy feltöltés"
         }
     },
     "component" : {
+        "navbar" : {
+            "logoutButton" : "Kijelentkezés"
+        },
         "documentUploadRequest" : {
             "addDocument" : "Még egy",
             "requestDocument" : "Dokumentum igenylese",
@@ -43,7 +56,9 @@
             "documentNamePlaceholder" : "Dokumentum",
             "noSelectedFile" : "Nincs kiválasztott dokumentum",
             "noSelectedFileError" : "Kérem valasszon egy feltoltendő dokumentumot!",
-            "browseFiles" : "Keresés"
+            "selectedFileSizeError" : "A megadott dokumentum meghaladja a maximum {{sizeLimit}} méretet.",
+            "browseFiles" : "Keresés",
+            "uploadSuccessTitle" : "Sikeres feltöltés"
         }
     },
     "request": {
@@ -56,6 +71,11 @@
         "officialReferenceNumber": "Iktatószám",
         "creationDate": "Létrehozva {{date, YYYY/MM/DD, hh:mm:ss}}",
         "lastUpdate": "Módositva {{date, YYYY/MM/DD, hh:mm:ss}}",
-        "requiredDocuments": "Szükséges dokumentumok"
+        "requiredDocuments": "Szükséges dokumentumok",
+        "requestUploadSuccessTitle" : "Sikeres feltöltés",
+        "requestUploadSuccessMessage": "Kérését sikeresen regisztráltuk, hamarosan elbírálásra kerül.",
+        "navigateToRequestButton" : "Kérését ide kattintva megtekintheti.",
+        "requestUploadedAttachmentUploadRequired" : "A következő dokumentumok szükségesek a kérvény elfogadásához.",
+        "requestAttachmentUploadRequired" : ""
     }
 }

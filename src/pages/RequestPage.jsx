@@ -1,57 +1,24 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Container, Row, Button, Col, Alert } from "react-bootstrap";
 import RequestForm from "../components/RequestForm"
-import RequestFormUploadComponent from "../components/RequestFormUploadComponent"
 import LoadingModal from "../components/LoadingModal";
 import RequestService from "../services/RequestService";
-import RequestPDFService from '../services/RequestPDFService';
-import AttachmentService from "../services/AttachmentService";
-import config from "../config";
+import { NavLink } from 'react-router-dom';
 import './RequestPage.css'
+import { downloadPdf, getRequestPdfFile } from '../services/RequestPDFService';
+import UploadComponent from '../components/UploadComponent'
+import { useTranslation } from "react-i18next";
+export default function RequestPage({ template, onClose }) {
 
-export default class RequestPage extends Component {
+    const { t } = useTranslation();
+    const [request, setRequest] = useState(template);
+    const [referenceNumber, setReferenceNumber] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [step, setStep] = useState(1);
 
-    initialState = {
-        loading: false, 
-        request: {}, 
-        refNumber: ''
-    }
-    requestForm = {}
-    RequestFormUploadComponents = [];
-
-    constructor(props) {
-        super(props);
-        this.pdfService = new RequestPDFService();
-        this.state = { ...this.initialState };
-        this.state.request = props.template;
-
-
-        this.uploadRequest = this.uploadRequest.bind(this);
-        this.getValidatedRequest = this.getValidatedRequest.bind(this);
-        this.reset = this.reset.bind(this);
-        this.uploadService = props.uploadService;
-
-        this.handleFormChange = this.handleFormChange.bind(this);
-        this.handleAttachmentChange = this.handleAttachmentChange.bind(this);
-
-        this.isSuccess = this.isSuccess.bind(this);
-    }
-
-    getValidatedRequest() {
+    const getValidatedRequest = () => {
         let hasErrors = false;
-        let tmpRequest = this.state.request;
-        for (let i in tmpRequest.attachmentList) {
-            tmpRequest.attachmentList[i].errors = [];
-            if (tmpRequest.attachmentList[i].value === undefined) {
-                tmpRequest.attachmentList[i].errors.push("Fisierul \"" + tmpRequest.attachmentList[i].name + "\" trebuie incarcat!");
-                hasErrors = true;
-            }else if (tmpRequest.attachmentList[i].value.size/1024 > config.rest.uploadFileSizeLimit) {
-                tmpRequest.attachmentList[i].errors.push("Marimea fisierului \"" + tmpRequest.attachmentList[i].name + "\" depaseste limita de " + config.rest.uploadFileSizeLimit + " KB !");
-                hasErrors = true;
-            }
-            // TODO more checks if required;
-        }
-
+        let tmpRequest = { ...request };
         tmpRequest.form.errors = [];
         for (let i in tmpRequest.form) {
             if (tmpRequest.form[i].variables !== undefined) {
@@ -72,145 +39,97 @@ export default class RequestPage extends Component {
         return tmpRequest;
     }
 
-    handleFormChange(requestForm) {
-        let tmpRequest = { ...this.state.request };
+    const handleFormChange = (requestForm) => {
+        let tmpRequest = { ...request };
         tmpRequest.form = requestForm;
-        this.setState({ request: tmpRequest });
+        setRequest(tmpRequest);
     }
 
-    handleAttachmentChange(attachment) {
-        let tmpRequest = { ...this.state.request };
-        for (let i in tmpRequest.attachmentList) {
-            if (tmpRequest.attachmentList[i].name === attachment.name) {
-                tmpRequest.attachmentList[i] = attachment;
-            }
+    const uploadRequest = () => {
+        let tmpRequest = getValidatedRequest();
+        if (!tmpRequest.hasErrors) {
+            setLoading(true);
+            getRequestPdfFile(tmpRequest.form, tmpRequest.name)
+                .then((file) => {
+                    RequestService.uploadRequest(tmpRequest, file)
+                        .then((refNumber) => {
+                            setReferenceNumber(refNumber);
+                            setLoading(false);
+                            if (request.attachmentList !== null && request.attachmentList !== undefined && request.attachmentList.length > 0) {
+                                setStep(2);
+                            } else {
+                                setStep(3);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            tmpRequest.form.errors = ["Error during the request upload"];
+                            setRequest(tmpRequest);
+                            setLoading(false);
+                        });
+                    this.setState({ loading: true })
+                }).catch((error) => {
+                    console.log(error)
+                    tmpRequest.form.errors = ["Error during the pdf generation, please report this error."];
+                    setRequest(tmpRequest);
+                    setLoading(false);
+                });
+        } else {
+            setRequest(tmpRequest);
         }
-        this.setState({ request: tmpRequest });
     }
 
-    uploadRequest() {
-        let request = this.getValidatedRequest();
-        if (!request.hasErrors) {
-            this.setState({ loading: true });
-            if (this.state.refNumber !== '') {
-                this.uploadAttachments(this.state.refNumber);
-            } else {
-                this.setState({ loading: true });
-                this.pdfService.getRequestPdfFile(this.state.request.form, this.state.request.name)
-                    .then((file) => {
-                        RequestService.uploadRequest(this.state.request, file)
-                            .then((refNumber) => {
-                                if (this.state.request.attachmentList && this.state.request.attachmentList.length > 0) {
-                                    this.uploadAttachments(refNumber);
-                                } else {
-                                    this.setState({ loading: false, refNumber: refNumber })
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                                let tmp = { ...this.state.request };
-                                tmp.form.errors = ["Error during the request upload"];
-                                this.setState({ loading: false, request: tmp })
-                            });
-                        this.setState({ loading: true })
-                    }).catch((error) => {
-                        console.log(error)
-                        let tmp = { ...this.state.request };
-                        tmp.form.errors = ["Error during the pdf generation, please report this error."];
-                        this.setState({ loading: false, request: tmp })
-                    });
+    const attachMentUploadFinished = () => {
+        setStep(3);
+    }
+
+    return (
+        <Container>
+            <Row>
+                <Col><h2>{request.name}</h2></Col>
+                <Col md='auto'>
+                    <Button onClick={() => onClose()}>Vissza a kérvényekhez</Button>
+                </Col>
+            </Row>
+            {step === 1 &&
+                <>
+                    <RequestForm form={request.form} onChange={handleFormChange} />
+                    <Row className="rowSpace formMainControls">
+                        <Col><Button variant="primary" onClick={() => downloadPdf(request.form, request.name)}>Kérvény Letöltése küldés nélkül</Button></Col>
+                        <Col xs="auto"><Button variant="success" onClick={(e) => uploadRequest(request)}>Küldés</Button></Col>
+                    </Row>
+                </>
             }
-        }
-        this.setState({ request: request })
-    }
-
-    uploadAttachments(refNumber) {
-        let attList = this.state.request.attachmentList;
-        let promises = []
-        for (let i in attList) {
-            if (attList[i].uploadSuccess) {
-                continue
+            {step === 2 &&
+                <>
+                    <Row>
+                        <Col>
+                        <Alert variant="info">
+                            <Alert.Heading>{t("request.requestUploadSuccessTitle")}</Alert.Heading>
+                            <p></p>
+                            <hr/>
+                            <p>{t("request.requestUploadedAttachmentUploadRequired")}</p>
+                        </Alert>
+                        </Col>
+                    </Row>
+                    <UploadComponent referenceNumber={referenceNumber} requiredDocuments={request.attachmentList.map((att => att.name))} onUploadSuccess={attachMentUploadFinished} />
+                </>
             }
-            promises.push(AttachmentService.upload(refNumber, attList[i]))
-        }
-        Promise.all(promises)
-            .then((res) => {
-                let tmp = { ...this.state.request };
-                let uploadSuccess = true; 
-                for (let i in res) {
-                    uploadSuccess = uploadSuccess && res[i].uploadSuccess;
-                    for (let j in tmp.attachmentList) {
-                        if (res[i].name === tmp.attachmentList[j].name) {
-                            tmp[j] = res[i];
-                        }
-                    }
-                }
-                this.setState({ loading: false, request: tmp, attUploadSuccess: uploadSuccess, refNumber: refNumber })
-            })
-    }
-
-
-    reset() {
-        let resetTemplate = { ...this.state.request };
-        for (let i in resetTemplate.form) {
-            let formPart = resetTemplate.form[i];
-            if (formPart.type === 'text' && formPart.variables) {
-                for (let j in formPart.variables) {
-                    formPart.variables[j].value = undefined;
-                }
-            } else if (formPart.type === 'customText') {
-                formPart.value = undefined;
-            }
-            // else if (formPart.type === 'dateAndSignature') {
-            //     formPart.signatureValue = undefined;
-            // }
-        }
-        // sigPad.clear();
-        this.setState({ request: resetTemplate, errors: [] });
-    }
-
-    isSuccess(){
-        return !(this.state.refNumber === '' || (this.state.attUploadSuccess === false && this.state.request.attachmentList));
-    }
-
-    render() {
-        return (
-            <Container>
+            {step === 3 &&
                 <Row>
-                    <Col><h2>{this.state.request.name}</h2></Col>
-                    <Col md='auto'>
-                        <Button onClick={this.props.close}>Vissza a kérvényekhez</Button>
+                    <Col>
+                        <Alert variant="success">
+                            <Alert.Heading>
+                                {t("request.requestUploadSuccessTitle")}
+                            </Alert.Heading>
+                            <p>{t("request.requestUploadSuccessMessage")}</p>
+                            <hr />
+                            <NavLink to={"/inspect/" + referenceNumber} className='btn btn-outline-info ml-auto'>{t("request.navigateToRequestButton")}</NavLink>
+                        </Alert>
                     </Col>
                 </Row>
-                { this.state.refNumber !== '' &&
-                    <Alert variant={this.isSuccess() ? 'success' : 'warning'}>
-                        <Alert.Heading>{this.isSuccess() ? 'Sikeres feltöltés' : 'Hibás feltöltés'}</Alert.Heading>
-                        <p>Request form uploaded successfully with reference number {this.state.refNumber}</p>
-                        {this.state.attUploadSuccess === false &&
-                            <div>
-                                <p><strong>!!!</strong> Error with the attachments. Please try to choose a different file and/or send again!</p>
-                                <p>Or you can can retry to attach the required documents on the Request review page.</p>
-                            </div>
-                        }
-                    </Alert>}
-                { this.state.refNumber === '' && <RequestForm form={this.state.request.form} onChange={this.handleFormChange} />}
-                { (this.state.request.attachmentList && this.state.request.attachmentList.length > 0) &&
-                    this.state.request.attachmentList.map(att => {
-                        return <RequestFormUploadComponent key={att.name} doc={att} upload={this.state.upload} onChange={this.handleAttachmentChange} />
-                    })
-                }
-                <Row className="rowSpace formMainControls">
-                    { this.state.refNumber === '' &&
-                        <div>
-                            <Col><Button variant="primary" onClick={() => this.pdfService.downloadPdf(this.state.request.form, this.state.request.name)}>Kérvény Letöltése küldés nélkül</Button></Col>
-                            {/* <Col><Button variant="primary" onClick={this.reset}>Reset</Button></Col> */}
-                        </div>}
-                    { !this.isSuccess() && 
-                        <Col xs="auto"><Button variant="success" onClick={(e) => this.uploadRequest(this.state.request)}>Küldés</Button></Col>
-                    }
-                </Row>
-                <LoadingModal show={this.state.loading} />
-            </Container>
-        );
-    }
+            }
+            <LoadingModal show={loading} />
+        </Container>
+    )
 }

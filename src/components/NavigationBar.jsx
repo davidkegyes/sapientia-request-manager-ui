@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import { NavLink, Redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import logo from '../assets/logo_hu.png'
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +32,7 @@ const Styles = styled.div`
       height:80px;
   }
 `;
-export default function NavigationBar( {handleLogout}) {
+export default function NavigationBar({ handleLogout }) {
 
     const { t } = useTranslation();
 
@@ -47,16 +47,19 @@ export default function NavigationBar( {handleLogout}) {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Item>
-                                <Nav.Link as={NavLink} exact to="/">{t("nav.requestTemplates")}</Nav.Link>
+                                <Nav.Link as={NavLink} exact to="/">{t("page.requestTemplates.title")}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={NavLink} to="/myRequests">{t("nav.myRequests")}</Nav.Link>
+                                <Nav.Link as={NavLink} to="/customRequest">{t("page.customRequest.title")}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link as={NavLink} to="/myRequests">{t("page.myRequests.title")}</Nav.Link>
                             </Nav.Item>
                         </Nav>
                         <LanguageSelectorComponent />
                         <GoogleLogout
                             clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"
-                            buttonText={t("nav.logout")}
+                            buttonText={t("component.navbar.logoutButton")}
                             onLogoutSuccess={handleLogout}
                         >
                         </GoogleLogout>
