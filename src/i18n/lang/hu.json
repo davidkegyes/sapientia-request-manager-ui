@@ -34,11 +34,36 @@
             "requestNameInfo" : "A megadott kérvény neve segít a feltöltött kérvény azonositásában.",
             "requestFileInfo" : "Feltöltendő dokumentumonak jól olvashatónak kell lennie illetve a mai dátum és aláírásnak is szerepelnie kell rajta. File tipus: .jpeg/.jpg, .pdf",
             "noSelectedFile" : "Nincs kiválasztott dokumentum",
-            "noSelectedFileError" : "Kérem valasszon egy feltoltendő dokumentumot!",
+            "noSelectedFileError" : "Kérem valasszon egy feltöltendő dokumentumot!",
             "selectedFileSizeError" : "A megadott dokumentum meghaladja a maximum {{sizeLimit}} méretet.",
             "browseFiles" : "Keresés",
             "uploadButton" : "Feltöltés",
             "attachmentUploadTitle" : "Csatolmáy feltöltés"
+        },
+        "requestPage" : {
+            "back" : "Vissza a kérvényekhez"
+        },
+        "requesTemplateEditor" : {
+            "title" : "Sablon szerkesztés",
+            "templateName" : "Kérvény Név",
+            "templateDescription" : "Leírás",
+            "attachmentList" : "Csatolmány lista",
+            "officialAddress" : "Hivatalos cím",
+            "templateSablon" : "Sablon szöveg szerkesztése",
+            "templateVariable" : "Változó",
+            "templateCustomText" : "Egyéni szövegbevitel",
+            "templateReference" : "Utalás",
+            "templatecomment" : "A kitöltő hozzáfűzést tehet a kérvényhez",
+            "templateTemplateText" : "Sablon szöveg",
+            "templateTemplateOneText" :"Egyéni szövegbevitel",
+            "templateTemplateObligatory": "A kérvény neve kötelező",
+            "templateDate" : "Dátum címke",
+            "templateSignature" : "Aláírás Címke",
+            "templateEG" : "Átsorolási kérelem",
+            "templateGeneral" : "Általános leírás",
+            "templateButton1" : "Mégse",
+            "templateButton2" : "Mentés"
+
         }
     },
     "component" : {
