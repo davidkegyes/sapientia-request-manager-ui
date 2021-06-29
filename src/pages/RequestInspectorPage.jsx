@@ -8,6 +8,7 @@ import DocumentViewComponent from '../components/DocumentViewComponent';
 import AttachmentService from '../services/AttachmentService';
 import UploadComponent from '../components/UploadComponent';
 import { useTranslation } from 'react-i18next';
+import Restricted from '../components/Restricted';
 
 const splitRequestObject = (request) => {
     let info = { ...request };
@@ -25,13 +26,13 @@ export default function RequestInspectorPage() {
     const [error, setError] = useState(null);
     const [requestInfo, setRequestInfo] = useState(null);
     const [requestDocument, setRequestDocument] = useState(null);
-    const [attachmentList, setAttachMentList] = useState(null);
+    const [requiredDocuments, setRequiredDocuments] = useState(null);
     const [action, setAction] = useState({ type: "INIT" });
     const { t } = useTranslation();
 
     const onUpload = useCallback(async () => {
         setLoading(true);
-        setAttachMentList(await AttachmentService.getListForRequestReferenceNumber(params.ref));
+        setRequiredDocuments(await AttachmentService.getListForRequestReferenceNumber(params.ref));
         setLoading(false);
     })
 
@@ -45,7 +46,7 @@ export default function RequestInspectorPage() {
                         const { info, doc } = splitRequestObject(request);
                         setRequestInfo(info);
                         setRequestDocument(doc);
-                        setAttachMentList(await AttachmentService.getListForRequestReferenceNumber(params.ref));
+                        setRequiredDocuments(await AttachmentService.getListForRequestReferenceNumber(params.ref));
                         break;
                     case "APPROVE":
                         await RequestService.approve(params.ref);
@@ -57,7 +58,7 @@ export default function RequestInspectorPage() {
                         break;
                     case "DELETE_ATTACHMENT":
                         await AttachmentService.delete(action.value);
-                        setAttachMentList(attachmentList.filter((o) => o.uuid !== action.value))
+                        setRequiredDocuments(requiredDocuments.filter((o) => o.uuid !== action.value))
                         break;
                     default:
                         setLoading(false);
@@ -96,27 +97,31 @@ export default function RequestInspectorPage() {
             </Row>
             {requestInfo.status === "NEW" &&
                 <Container fluid>
-                    <Row className="rowSpace">
+                    {/* <Row className="rowSpace">
                         <Col>
-                            {/* <DocumentUploadRequestComponent referenceNumber={requestInfo.referenceNumber}/> */}
+                            <DocumentUploadRequestComponent referenceNumber={requestInfo.referenceNumber}/>
                         </Col>
-                    </Row>
+                    </Row> */}
                     <Row className="rowSpace">
                         <Col>
-                            <UploadComponent requiredDocuments={requestInfo.attachmentRequestList} referenceNumber={requestInfo.referenceNumber} onUpload={onUpload} />
+                            <UploadComponent requiredDocuments={requestInfo.requiredDocuments} referenceNumber={requestInfo.referenceNumber} onUpload={onUpload} />
                         </Col>
                     </Row>
                     <Row className="rowSpace justify-content-center">
-                        <Col md='auto'>
-                            <Button variant="danger" onClick={() => setAction({ type: "REJECT" })}>{t("page.requestInspector.button.reject")}</Button>
-                        </Col>
-                        <Col md='auto'>
-                            <Button variant="success" onClick={() => { setAction({ type: 'APPROVE' }) }}>{t("page.requestInspector.button.approve")}</Button>
-                        </Col>
+                        <Restricted permission="REJECT_APPLICATION">
+                            <Col md='auto'>
+                                <Button variant="danger" onClick={() => setAction({ type: "REJECT" })}>{t("page.requestInspector.button.reject")}</Button>
+                            </Col>
+                        </Restricted>
+                        <Restricted permission="APPROVE_APPLICATION">
+                            <Col md='auto'>
+                                <Button variant="success" onClick={() => { setAction({ type: 'APPROVE' }) }}>{t("page.requestInspector.button.approve")}</Button>
+                            </Col>
+                        </Restricted>
                     </Row>
                 </Container>
             }
-            { error &&
+            {error &&
                 <Row>
                     <Col>
                         <Alert>{error}</Alert>
@@ -130,24 +135,26 @@ export default function RequestInspectorPage() {
                     </Col>
                 </Row>
             }
-            {attachmentList &&
+            {requiredDocuments &&
                 <Container fluid>
                     <Row>
                         <Col><h3>{t("page.requestInspector.attachmentsTitle")}</h3></Col>
                     </Row>
-                    {attachmentList.length === 0 &&
+                    {requiredDocuments.length === 0 &&
                         <Row>
                             <Col><Alert variant="info">{t("page.requestInspector.noAttachments")}</Alert></Col>
                         </Row>
                     }
-                    {attachmentList.map((att) => {
+                    {requiredDocuments.map((att) => {
                         return (
                             <Container fluid className="box rowSpace">
                                 <Row className="rowSpace">
                                     {requestInfo.status === "NEW" &&
-                                        <Col md='auto'>
-                                            <Button variant="outline-danger" onClick={() => { setAction({ type: "DELETE_ATTACHMENT", value: att.uuid }) }}>Törlés</Button>
-                                        </Col>
+                                        <Restricted permission="DELETE_ATTACHMENT" >
+                                            <Col md='auto'>
+                                                <Button variant="outline-danger" onClick={() => { setAction({ type: "DELETE_ATTACHMENT", value: att.uuid }) }}>Törlés</Button>
+                                            </Col>
+                                        </Restricted>
                                     }
                                     <Col md='auto'>
                                         <h4>{att.name}</h4>

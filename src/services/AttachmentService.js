@@ -4,7 +4,7 @@ import RestTemplate from "./RestTemplate";
 const AttachmentService = {
 
     getListForRequestReferenceNumber: async (referenceNumber) =>{
-        return await RestTemplate.get(config.rest.attachmentList + '/' + referenceNumber);
+        return await RestTemplate.get(config.rest.requiredDocuments + '/' + referenceNumber);
     },
 
     delete: async (referenceNumber) => {

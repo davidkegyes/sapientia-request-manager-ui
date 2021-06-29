@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import logo from '../assets/logo_hu.png'
@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { GoogleLogout } from 'react-google-login';
 import LanguageSelectorComponent from './LanguageSelectorComponent'
+import Restricted from './Restricted';
+import { UserContext } from '../App';
 const Styles = styled.div`
   .navbar {
     margin-bottom: 15px;
@@ -34,6 +36,7 @@ const Styles = styled.div`
 `;
 export default function NavigationBar({ handleLogout }) {
 
+    const userCtxt = useContext(UserContext);
     const { t } = useTranslation();
 
     return (
@@ -50,15 +53,23 @@ export default function NavigationBar({ handleLogout }) {
                                 <Nav.Link as={NavLink} exact to="/">{t("page.requestTemplates.title")}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link as={NavLink} exact to="/createRequestTemplate">Sablon keszites</Nav.Link>
+                                <Nav.Link as={NavLink} to="/myRequests">{t("page.myRequests.title")}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link as={NavLink} to="/customRequest">{t("page.customRequest.title")}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={NavLink} to="/myRequests">{t("page.myRequests.title")}</Nav.Link>
-                            </Nav.Item>
+                            <Restricted permission="ADMIN">
+                                <Nav.Item>
+                                    <Nav.Link as={NavLink} exact to="/templateEditor">Sablon keszites</Nav.Link>
+                                </Nav.Item>
+                            </Restricted>
+                            <Restricted permission="ADMIN">
+                                <Nav.Item>
+                                    <Nav.Link as={NavLink} to="/userManagement">UserManagement</Nav.Link>
+                                </Nav.Item>
+                            </Restricted>
                         </Nav>
+                        {userCtxt.name}
                         <LanguageSelectorComponent />
                         <GoogleLogout
                             clientId="746309681103-5jb4g12c5kn08olp6j5ck7v5bm9630ve.apps.googleusercontent.com"

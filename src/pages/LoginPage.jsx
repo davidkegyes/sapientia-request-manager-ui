@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import GoogleLogin from 'react-google-login';
 import AuthorizationService from '../services/AuthorizationService'
-import UserService from '../services/UserService'
+import { getUserDetails } from '../services/UserService'
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import LoadingModal from '../components/LoadingModal'
 import './LoginPage.css';
@@ -10,15 +10,47 @@ import { useHistory } from "react-router-dom";
 import logo from '../assets/logo_hu.png'
 import { useTranslation } from 'react-i18next';
 import LanguageSelectorComponent from "../components/LanguageSelectorComponent";
+import { UserContext } from "../App";
 
 export default function LoginPage(props) {
 
+    const userContext = useContext(UserContext);
     let history = useHistory();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(undefined);
     const { t } = useTranslation();
 
-    if (props.user) {
+    const checkUser = async () => {
+        if (localStorage.getItem('token')) {
+            getUserDetails()
+                .then((user) => {
+                    props.handleLogin(user);
+                    setLoading(false);
+                }).catch((error) => {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    console.log(error);
+                    if (error.response.status === 403) {
+                        setError("Sajnos nincs hozzaferese");
+                    }
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
+        }
+    }
+
+
+    useEffect(() => {
+        console.log("use effect");
+        const token = localStorage.getItem('token');
+        if (token) {
+            setLoading(true);
+            checkUser();
+        }
+    }, []);
+
+    if (userContext.user !== null) {
         return <Redirect to={
             {
                 pathname: history.location.state.from.pathname,
@@ -27,18 +59,6 @@ export default function LoginPage(props) {
                 }
             }
         } />
-    }
-
-    let token = localStorage.getItem('token');
-    if (token) {
-        // setLoading(true);
-        UserService.getUserDetails()
-            .then((user) => {
-                props.handleLogin(user);
-            }).catch((error) => {
-                localStorage.removeItem('token');
-                setLoading(false);
-            });
     }
 
     function refreshTokenSetup(res) {
@@ -58,7 +78,7 @@ export default function LoginPage(props) {
         console.log("succesResponseGoogle");
         AuthorizationService.storeToken(res.tokenId);
         refreshTokenSetup(res);
-        checkGoogleTokenAgainstBE();
+        checkUser();
     }
 
     function errorResponseGoogle(res) {
@@ -66,20 +86,10 @@ export default function LoginPage(props) {
         console.log(res);
     }
 
-    function checkGoogleTokenAgainstBE() {
-        UserService.getUserDetails()
-            .then((user) => {
-                props.handleLogin(user);
-            }).catch((error) => {
-                console.log(error);
-                localStorage.removeItem('token');
-                setError(error.message);
-                setLoading(false);
-            });
-    }
 
     return (
         <Container className="box">
+            <LoadingModal show={loading} />
             <Row >
                 <Col className="d-flex align-items-center justify-content-center">
                     <img src={logo} className="loginLogo" title="Sapientia EMTE" alt="Sapientia EMTE" />
@@ -99,8 +109,6 @@ export default function LoginPage(props) {
                             onSuccess={succesResponseGoogle}
                             onFailure={errorResponseGoogle}
                             cookiePolicy={'single_host_origin'}
-                        // autoLoad={true}
-                        isSignedIn={true}
                         />
                     </p>
                 </Col>
@@ -108,13 +116,12 @@ export default function LoginPage(props) {
             <Row>
                 <Col className="d-flex align-items-center justify-content-center"><LanguageSelectorComponent /></Col>
             </Row>
-            { error !== undefined &&
+            {error !== undefined &&
                 <Row>
                     <Col className="d-flex align-items-center justify-content-center">
                         <Alert key={error} variant='danger'>{error}</Alert>
                     </Col>
                 </Row>}
-            <LoadingModal show={loading} />
         </Container>
     )
 }

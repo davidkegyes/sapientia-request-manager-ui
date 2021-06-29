@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
-import { Container, Form, Row, Col, Button, Badge } from 'react-bootstrap'
+import React, { useState, useEffect } from 'react'
+import { Container, Form, Row, Col, Button } from 'react-bootstrap'
+import { useParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
+import RequestTemplateService from '../services/RequestTemplateService';
+import LoadingModal from '../components/LoadingModal';
 
 export default function RequestTemplateEditorPage() {
+
+    const params = useParams();
 
     const customText = {
         "id": null,
@@ -33,7 +38,7 @@ export default function RequestTemplateEditorPage() {
         "max": null
     }
 
-    const test = [
+    const empty = [
         {
             "id": uuid(),
             "wrapper": "title",
@@ -70,9 +75,64 @@ export default function RequestTemplateEditorPage() {
         }
     ];
 
-    const [templateInfo, setTemplateInfo] = useState({ name: '', description: '', language: ''})
-    const [form, setForm] = useState(test);
-    const [attachmentList, setAttachmentList] = useState([]);
+    const [templateInfo, setTemplateInfo] = useState({ name: '', description: '', language: '' })
+    const [form, setForm] = useState(empty);
+    const [requiredDocuments, setRequiredDocuments] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const addIdIfMisingToForm = (list) => {
+        for (let i in list) {
+            if (list[i].id === undefined || list[i].id === null || list[i].id === '') {
+                list[i].id = uuid();
+            }
+            if (list[i].component === undefined || list[i].component === null || list[i].component === ''){
+                if (list[i].wrapper === 'title' || list[i].wrapper === 'dateAndSignature'){
+                    list[i].component = list[i].wrapper;
+                }else if (list[i].wrapper.startsWith("body")) {
+                    list[i].component = "body";
+
+                }
+            }
+            if (list[i].variables) {
+                for (let j in list[i].variables) {
+                    if (list[i].variables[j].id === undefined || list[i].variables[j].id === null || list[i].variables[j].id === '') {
+                        list[i].variables[j].id = uuid();
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    const prepRequiredDocuments = (docs) => {
+        let dl = [];
+        if (docs) {
+            for (let i in docs) {
+                dl.push({ id: uuid(), name: docs[i] });
+            }
+        }
+        return dl;
+    }
+
+    
+    const getTemplate = async (tuuId) => {
+        setLoading(true);
+        try {
+            const rt = await RequestTemplateService.getTemplateByUuid(tuuId);
+            setTemplateInfo({ name: rt.name, description: rt.description, language: rt.language });
+            setForm(addIdIfMisingToForm(rt.form));
+            setRequiredDocuments(prepRequiredDocuments(rt.requiredDocuments));
+        } catch (err) {
+            console.log(err);
+        }
+        setLoading(false);
+    }
+    
+    useEffect(()=>{
+        if (params.uuid !== undefined && params.uuid !== null && params.uuid !== '') {
+            getTemplate(params.uuid);    
+        }
+    }, [params.ref] );
 
     const constructVariableList = (text, variables) => {
         let variableNames = text.match(/({\w+})/g);
@@ -131,24 +191,24 @@ export default function RequestTemplateEditorPage() {
 
     const onAttachmentChangeList = (event) => {
         const { id, value } = event.target;
-        let tmp = [...attachmentList];
+        let tmp = [...requiredDocuments];
         for (let i in tmp) {
             if (tmp[i].id === id) {
-                tmp.[i].name = value;
+                tmp[i].name = value;
                 break;
             }
         }
-        setAttachmentList(tmp);
+        setRequiredDocuments(tmp);
     }
 
     const addNewAttachment = () => {
-        if (attachmentList.length < 6) {
-            setAttachmentList([...attachmentList, { id: uuid(), name: '' }]);
+        if (requiredDocuments.length < 6) {
+            setRequiredDocuments([...requiredDocuments, { id: uuid(), name: '' }]);
         }
     }
 
     const deleteAttachment = (id) => {
-        setAttachmentList(attachmentList.filter(i => i.id !== id));
+        setRequiredDocuments(requiredDocuments.filter(i => i.id !== id));
     }
 
     const removeFormPart = (id) => {
@@ -157,33 +217,37 @@ export default function RequestTemplateEditorPage() {
 
     const addFormPart = (part) => {
         let tmp = [...form];
-        let ct = {...part};
+        let ct = { ...part };
         ct.id = uuid();
         ct.wrapper = ct.id;
-        tmp.splice(tmp.length -1, 0, ct);
+        tmp.splice(tmp.length - 1, 0, ct);
         setForm(tmp);
     }
 
     const onTemplateInfoChange = (event) => {
-        const {id, value} = event.target;
-        let tmp = {...templateInfo};
+        const { id, value } = event.target;
+        let tmp = { ...templateInfo };
         tmp[id] = value;
         setTemplateInfo(tmp);
     }
 
     const saveTemplate = () => {
         const template = {
-            name : templateInfo.name,
+            uuid: params.uuid,
+            name: templateInfo.name,
             description: templateInfo.description,
-            requestedDocuments: attachmentList.map( (att) => att.name),
-            form : form
+            language: '',
+            requiredDocuments: requiredDocuments.map((doc) => doc.name),
+            form: form
         }
         console.log(template);
-
+        RequestTemplateService.saveTemplate(template);
+        
     }
 
     return (
         <Container >
+            <LoadingModal show={loading} />
             <Form>
                 <Container fluid className="box">
                     <Row className="justify-content-md-center">
@@ -217,14 +281,14 @@ export default function RequestTemplateEditorPage() {
                             Csatolmany lista
                         </Form.Label>
                         <Col sm={10}>
-                            {attachmentList.map((att) => {
+                            {requiredDocuments.map((doc) => {
                                 return (
-                                    <Row key={att.id} className="rowSpace">
+                                    <Row key={doc.id} className="rowSpace">
                                         <Col sm={11}>
-                                            <Form.Control id={att.id} onChange={onAttachmentChangeList} required type="text" placeholder="Kert csatolmany neve" value={att.name} />
+                                            <Form.Control id={doc.id} onChange={onAttachmentChangeList} required type="text" placeholder="Kert csatolmany neve" value={doc.name} />
                                         </Col>
                                         <Col sm={1}>
-                                            <Button variant="outline-danger" onClick={() => { deleteAttachment(att.id) }}><i className="fas fa-minus"></i></Button>
+                                            <Button variant="outline-danger" onClick={() => { deleteAttachment(doc.id) }}><i className="fas fa-minus"></i></Button>
                                         </Col>
                                     </Row>
                                 )
@@ -239,7 +303,7 @@ export default function RequestTemplateEditorPage() {
                     </Form.Group>
                 </Container>
                 <Container fluid className="box rowSpace">
-                    {form.map((part, index) => {
+                    {form.map((part) => {
                         if (part.component === "title") {
                             return (
                                 <Row className="justify-content-md-center rowSpace">
@@ -290,11 +354,11 @@ export default function RequestTemplateEditorPage() {
                                                         <Form.Row>
                                                             <Form.Group as={Col}>
                                                                 <Form.Label>Min</Form.Label>
-                                                                <Form.Control required id={v.id} data-partid={part.id} data-targetfield="min" type="text" value={v.max} onChange={onFormChange} />
+                                                                <Form.Control required id={v.id} data-partid={part.id} data-targetfield="min" type="number" value={v.min} onChange={onFormChange} />
                                                             </Form.Group>
                                                             <Form.Group as={Col}>
                                                                 <Form.Label>Max</Form.Label>
-                                                                <Form.Control required id={v.id} data-partid={part.id} data-targetfield="max" type="text" value={v.min} onChange={onFormChange} />
+                                                                <Form.Control required id={v.id} data-partid={part.id} data-targetfield="max" type="number" value={v.max} onChange={onFormChange} />
                                                             </Form.Group>
                                                         </Form.Row>}
                                                 </Col>)
@@ -338,10 +402,10 @@ export default function RequestTemplateEditorPage() {
                                 <Container fluid className="rowSpace">
                                     <Row className="justify-content-md-center">
                                         <Col md="auto">
-                                            <Button variant="outline-info" onClick={() => {addFormPart(text)}}><i className="fas fa-plus"></i> Sablon szoveg</Button>
+                                            <Button variant="outline-info" onClick={() => { addFormPart(text) }}><i className="fas fa-plus"></i> Sablon szoveg</Button>
                                         </Col>
                                         <Col md="auto">
-                                            <Button variant="outline-info" onClick={() => {addFormPart(customText)}}> <i className="fas fa-plus"></i> Egyeni szovegbevitel</Button>
+                                            <Button variant="outline-info" onClick={() => { addFormPart(customText) }}> <i className="fas fa-plus"></i> Egyeni szovegbevitel</Button>
                                         </Col>
                                     </Row>
                                     <Row className="rowSpace">

@@ -18,29 +18,26 @@ const executeRequest = async (method, url, data, headers) => {
             headers: headerConfig
         }).then((res) => {
             return res.data;
+        })
+        .catch((err) => {
+            console.log("RestTemplate Error", err);
+            throw err;
         });
-        // .catch((err) => {
-        //     console.log("RestTemplate Error", err);
-        //     localStorage.clear();
-        //     if (err.response.status === 403) {
-        //         return Promise.reject({ redirectTo: '/login' });
-        //     }
-        // });
     }
 }
 
 export const RestTemplate = {
 
     get: async (url, body, headers) => {
-        return executeRequest('get', url, body, headers);
+        return await executeRequest('get', url, body, headers);
     },
 
     post: async (url, body, headers) => {
-        return executeRequest('post', url, body, headers);
+        return await executeRequest('post', url, body, headers);
     },
 
     delete: async (url, body, headers) => {
-        return executeRequest("delete", url, body, headers);
+        return await executeRequest("delete", url, body, headers);
     }
 }
 

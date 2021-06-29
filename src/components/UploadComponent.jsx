@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Button, Container, Row, Col, Form, Alert } from 'react-bootstrap'
+import { Button, Container, Row, Col, Form } from 'react-bootstrap'
 import LoadingModal from './LoadingModal';
 import AttachmentService from '../services/AttachmentService'
 import { v4 as uuid } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import config from '../config';
+import Restricted from './Restricted';
 
 export default function UploadComponent({ referenceNumber, requiredDocuments, onUpload, onUploadSuccess }) {
 
@@ -62,8 +63,8 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
         for (let i in tmp) {
             if (tmp[i].file === null) {
                 tmp[i].error = t("component.documentUpload.noSelectedFileError");
-            } else if (tmp[i].file.size / 1024 > config.rest.uploadFileSizeLimit ) {
-                tmp[i].error = t("component.documentUpload.selectedFileSizeError", {sizeLimit: config.rest.uploadFileSizeLimit + " KB"});
+            } else if (tmp[i].file.size / 1024 > config.rest.uploadFileSizeLimit) {
+                tmp[i].error = t("component.documentUpload.selectedFileSizeError", { sizeLimit: config.rest.uploadFileSizeLimit + " KB" });
             } else {
                 tmp[i].error = null;
             }
@@ -75,7 +76,7 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
         event.preventDefault();
         event.stopPropagation();
         const validatedFiles = validateFiles();
-        if (validatedFiles.every( (f) => f.error === null) === true) {
+        if (validatedFiles.every((f) => f.error === null) === true) {
             setLoading(true);
             let promises = [];
             for (let i in fileList) {
@@ -109,7 +110,7 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
                     }
                     setLoading(false);
                 });
-        }else {
+        } else {
             setFileList(validateFiles);
         }
     }
@@ -124,7 +125,7 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
                             <Col lg={5}>
                                 <Form.File custom
                                     key={f.id} id={f.id}>
-                                    <Form.File.Input isInvalid={!!f.error} onChange={onFileAdd} accept=".jpg, .jpeg, .pdf"/>
+                                    <Form.File.Input isInvalid={!!f.error} onChange={onFileAdd} accept=".jpg, .jpeg, .pdf" />
                                     <Form.File.Label data-browse={t("component.documentUpload.browseFiles")}>
                                         {f.file ? f.file.name : t("component.documentUpload.noSelectedFile")}
                                     </Form.File.Label>
@@ -144,11 +145,12 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
                         </Row>
                     </Container>
                 ))}
-
-                <Row className="rowSpace justify-content-center">
-                    <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>{t("component.documentUpload.addDocument")}</Button></Col>
-                    <Col xs="auto"><Button variant="outline-success" type="submit" disabled={referenceNumber === undefined}>{t("component.documentUpload.uploadDocument")}</Button></Col>
-                </Row>
+                <Restricted permission="UPLOAD_ATTACHMENT">
+                    <Row className="rowSpace justify-content-center">
+                        <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>{t("component.documentUpload.addDocument")}</Button></Col>
+                        <Col xs="auto"><Button variant="outline-success" type="submit" disabled={referenceNumber === undefined}>{t("component.documentUpload.uploadDocument")}</Button></Col>
+                    </Row>
+                </Restricted>
             </Form>
         </Container>
     );

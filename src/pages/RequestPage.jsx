@@ -24,7 +24,7 @@ export default function RequestPage({ template, onClose }) {
             if (tmpRequest.form[i].variables !== undefined) {
                 for (let j in tmpRequest.form[i].variables) {
                     if (tmpRequest.form[i].variables[j].value === undefined) {
-                        tmpRequest.form.errors.push(tmpRequest.form[i].variables[j].error);
+                        tmpRequest.form.errors.push(tmpRequest.form[i].variables[j].hint);
                         hasErrors = true;
                     }
                 }
@@ -55,7 +55,7 @@ export default function RequestPage({ template, onClose }) {
                         .then((refNumber) => {
                             setReferenceNumber(refNumber);
                             setLoading(false);
-                            if (request.attachmentList !== null && request.attachmentList !== undefined && request.attachmentList.length > 0) {
+                            if (request.requiredDocuments !== null && request.requiredDocuments !== undefined && request.requiredDocuments.length > 0) {
                                 setStep(2);
                             } else {
                                 setStep(3);
@@ -112,7 +112,7 @@ export default function RequestPage({ template, onClose }) {
                         </Alert>
                         </Col>
                     </Row>
-                    <UploadComponent referenceNumber={referenceNumber} requiredDocuments={request.attachmentList.map((att => att.name))} onUploadSuccess={attachMentUploadFinished} />
+                    <UploadComponent referenceNumber={referenceNumber} requiredDocuments={request.requiredDocuments} onUploadSuccess={attachMentUploadFinished} />
                 </>
             }
             {step === 3 &&
