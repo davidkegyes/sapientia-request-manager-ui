@@ -10,7 +10,7 @@ import RequestInspectorPage from './pages/RequestInspectorPage'
 import CustomRequestPage from './pages/CustomRequestPage'
 import RequestTemplateEditorPage from './pages/RequestTemplateEditorPage'
 import UserManagementPage from "./pages/UserManagementPage";
-import { getUserDetails } from './services/UserService'
+import NotFoundPage from "./pages/NotFoundPage"
 import './App.css'
 import { useTranslation } from 'react-i18next';
 
@@ -35,20 +35,13 @@ export default function App() {
     setUser(null);
   }
 
-  const isLoggedIn = () => {
-    if (localStorage.getItem('token')){
-      return true;
-    }
-    return false;
-  }
-
   return (
-    <UserContext.Provider value={{ user: user, isLoggedIn: isLoggedIn }}>
+    <UserContext.Provider value={{ user: user, isLoggedIn: false }}>
       <React.Fragment>
         <Router>
           {user && <NavigationBar user={user} handleLogout={handleLogout} />}
-          <Switch>
-            <Container>
+          <Container>
+            <Switch>
               <Route path="/login" component={() => <LoginPage handleLogin={handleLogin} />} />
               <ProtectedRoute exact path="/" component={RequestTemplatesPage} />
               <ProtectedRoute path="/templateEditor/:uuid" component={RequestTemplateEditorPage} />
@@ -57,9 +50,9 @@ export default function App() {
               <ProtectedRoute path="/myRequests" component={MyRequestsPage} />
               <ProtectedRoute path="/inspect/:ref" component={RequestInspectorPage} />
               <ProtectedRoute path="/userManagement" permission="ADMIN" component={UserManagementPage} />
-            </Container>
-            {/* // TODO Notfound page */}
-          </Switch>
+              <Route component={NotFoundPage} />
+            </Switch>
+          </Container>
         </Router>
       </React.Fragment>
     </UserContext.Provider>

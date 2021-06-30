@@ -1,8 +1,8 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const executeRequest = async (method, url, data, headers) => {
+
     const token = JSON.parse(localStorage.getItem('token'));
-    if (token) {
         const headerConfig = {
             'Authorization': 'Bearer ' + token,
         }
@@ -21,9 +21,13 @@ const executeRequest = async (method, url, data, headers) => {
         })
         .catch((err) => {
             console.log("RestTemplate Error", err);
+            if (err.response.status === 403 && window.location.pathname !== '/login'){
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = '/login';
+            }
             throw err;
         });
-    }
 }
 
 export const RestTemplate = {

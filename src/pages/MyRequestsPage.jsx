@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Container, Row, Col, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
@@ -9,9 +9,9 @@ export default function MyRequestsPage(props) {
     let [myRequests, setMyRequests] = useState(undefined);
     const {t} = useTranslation();
 
-    if (myRequests === undefined) {
+    useEffect(() => {
         RequestServices.getrequestInfoList().then((res) => setMyRequests(res));
-    }
+    }, [])
 
     return (
         <Container>

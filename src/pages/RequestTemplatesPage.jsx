@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Button, Card, CardColumns, Row, Col } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import RequestTemplateService from '../services/RequestTemplateService';
@@ -11,7 +11,7 @@ export default function RequesTemplatesPage() {
     let [templates, setTemplates] = useState([]);
     let [templateInUse, setTemplateInUse] = useState(undefined)
 
-    if (templates.length === 0) {
+    useEffect(() => {
         RequestTemplateService.getRequestTemplates().then(templates => {
             if (templates) {
                 setTemplates(templates)
@@ -19,7 +19,7 @@ export default function RequesTemplatesPage() {
                 setTemplates([]);
             }
         });
-    }
+    }, [])
 
     function closeRequestPage() {
         setTemplateInUse(undefined);

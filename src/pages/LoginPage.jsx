@@ -21,31 +21,32 @@ export default function LoginPage(props) {
     const { t } = useTranslation();
 
     const checkUser = async () => {
-        if (localStorage.getItem('token')) {
+        // if (localStorage.getItem('token')) {
             getUserDetails()
                 .then((user) => {
                     props.handleLogin(user);
-                    setLoading(false);
                 }).catch((error) => {
                     localStorage.clear();
                     sessionStorage.clear();
                     console.log(error);
-                    if (error.response.status === 403) {
+                    if (error.message === 'Network Error'){
+                        setError("Kommunikacios problema, a bejelentkezes nem lehetseges");
+                    }else if (error.response.status === 403) {
                         setError("Sajnos nincs hozzaferese");
+                    } else {
+                        setError("Hiba tortent, a bejelentkezes nem lehetseges");
                     }
                     setLoading(false);
                 });
-        } else {
-            setLoading(false);
-        }
+        // } else {
+            // setLoading(false);
+        // }
     }
 
 
     useEffect(() => {
-        console.log("use effect");
         const token = localStorage.getItem('token');
         if (token) {
-            setLoading(true);
             checkUser();
         }
     }, []);
@@ -53,7 +54,7 @@ export default function LoginPage(props) {
     if (userContext.user !== null) {
         return <Redirect to={
             {
-                pathname: history.location.state.from.pathname,
+                pathname: history.location.state ? history.location.state.from.pathname : '',
                 state: {
                     from: props.location
                 }
@@ -78,6 +79,7 @@ export default function LoginPage(props) {
         console.log("succesResponseGoogle");
         AuthorizationService.storeToken(res.tokenId);
         refreshTokenSetup(res);
+        // setLoading(true);
         checkUser();
     }
 
@@ -86,6 +88,9 @@ export default function LoginPage(props) {
         console.log(res);
     }
 
+    if (localStorage.getItem('token')) {
+        return (<LoadingModal show={true} />)
+    }
 
     return (
         <Container className="box">
