@@ -53,6 +53,9 @@ export default function NavigationBar({ handleLogout }) {
                                 <Nav.Link as={NavLink} exact to="/">{t("page.requestTemplates.title")}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
+                                <Nav.Link as={NavLink} to="/myRequests">{t("page.myRequests.title")}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
                                 <Nav.Link as={NavLink} to="/customRequest">{t("page.customRequest.title")}</Nav.Link>
                             </Nav.Item>
                             <Restricted permission="ADMIN">

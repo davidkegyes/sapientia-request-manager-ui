@@ -26,12 +26,12 @@ export default function LoginPage(props) {
                 .then((user) => {
                     props.handleLogin(user);
                 }).catch((error) => {
-                    localStorage.clear();
-                    sessionStorage.clear();
+                    // localStorage.clear();
+                    // sessionStorage.clear();
                     console.log(error);
                     if (error.message === 'Network Error'){
                         setError("Kommunikacios problema, a bejelentkezes nem lehetseges");
-                    }else if (error.response.status === 403) {
+                    }else if (error.response && error.response.status === 403) {
                         setError("Sajnos nincs hozzaferese");
                     } else {
                         setError("Hiba tortent, a bejelentkezes nem lehetseges");

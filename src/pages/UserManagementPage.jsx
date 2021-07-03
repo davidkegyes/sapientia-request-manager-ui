@@ -142,7 +142,7 @@ export default function UserManagementPage() {
     }
 
     return (
-        <Container fluid className="box">
+        <Container fluid className="noPadding">
             <LoadingModal show={loading} />
             {error !== null && <Alert variant="danger">Error on save</Alert>}
             <UserEditForm show={editedUser !== null} user={editedUser} onSave={saveChanges} onChange={onFormInputChange} onHide={() => setEditedUser(null)} />

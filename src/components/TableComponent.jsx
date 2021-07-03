@@ -1,39 +1,10 @@
-import React, {useState} from 'react'
-import {useAsyncDebounce, useGlobalFilter, usePagination, useTable} from 'react-table'
+import React from 'react'
+import {useGlobalFilter, usePagination, useSortBy, useTable} from 'react-table'
 import {Col, Container, Form, Pagination, Row, Table} from 'react-bootstrap'
+import GlobalFilter from "./GlobalFilterComponent";
+import './TableComponent.css'
 
-// Define a default UI for filtering
-function GlobalFilter({
-    preGlobalFilteredRows,
-    globalFilter,
-    setGlobalFilter,
-    gotToFirstPage,
-}) {
-    const count = preGlobalFilteredRows.length
-    const [value, setValue] = useState(globalFilter)
-    const onChange = useAsyncDebounce(value => {
-        setGlobalFilter(value || undefined)
-    }, 200)
-
-    return (
-        <Form>
-            <Form.Group as={Row} controlId="globalFilterControl">
-                <Form.Label column sm={2}>
-                    Kereses
-                </Form.Label>
-                <Col sm={10}>
-                    <Form.Control type="text" value={value || ""}
-                        onChange={e => {
-                            setValue(e.target.value);
-                            onChange(e.target.value);
-                        }}
-                        placeholder={`${count} records...`} />
-                </Col>
-            </Form.Group>
-        </Form>
-    )
-}
-export default function TableComponent({ columns, data }) {
+export default function TableComponent({columns, data}) {
 
     const {
         getTableProps,
@@ -52,16 +23,15 @@ export default function TableComponent({ columns, data }) {
         previousPage,
         setPageSize,
         state,
-        state: {pageIndex, pageSize },
+        state: {pageIndex, pageSize},
     } = useTable({
         columns,
         data,
-        initialState: { pageIndex: 0 },
-    }, useGlobalFilter, usePagination)
+        initialState: {pageIndex: 0},
+    }, useGlobalFilter, useSortBy, usePagination)
 
-    // Render the UI for your table
     return (
-        <Container fluid>
+        <Container fluid className="noPadding">
             <Row>
                 <Col>
                     <GlobalFilter
@@ -73,27 +43,36 @@ export default function TableComponent({ columns, data }) {
             </Row>
             <Row>
                 <Col>
-                    <Table striped bordered hover responsive {...getTableProps()}>
+                    <Table striped hover responsive className="tableStyle" {...getTableProps()}>
                         <thead>
-                            {headerGroups.map(headerGroup => (
-                                <tr {...headerGroup.getHeaderGroupProps()}>
-                                    {headerGroup.headers.map(column => (
-                                        <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                                    ))}
-                                </tr>
-                            ))}
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                        {column.render('Header')}
+                                        <span>
+                                        {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? <i class="fas fa-sort-down"></i>
+                                                : <i class="fas fa-sort-up"></i>
+                                            : ''}
+                                      </span>
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
                         </thead>
                         <tbody {...getTableBodyProps()}>
-                            {page.map((row, i) => {
-                                prepareRow(row)
-                                return (
-                                    <tr {...row.getRowProps()}>
-                                        {row.cells.map(cell => {
-                                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                        })}
-                                    </tr>
-                                )
-                            })}
+                        {page.map((row, i) => {
+                            prepareRow(row)
+                            return (
+                                <tr {...row.getRowProps()}>
+                                    {row.cells.map(cell => {
+                                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                    })}
+                                </tr>
+                            )
+                        })}
                         </tbody>
                     </Table>
                 </Col>

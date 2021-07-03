@@ -61,7 +61,7 @@ export default function CustomRequestPage() {
   };
 
   return (
-    <Container>
+    <Container fluid className='noPadding'>
       <Row>
         <Col>
           <h1>{t("page.customRequest.title")}</h1>
