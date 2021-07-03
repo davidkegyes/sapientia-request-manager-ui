@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Container, Form, Row, Col, Button } from 'react-bootstrap'
 import { useParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
+import { useTranslation } from "react-i18next";
 import RequestTemplateService from '../services/RequestTemplateService';
 import LoadingModal from '../components/LoadingModal';
 
 export default function RequestTemplateEditorPage() {
+
+    const { t } = useTranslation();
 
     const params = useParams();
 
@@ -114,7 +117,7 @@ export default function RequestTemplateEditorPage() {
         return dl;
     }
 
-    
+
     const getTemplate = async (tuuId) => {
         setLoading(true);
         try {
@@ -127,10 +130,10 @@ export default function RequestTemplateEditorPage() {
         }
         setLoading(false);
     }
-    
+
     useEffect(()=>{
         if (params.uuid !== undefined && params.uuid !== null && params.uuid !== '') {
-            getTemplate(params.uuid);    
+            getTemplate(params.uuid);
         }
     }, [params.ref] );
 
@@ -242,7 +245,7 @@ export default function RequestTemplateEditorPage() {
         }
         console.log(template);
         RequestTemplateService.saveTemplate(template);
-        
+
     }
 
     return (
@@ -252,33 +255,33 @@ export default function RequestTemplateEditorPage() {
                 <Container fluid className="box">
                     <Row className="justify-content-md-center">
                         <Col md="auto">
-                            <Button variant="outline-danger">Megse</Button>
+                            <Button variant="outline-danger">{t("page.requesTemplateEditor.templateButton1")}</Button>
                         </Col>
                         <Col md="auto">
-                            <Button variant="outline-success" onClick={saveTemplate}>Mentes</Button>
+                            <Button variant="outline-success" onClick={saveTemplate}>{t("page.requesTemplateEditor.templateButton2")}</Button>
                         </Col>
                     </Row>
                 </Container>
                 <Container fluid className="box rowSpace">
                     <Form.Group as={Row}>
                         <Form.Label column sm={2}>
-                            Kerveny Nev
+                            {t("page.requesTemplateEditor.templateName")}
                         </Form.Label>
                         <Col sm={10}>
-                            <Form.Control required type="text" placeholder="Pl.: Atsorolasi kerelem" value={templateInfo.name} id="name" onChange={onTemplateInfoChange} />
+                            <Form.Control required type="text" placeholder={t("page.requesTemplateEditor.templateEG")} value={templateInfo.name} id="name" onChange={onTemplateInfoChange} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Form.Label column sm={2}>
-                            Leiras
+                            {t("page.requesTemplateEditor.templateDescription")}
                         </Form.Label>
                         <Col sm={10}>
-                            <Form.Control required type="text" placeholder="Altalanos leiras" value={templateInfo.description} id="description" onChange={onTemplateInfoChange} />
+                            <Form.Control required type="text" placeholder={t("page.requesTemplateEditor.templateGeneral")} value={templateInfo.description} id="description" onChange={onTemplateInfoChange} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Form.Label column sm={2} className="rowSpace">
-                            Csatolmany lista
+                            {t("page.requesTemplateEditor.attachmentList")}
                         </Form.Label>
                         <Col sm={10}>
                             {requiredDocuments.map((doc) => {
@@ -309,8 +312,8 @@ export default function RequestTemplateEditorPage() {
                                 <Row className="justify-content-md-center rowSpace">
                                     <Col xs lg={4} >
                                         <Form.Group>
-                                            <Form.Control required id={part.id} type="text" placeholder="Hivatalos cim" style={{ 'textAlign': 'center' }} value={part.text} onChange={onFormChange} />
-                                            <Form.Control.Feedback type="invalid">A kerveny neve kotelezo</Form.Control.Feedback>
+                                            <Form.Control required id={part.id} type="text" placeholder={t("page.requesTemplateEditor.officialAddress")} style={{ 'textAlign': 'center' }} value={part.text} onChange={onFormChange} />
+                                            <Form.Control.Feedback type="invalid">A kérvény neve kötelező</Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
                                 </Row>
@@ -324,7 +327,7 @@ export default function RequestTemplateEditorPage() {
                                                 <Button variant="outline-danger" onClick={() => { removeFormPart(part.id) }}><i className="fas fa-minus"></i></Button>
                                             </Col>
                                             <Col>
-                                                <h3>Sablon szoveg szerkesztese</h3>
+                                                <h3>{t("page.requesTemplateEditor.templateSablon")}</h3>
                                             </Col>
                                         </Row>
                                         <Row className="rowSpace">
@@ -336,15 +339,15 @@ export default function RequestTemplateEditorPage() {
                                             {!!part.variables && part.variables.map((v) => {
                                                 return (<Col xs lg={4} className="box">
                                                     <Form.Group>
-                                                        <Form.Label>Valtozo</Form.Label>
+                                                        <Form.Label>{t("page.requesTemplateEditor.templateVariable")}</Form.Label>
                                                         <Form.Control type="text" value={v.name} disabled />
                                                     </Form.Group>
                                                     <Form.Group>
-                                                        <Form.Label>Utalas</Form.Label>
+                                                        <Form.Label>Utalás</Form.Label>
                                                         <Form.Control required id={v.id} data-partid={part.id} data-targetfield="hint" type="text" value={v.hint} onChange={onFormChange} />
                                                     </Form.Group>
                                                     <Form.Group>
-                                                        <Form.Label>Tipus</Form.Label>
+                                                        <Form.Label>Típus</Form.Label>
                                                         <Form.Control required id={v.id} data-partid={part.id} data-targetfield="type" as="select" onChange={onFormChange} value={v.type}>
                                                             <option value='text'>Szoveg</option>
                                                             <option value='number'>Szam</option>
@@ -374,14 +377,14 @@ export default function RequestTemplateEditorPage() {
                                                 <Button variant="outline-danger" onClick={() => { removeFormPart(part.id) }}><i className="fas fa-minus"></i></Button>
                                             </Col>
                                             <Col>
-                                                <h3>Egyeni szovegbevitel</h3>
+                                                <h3>{t("page.requesTemplateEditor.templateCustomText")}</h3>
                                             </Col>
                                         </Row>
                                         <Row>
                                             <Col>
                                                 <Form.Group as={Row}>
                                                     <Form.Label column sm={2}>
-                                                        Utalas
+                                                        {t("page.requesTemplateEditor.templateReference")}
                                                     </Form.Label>
                                                     <Col sm={10}>
                                                         <Form.Control required type="text" id={part.id} data-targetfield="hint" value={part.hint} onChange={onFormChange} />
@@ -391,7 +394,7 @@ export default function RequestTemplateEditorPage() {
                                         </Row>
                                         <Row>
                                             <Col>
-                                                <Form.Control id={part.id} as="textarea" rows={2} disabled value="A kitolto hozasfuzest tehet a kervenyhez" />
+                                                <Form.Control id={part.id} as="textarea" rows={2} disabled value={t("page.requesTemplateEditor.templatecomment")} />
                                             </Col>
                                         </Row>
                                     </Container>
@@ -402,10 +405,10 @@ export default function RequestTemplateEditorPage() {
                                 <Container fluid className="rowSpace">
                                     <Row className="justify-content-md-center">
                                         <Col md="auto">
-                                            <Button variant="outline-info" onClick={() => { addFormPart(text) }}><i className="fas fa-plus"></i> Sablon szoveg</Button>
+                                            <Button variant="outline-info" onClick={() => { addFormPart(text) }}><i className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateText")}</Button>
                                         </Col>
                                         <Col md="auto">
-                                            <Button variant="outline-info" onClick={() => { addFormPart(customText) }}> <i className="fas fa-plus"></i> Egyeni szovegbevitel</Button>
+                                            <Button variant="outline-info" onClick={() => { addFormPart(customText) }}> <i className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateOneText")}</Button>
                                         </Col>
                                     </Row>
                                     <Row className="rowSpace">
@@ -413,8 +416,8 @@ export default function RequestTemplateEditorPage() {
                                             <Row className="justify-content-md-center">
                                                 <Col xs lg={5}>
                                                     <Form.Group>
-                                                        <Form.Control id={part.id} data-targetfield="dateText" value={part.dateText} required type="text" placeholder="Datum cimke" style={{ 'textAlign': 'center' }} onChange={onFormChange} />
-                                                        <Form.Control.Feedback type="invalid">A kerveny neve kotelezo</Form.Control.Feedback>
+                                                        <Form.Control id={part.id} data-targetfield="dateText" value={part.dateText} required type="text" placeholder={t("page.requesTemplateEditor.templateDate")} style={{ 'textAlign': 'center' }} onChange={onFormChange} />
+                                                        <Form.Control.Feedback type="invalid">{t("page.requesTemplateEditor.templateTemplateObligatory")}</Form.Control.Feedback>
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
@@ -428,8 +431,8 @@ export default function RequestTemplateEditorPage() {
                                             <Row className="justify-content-md-center">
                                                 <Col xs lg={5}>
                                                     <Form.Group>
-                                                        <Form.Control id={part.id} data-targetfield="signatureText" required value={part.signatureText} type="text" placeholder="Alairas Cimke" style={{ 'textAlign': 'center' }} onChange={onFormChange} />
-                                                        <Form.Control.Feedback type="invalid">Alairas Cimke</Form.Control.Feedback>
+                                                        <Form.Control id={part.id} data-targetfield="signatureText" required value={part.signatureText} type="text" placeholder={t("page.requesTemplateEditor.templateSignature")} style={{ 'textAlign': 'center' }} onChange={onFormChange} />
+                                                        <Form.Control.Feedback type="invalid">{t("page.requesTemplateEditor.templateSignature")}</Form.Control.Feedback>
                                                     </Form.Group>
                                                 </Col>
                                             </Row>

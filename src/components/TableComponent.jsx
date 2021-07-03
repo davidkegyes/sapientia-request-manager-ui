@@ -1,15 +1,16 @@
-import React from 'react'
-import { useTable, useGlobalFilter, useAsyncDebounce } from 'react-table'
-import { Container, Row, Col, Table, Form } from 'react-bootstrap'
+import React, {useState} from 'react'
+import {useAsyncDebounce, useGlobalFilter, usePagination, useTable} from 'react-table'
+import {Col, Container, Form, Pagination, Row, Table} from 'react-bootstrap'
 
 // Define a default UI for filtering
 function GlobalFilter({
     preGlobalFilteredRows,
     globalFilter,
     setGlobalFilter,
+    gotToFirstPage,
 }) {
     const count = preGlobalFilteredRows.length
-    const [value, setValue] = React.useState(globalFilter)
+    const [value, setValue] = useState(globalFilter)
     const onChange = useAsyncDebounce(value => {
         setGlobalFilter(value || undefined)
     }, 200)
@@ -34,21 +35,29 @@ function GlobalFilter({
 }
 export default function TableComponent({ columns, data }) {
 
-
-    // Use the state and functions returned from useTable to build your UI
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        page,
         prepareRow,
-        state,
         preGlobalFilteredRows,
-        setGlobalFilter
+        setGlobalFilter,
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
+        nextPage,
+        previousPage,
+        setPageSize,
+        state,
+        state: {pageIndex, pageSize },
     } = useTable({
         columns,
         data,
-    }, useGlobalFilter)
+        initialState: { pageIndex: 0 },
+    }, useGlobalFilter, usePagination)
 
     // Render the UI for your table
     return (
@@ -75,7 +84,7 @@ export default function TableComponent({ columns, data }) {
                             ))}
                         </thead>
                         <tbody {...getTableBodyProps()}>
-                            {rows.map((row, i) => {
+                            {page.map((row, i) => {
                                 prepareRow(row)
                                 return (
                                     <tr {...row.getRowProps()}>
@@ -87,6 +96,38 @@ export default function TableComponent({ columns, data }) {
                             })}
                         </tbody>
                     </Table>
+                </Col>
+            </Row>
+            <Row className="justify-content-md-center">
+                <Col>
+                    <label>
+                        {pageIndex + 1} of {pageOptions.length}
+                    </label>
+                </Col>
+                <Col>
+                    <Pagination>
+                        <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage}/>
+                        <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage}/>
+                        <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage}/>
+                        <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}/>
+                    </Pagination>
+                </Col>
+                <Col md={'auto'}>
+                    <Form>
+                        <Form.Group controlId="exampleForm.SelectCustom">
+                            <Form.Control as="select"
+                                          value={pageSize}
+                                          onChange={e => {
+                                              setPageSize(Number(e.target.value))
+                                          }}>
+                                {[10, 20, 30, 40, 50].map(pageSize => (
+                                    <option key={pageSize} value={pageSize}>
+                                        Show {pageSize}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
                 </Col>
             </Row>
         </Container>

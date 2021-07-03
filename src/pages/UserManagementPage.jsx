@@ -80,6 +80,8 @@ export default function UserManagementPage() {
             },
             {
                 Header: 'Controls',
+                disableFilters : true,
+                disableGlobalFilter: true,
                 Cell: ({ row }) => (<Button variant="outline-primary" onClick={() => editRow(row)}>Edit</Button>)
             }
         ],

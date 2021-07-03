@@ -88,7 +88,7 @@ export default function RequestPage({ template, onClose }) {
             <Row>
                 <Col><h2>{request.name}</h2></Col>
                 <Col md='auto'>
-                    <Button onClick={() => onClose()}>Vissza a kérvényekhez</Button>
+                    <Button onClick={() => onClose()}>{t("page.requestPage.back")}</Button>
                 </Col>
             </Row>
             {step === 1 &&
