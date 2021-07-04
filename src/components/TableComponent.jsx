@@ -25,10 +25,15 @@ export default function TableComponent({columns, data}) {
         state,
         state: {pageIndex, pageSize},
     } = useTable({
-        columns,
-        data,
-        initialState: {pageIndex: 0},
-    }, useGlobalFilter, useSortBy, usePagination)
+            columns,
+            data,
+            initialState: {
+                pageIndex: 0,
+                hiddenColumns: columns.filter(col => col.show === false).map(col => col.accessor)
+            },
+        },
+        useGlobalFilter, useSortBy, usePagination
+    )
 
     return (
         <Container fluid className="noPadding">

@@ -44,8 +44,8 @@ export default function App() {
             <Switch>
               <Route path="/login" component={() => <LoginPage handleLogin={handleLogin} />} />
               <ProtectedRoute exact path="/" component={RequestTemplatesPage} />
-              <ProtectedRoute path="/templateEditor/:uuid" component={RequestTemplateEditorPage} />
-              <ProtectedRoute path="/templateEditor" component={RequestTemplateEditorPage} />
+              <ProtectedRoute path="/editTemplate/:uuid" component={RequestTemplateEditorPage} />
+              <ProtectedRoute path="/createTemplate" component={RequestTemplateEditorPage} />
               <ProtectedRoute path="/customRequest" component={CustomRequestPage} />
               <ProtectedRoute path="/myRequests" component={MyRequestsPage} />
               <ProtectedRoute path="/inspect/:ref" component={RequestInspectorPage} />

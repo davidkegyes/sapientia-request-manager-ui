@@ -7,8 +7,9 @@ export const RequestService = {
         const formData = new FormData();
         formData.append('file', requestDocument);
         formData.append('name', request.name);
-        formData.append('templateId', request.id);
+        formData.append('templateId', request.uuid);
         formData.append('json', JSON.stringify(request));
+        formData.append('requiredDocuments', request.requiredDocuments)
 
         const headers = {
             'Content-Type': 'multipart/form-data'

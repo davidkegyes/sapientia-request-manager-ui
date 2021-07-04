@@ -2,6 +2,7 @@
     "language" : "Magyar",
     "title": "Sapientia Erdélyi Magyar Tudományegyetem",
     "loading": "...Betöltés",
+    "date": "{{date, YYYY/MM/DD, hh:mm:ss}}",
     "page": {
         "login": {
             "hint": "Bejelentkezéshez használja az egyetemtől kapott emailcímet.",

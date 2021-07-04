@@ -9,6 +9,7 @@ import AttachmentService from '../services/AttachmentService';
 import UploadComponent from '../components/UploadComponent';
 import { useTranslation } from 'react-i18next';
 import Restricted from '../components/Restricted';
+import { saveAs } from 'file-saver';
 
 const splitRequestObject = (request) => {
     let info = { ...request };
@@ -27,6 +28,7 @@ export default function RequestInspectorPage() {
     const [requestInfo, setRequestInfo] = useState(null);
     const [requestDocument, setRequestDocument] = useState(null);
     const [requiredDocuments, setRequiredDocuments] = useState(null);
+    const [documentUpload, setDocumentUpload] = useState(false)
     const [action, setAction] = useState({ type: "INIT" });
     const { t } = useTranslation();
 
@@ -35,6 +37,20 @@ export default function RequestInspectorPage() {
         setRequiredDocuments(await AttachmentService.getListForRequestReferenceNumber(params.ref));
         setLoading(false);
     })
+
+    useEffect(()=> {
+        console.log("effect upload", requiredDocuments)
+        if (requiredDocuments != null && requestInfo.requiredDocuments != null) {
+            const uploadList = [];
+            const uploaded = requiredDocuments.map(rd => rd.name);
+            for (const d in requestInfo.requiredDocuments) {
+                if (!uploaded.includes(requestInfo.requiredDocuments[d])){
+                    uploadList.push(requestInfo.requiredDocuments[d]);
+                }
+            }
+            setDocumentUpload(uploadList);
+        }
+    }, [requiredDocuments])
 
     useEffect(() => {
         async function doAction() {
@@ -77,10 +93,16 @@ export default function RequestInspectorPage() {
         return (<LoadingModal show={true} />);
     }
 
+    const downloadRequest = async () => {
+        const base64Response = await fetch(`data:${requestDocument.documentType};base64,${requestDocument.document.toString('base64')}`);
+        const blob = await base64Response.blob();
+        saveAs(blob, `${requestInfo.name}.${requestDocument.documentType.startsWith('image') ? 'jpg': 'pdf'}`)
+    }
+
     return (
         <Container>
             <LoadingModal show={loading} />
-            <Row>
+            <Row className='align-items-center'>
                 <Col md="auto">
                     <h3>
                         {requestInfo.status === 'NEW' && <Badge variant="primary">{t("request.status.new")}</Badge>}
@@ -91,22 +113,24 @@ export default function RequestInspectorPage() {
                 <Col md="auto">
                     <h2>{requestInfo.name}</h2>
                 </Col>
+                <Col>
+                    <Button variant='outline-primary' onClick={downloadRequest}>Download</Button>
+                </Col>
                 <Col className='d-flex align-items-center'>
                     <NavLink to="/myRequests" className='btn btn-outline-info ml-auto'>{t("page.requestInspector.button.backToMyRequests")}</NavLink>
                 </Col>
             </Row>
             {requestInfo.status === "NEW" &&
                 <Container fluid>
-                    {/* <Row className="rowSpace">
-                        <Col>
-                            <DocumentUploadRequestComponent referenceNumber={requestInfo.referenceNumber}/>
-                        </Col>
-                    </Row> */}
+                    {documentUpload && documentUpload.length > 0 &&
                     <Row className="rowSpace">
                         <Col>
-                            <UploadComponent requiredDocuments={requestInfo.requiredDocuments} referenceNumber={requestInfo.referenceNumber} onUpload={onUpload} />
+                            <UploadComponent requiredDocuments={documentUpload}
+                                             referenceNumber={requestInfo.referenceNumber} onUpload={onUpload}
+                                             disableAdditionalDocuments={true}/>
                         </Col>
                     </Row>
+                    }
                     <Row className="rowSpace justify-content-center">
                         <Restricted permission="REJECT_APPLICATION">
                             <Col md='auto'>
@@ -135,7 +159,7 @@ export default function RequestInspectorPage() {
                     </Col>
                 </Row>
             }
-            {requiredDocuments &&
+            {requestInfo.requiredDocuments && requestInfo.requiredDocuments.length > 0 && requiredDocuments &&
                 <Container fluid>
                     <Row>
                         <Col><h3>{t("page.requestInspector.attachmentsTitle")}</h3></Col>

@@ -1,106 +1,106 @@
 {
-    "language" : "English",
-    "title": "Sapientia Erdélyi Magyar Tudományegyetem",
-    "loading": "...Loading",
-    "page": {
-        "login": {
-            "hint": "Login with the provided email from the Universisty",
-            "button": "Login with Google"
-        },
-        "myRequests": {
-            "title": "My Requests",
-            "noRequestFound": "No request found.",
-            "openRequest": "Open"
-        },
-        "requestTemplates": {
-            "title": "Request Templates",
-            "useTemplate": "Fill"
-        },
-        "requestInspector": {
-            "button": {
-                "backToMyRequests": "Back To My Requests",
-                "approve": "Approve",
-                "reject": "Reject"
-            },
-            "attachmentsTitle": "Attachments",
-            "noAttachments" : "No attachment found"
-        },
-        "requestPage" : {
-            "back" : "Back to requests"
-        },
-        "requesTemplateEditor" : {
-            "title" : "Edit templates",
-            "templateName" : "Template Name",
-            "templateDescription" : "Template Description",
-            "attachmentList" : "Attachment list",
-            "officialAddress" : "Official Address",
-            "templateSablon" : "Edit text template",
-            "templateVariable" : "Variable",
-            "templateCustomText" : "Add custom text",
-             "templateReference" : "Reference",
-             "templatecomment" : "Add comment for the request.",
-             "templateTemplateText" : "Add custom template text",
-             "templateTemplateOneText" :"Add templates text",
-             "templateTemplateObligatory": "The name for request is mandatory.",
-             "templateDate" : "Date",
-            "templateSignature" : "Signature",
-            "templateEG" : "E.G: Reclassification request",
-            "templateGeneral" : "General description",
-            "templateButton1" : "Cancel",
-            "templateButton2" : "Save"
-        },
-        "customRequest" : {
-            "title" : "Custom request",
-            "description" : "Upload an individual request. Use this feature if you have not found a suitable request template.",
-            "requestName" : "Request Name",
-            "requestNameError" : "Please add a request name.",
-            "requestNamePlaceholder" : "E.g: Application for the issuance of a certificate certifying the University's legal relationship",
-            "requestNameInfo" : "The name of the submitted application helps to identify the uploaded application.",
-            "requestFileInfo" : "The document to be uploaded must be clearly legible and include today's date and signature. File type: .jpeg/.jpg, .pdf",
-            "noSelectedFile" : "No selected file.",
-            "noSelectedFileError" : "Please select a document to upload!",
-            "selectedFileSizeError" : "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
-            "browseFiles" : "Search",
-            "uploadButton" : "Uploading",
-            "attachmentUploadTitle" : "Attachment upload"
-        }
-        
+  "language": "English",
+  "title": "Sapientia Erdélyi Magyar Tudományegyetem",
+  "loading": "...Loading",
+  "date": "{{date, YYYY/MM/DD, hh:mm:ss}}",
+  "page": {
+    "login": {
+      "hint": "Login with the provided email from the Universisty",
+      "button": "Login with Google"
     },
-     "component" : {
-        "navbar" : {
-            "logoutButton" : "Logout"
-        },
-        "documentUploadRequest" : {
-            "addDocument" : "One more",
-            "requestDocument" : "Request document",
-            "requestDocument_plural" : "Requests documents"
-        },
-        "documentUpload" : {
-            "addDocument" :"Add document",
-            "uploadDocument" : "Upload",
-            "documentNamePlaceholder" : "Document",
-            "noSelectedFile" : "No document selected",
-            "noSelectedFileError" : "Please select a document to upload!",
-            "selectedFileSizeError" : "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
-            "browseFiles" : "Search",
-            "uploadSuccessTitle" : "Upload successful"
-        }
+    "myRequests": {
+      "title": "My Requests",
+      "noRequestFound": "No request found.",
+      "openRequest": "Open"
     },
-    "request": {
-        "status": {
-            "approved": "Approved",
-            "rejected": "Rejected",
-            "new": "New"
-        },
-        "referenceNumber": "Reference number",
-        "officialReferenceNumber": "Official reference number",
-        "creationDate": "Created {{date, YYYY/MM/DD, hh:mm:ss}}",
-        "lastUpdate": "Updated {{date, YYYY/MM/DD, hh:mm:ss}}",
-        "requiredDocuments": "Required documents",
-        "requestUploadSuccessTitle" : "Upload successful",
-        "requestUploadSuccessMessage": "Your request has been successfully registered and will be processed shortly.",
-        "navigateToRequestButton" : "Kérését ide kattintva megtekintheti.",
-        "requestUploadedAttachmentUploadRequired" : "A következő dokumentumok szükségesek a kérvény elfogadásához.",
-        "requestAttachmentUploadRequired" : ""
+    "requestTemplates": {
+      "title": "Request Templates",
+      "useTemplate": "Fill"
+    },
+    "requestInspector": {
+      "button": {
+        "backToMyRequests": "Back To My Requests",
+        "approve": "Approve",
+        "reject": "Reject"
+      },
+      "attachmentsTitle": "Attachments",
+      "noAttachments": "No attachment found"
+    },
+    "requestPage": {
+      "back": "Back to requests"
+    },
+    "requesTemplateEditor": {
+      "title": "Edit templates",
+      "templateName": "Template Name",
+      "templateDescription": "Template Description",
+      "attachmentList": "Attachment list",
+      "officialAddress": "Official Address",
+      "templateSablon": "Edit text template",
+      "templateVariable": "Variable",
+      "templateCustomText": "Add custom text",
+      "templateReference": "Reference",
+      "templatecomment": "Add comment for the request.",
+      "templateTemplateText": "Add template text",
+      "templateTemplateOneText": "Add custom input text",
+      "templateTemplateObligatory": "The name for request is mandatory.",
+      "templateDate": "Date",
+      "templateSignature": "Signature",
+      "templateEG": "E.G: Reclassification request",
+      "templateGeneral": "General description",
+      "templateButton1": "Cancel",
+      "templateButton2": "Save"
+    },
+    "customRequest": {
+      "title": "Custom request",
+      "description": "Upload an individual request. Use this feature if you have not found a suitable request template.",
+      "requestName": "Request Name",
+      "requestNameError": "Please add a request name.",
+      "requestNamePlaceholder": "E.g: Application for the issuance of a certificate certifying the University's legal relationship",
+      "requestNameInfo": "The name of the submitted application helps to identify the uploaded application.",
+      "requestFileInfo": "The document to be uploaded must be clearly legible and include today's date and signature. File type: .jpeg/.jpg, .pdf",
+      "noSelectedFile": "No selected file.",
+      "noSelectedFileError": "Please select a document to upload!",
+      "selectedFileSizeError": "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
+      "browseFiles": "Search",
+      "uploadButton": "Uploading",
+      "attachmentUploadTitle": "Attachment upload"
     }
+  },
+  "component": {
+    "navbar": {
+      "logoutButton": "Logout"
+    },
+    "documentUploadRequest": {
+      "addDocument": "One more",
+      "requestDocument": "Request document",
+      "requestDocument_plural": "Requests documents"
+    },
+    "documentUpload": {
+      "addDocument": "Add document",
+      "uploadDocument": "Upload",
+      "documentNamePlaceholder": "Document",
+      "noSelectedFile": "No document selected",
+      "noSelectedFileError": "Please select a document to upload!",
+      "selectedFileSizeError": "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
+      "browseFiles": "Search",
+      "uploadSuccessTitle": "Upload successful"
+    }
+  },
+  "request": {
+    "status": {
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "new": "New"
+    },
+    "referenceNumber": "Reference number",
+    "officialReferenceNumber": "Official reference number",
+    "creationDate": "Created {{date, YYYY/MM/DD, hh:mm:ss}}",
+    "lastUpdate": "Updated {{date, YYYY/MM/DD, hh:mm:ss}}",
+    "requiredDocuments": "Required documents",
+    "requestUploadSuccessTitle": "Upload successful",
+    "requestUploadSuccessMessage": "Your request has been successfully registered and will be processed shortly.",
+    "navigateToRequestButton": "Kérését ide kattintva megtekintheti.",
+    "requestUploadedAttachmentUploadRequired": "A következő dokumentumok szükségesek a kérvény elfogadásához.",
+    "requestAttachmentUploadRequired": ""
+  }
 }

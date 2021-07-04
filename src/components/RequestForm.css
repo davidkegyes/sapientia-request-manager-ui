@@ -33,12 +33,16 @@ input::-webkit-inner-spin-button {
     width: 150px;
 }
 
-.requestForm .body {
-    text-indent: 5%;
+.requestForm .body .title {
+
+}
+
+.requestForm .text{
+    text-indent: 3rem;
 }
 
 .requestForm textarea {
-    text-indent: 0 !important;
+    text-indent: 3rem;
 }
 
 .requestForm .sigCanvas{

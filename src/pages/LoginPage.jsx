@@ -1,16 +1,15 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import GoogleLogin from 'react-google-login';
 import AuthorizationService from '../services/AuthorizationService'
-import { getUserDetails } from '../services/UserService'
-import { Container, Row, Col, Alert } from "react-bootstrap";
+import {getUserDetails} from '../services/UserService'
+import {Alert, Col, Container, Row} from "react-bootstrap";
 import LoadingModal from '../components/LoadingModal'
 import './LoginPage.css';
-import { Redirect } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import {Redirect, useHistory} from "react-router-dom";
 import logo from '../assets/logo_hu.png'
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import LanguageSelectorComponent from "../components/LanguageSelectorComponent";
-import { UserContext } from "../App";
+import {UserContext} from "../App";
 
 export default function LoginPage(props) {
 
@@ -18,28 +17,28 @@ export default function LoginPage(props) {
     let history = useHistory();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(undefined);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const checkUser = async () => {
         // if (localStorage.getItem('token')) {
-            getUserDetails()
-                .then((user) => {
-                    props.handleLogin(user);
-                }).catch((error) => {
-                    // localStorage.clear();
-                    // sessionStorage.clear();
-                    console.log(error);
-                    if (error.message === 'Network Error'){
-                        setError("Kommunikacios problema, a bejelentkezes nem lehetseges");
-                    }else if (error.response && error.response.status === 403) {
-                        setError("Sajnos nincs hozzaferese");
-                    } else {
-                        setError("Hiba tortent, a bejelentkezes nem lehetseges");
-                    }
-                    setLoading(false);
-                });
+        getUserDetails()
+            .then((user) => {
+                props.handleLogin(user);
+            }).catch((error) => {
+            console.log(error);
+            if (error.message === 'Network Error') {
+                setError("Kommunikacios problema, a bejelentkezes nem lehetseges");
+            } else if (error.response && error.response.status === 403) {
+                setError("Sajnos nincs hozzaferese");
+                localStorage.clear();
+                sessionStorage.clear();
+            } else {
+                setError("Hiba tortent, a bejelentkezes nem lehetseges");
+            }
+            setLoading(false);
+        });
         // } else {
-            // setLoading(false);
+        // setLoading(false);
         // }
     }
 
@@ -59,7 +58,7 @@ export default function LoginPage(props) {
                     from: props.location
                 }
             }
-        } />
+        }/>
     }
 
     function refreshTokenSetup(res) {
@@ -88,16 +87,16 @@ export default function LoginPage(props) {
         console.log(res);
     }
 
-    if (localStorage.getItem('token')) {
-        return (<LoadingModal show={true} />)
+    if (loading && localStorage.getItem('token')) {
+        return (<LoadingModal show={true}/>)
     }
 
     return (
         <Container className="box">
-            <LoadingModal show={loading} />
-            <Row >
+            <LoadingModal show={loading}/>
+            <Row>
                 <Col className="d-flex align-items-center justify-content-center">
-                    <img src={logo} className="loginLogo" title="Sapientia EMTE" alt="Sapientia EMTE" />
+                    <img src={logo} className="loginLogo" title="Sapientia EMTE" alt="Sapientia EMTE"/>
                 </Col>
             </Row>
             <Row>
@@ -114,19 +113,20 @@ export default function LoginPage(props) {
                             onSuccess={succesResponseGoogle}
                             onFailure={errorResponseGoogle}
                             cookiePolicy={'single_host_origin'}
+                            isSignedIn = {true}
                         />
                     </p>
                 </Col>
             </Row>
             <Row>
-                <Col className="d-flex align-items-center justify-content-center"><LanguageSelectorComponent /></Col>
+                <Col className="d-flex align-items-center justify-content-center"><LanguageSelectorComponent/></Col>
             </Row>
             {error !== undefined &&
-                <Row>
-                    <Col className="d-flex align-items-center justify-content-center">
-                        <Alert key={error} variant='danger'>{error}</Alert>
-                    </Col>
-                </Row>}
+            <Row>
+                <Col className="d-flex align-items-center justify-content-center">
+                    <Alert key={error} variant='danger'>{error}</Alert>
+                </Col>
+            </Row>}
         </Container>
     )
 }

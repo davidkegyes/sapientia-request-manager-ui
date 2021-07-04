@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { Container, Form, Row, Col, Button } from 'react-bootstrap'
-import { useParams } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
-import { useTranslation } from "react-i18next";
+import React, {useEffect, useState} from 'react'
+import {NavLink, Redirect} from 'react-router-dom';
+import {Button, Col, Container, Form, Row} from 'react-bootstrap'
+import {useParams} from 'react-router-dom';
+import {v4 as uuid} from 'uuid';
+import {useTranslation} from "react-i18next";
 import RequestTemplateService from '../services/RequestTemplateService';
 import LoadingModal from '../components/LoadingModal';
-
 export default function RequestTemplateEditorPage() {
 
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const params = useParams();
 
@@ -46,7 +46,7 @@ export default function RequestTemplateEditorPage() {
             "id": uuid(),
             "wrapper": "title",
             "text": "",
-            "type": "text",
+            "type": "title",
             "component": "title"
         },
         {
@@ -78,20 +78,23 @@ export default function RequestTemplateEditorPage() {
         }
     ];
 
-    const [templateInfo, setTemplateInfo] = useState({ name: '', description: '', language: '' })
+    const emptyInfo = {name: '', description: '', language: ''};
+
+    const [templateInfo, setTemplateInfo] = useState(emptyInfo)
     const [form, setForm] = useState(empty);
     const [requiredDocuments, setRequiredDocuments] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [goToTemplates, setGoToTemplates] = useState(false);
 
     const addIdIfMisingToForm = (list) => {
         for (let i in list) {
             if (list[i].id === undefined || list[i].id === null || list[i].id === '') {
                 list[i].id = uuid();
             }
-            if (list[i].component === undefined || list[i].component === null || list[i].component === ''){
-                if (list[i].wrapper === 'title' || list[i].wrapper === 'dateAndSignature'){
+            if (list[i].component === undefined || list[i].component === null || list[i].component === '') {
+                if (list[i].wrapper === 'title' || list[i].wrapper === 'dateAndSignature') {
                     list[i].component = list[i].wrapper;
-                }else if (list[i].wrapper.startsWith("body")) {
+                } else if (list[i].wrapper.startsWith("body")) {
                     list[i].component = "body";
 
                 }
@@ -111,7 +114,7 @@ export default function RequestTemplateEditorPage() {
         let dl = [];
         if (docs) {
             for (let i in docs) {
-                dl.push({ id: uuid(), name: docs[i] });
+                dl.push({id: uuid(), name: docs[i]});
             }
         }
         return dl;
@@ -122,7 +125,7 @@ export default function RequestTemplateEditorPage() {
         setLoading(true);
         try {
             const rt = await RequestTemplateService.getTemplateByUuid(tuuId);
-            setTemplateInfo({ name: rt.name, description: rt.description, language: rt.language });
+            setTemplateInfo({name: rt.name, description: rt.description, language: rt.language});
             setForm(addIdIfMisingToForm(rt.form));
             setRequiredDocuments(prepRequiredDocuments(rt.requiredDocuments));
         } catch (err) {
@@ -131,11 +134,11 @@ export default function RequestTemplateEditorPage() {
         setLoading(false);
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (params.uuid !== undefined && params.uuid !== null && params.uuid !== '') {
             getTemplate(params.uuid);
         }
-    }, [params.ref] );
+    }, [params.ref]);
 
     const constructVariableList = (text, variables) => {
         let variableNames = text.match(/({\w+})/g);
@@ -151,7 +154,7 @@ export default function RequestTemplateEditorPage() {
                         break;
                     }
                 }
-                let newVar = { ...variable };
+                let newVar = {...variable};
                 newVar.id = uuid();
                 newVar.name = variableNames[index].slice(1, -1);
                 newVariables.splice(index, 0, newVar);
@@ -161,8 +164,8 @@ export default function RequestTemplateEditorPage() {
     }
 
     const onFormChange = (event) => {
-        const { id, value } = event.target;
-        const { targetfield, partid } = event.target.dataset;
+        const {id, value} = event.target;
+        const {targetfield, partid} = event.target.dataset;
         console.log(id);
         let tmp = [...form];
         let variableId = partid === undefined ? undefined : id;
@@ -193,7 +196,7 @@ export default function RequestTemplateEditorPage() {
     }
 
     const onAttachmentChangeList = (event) => {
-        const { id, value } = event.target;
+        const {id, value} = event.target;
         let tmp = [...requiredDocuments];
         for (let i in tmp) {
             if (tmp[i].id === id) {
@@ -206,7 +209,7 @@ export default function RequestTemplateEditorPage() {
 
     const addNewAttachment = () => {
         if (requiredDocuments.length < 6) {
-            setRequiredDocuments([...requiredDocuments, { id: uuid(), name: '' }]);
+            setRequiredDocuments([...requiredDocuments, {id: uuid(), name: ''}]);
         }
     }
 
@@ -220,7 +223,7 @@ export default function RequestTemplateEditorPage() {
 
     const addFormPart = (part) => {
         let tmp = [...form];
-        let ct = { ...part };
+        let ct = {...part};
         ct.id = uuid();
         ct.wrapper = ct.id;
         tmp.splice(tmp.length - 1, 0, ct);
@@ -228,37 +231,140 @@ export default function RequestTemplateEditorPage() {
     }
 
     const onTemplateInfoChange = (event) => {
-        const { id, value } = event.target;
-        let tmp = { ...templateInfo };
+        const {id, value} = event.target;
+        let tmp = {...templateInfo};
         tmp[id] = value;
         setTemplateInfo(tmp);
     }
 
-    const saveTemplate = () => {
-        const template = {
-            uuid: params.uuid,
-            name: templateInfo.name,
-            description: templateInfo.description,
-            language: '',
-            requiredDocuments: requiredDocuments.map((doc) => doc.name),
-            form: form
+    const validate = () => {
+        let valid = true;
+        let vtInfo = {...templateInfo};
+        if (vtInfo.name === undefined || vtInfo.name === null || vtInfo.name === '') {
+            vtInfo.nameError = "Ez kell";
+            valid = false;
+        } else {
+            delete vtInfo.nameError;
         }
-        console.log(template);
-        RequestTemplateService.saveTemplate(template);
+        if (vtInfo.description === undefined || vtInfo.description === null || vtInfo.description === '') {
+            vtInfo.descriptionError = "Ez kell";
+            valid = false;
+        } else {
+            delete vtInfo.descriptionError;
+        }
+        let vForm = [...form];
+        for (let i in vForm) {
+            if (vForm[i].type === 'dateAndSignature') {
+                if (vForm[i].signatureText === null || vForm[i].signatureText === undefined || vForm[i].signatureText === '') {
+                    vForm[i].signatureTextError = 'Ez is kell te....';
+                    valid = false;
+                } else {
+                    delete vForm[i].signatureTextError;
+                }
+                if (vForm[i].dateText === null || vForm[i].dateText === undefined || vForm[i].dateText === '') {
+                    vForm[i].dateTextError = 'Ez is kell te....';
+                    valid = false;
+                } else {
+                    delete vForm[i].dateTextError;
+                }
+            } else if (vForm[i].type === 'customText') {
+                if (vForm[i].hint === null || vForm[i].hint === undefined || vForm[i].hint === '') {
+                    vForm[i].error = 'Ez is kell te....';
+                    valid = false;
+                } else {
+                    delete vForm[i].error;
+                }
+            } else {
+                if (vForm[i].text === null || vForm[i].text === undefined || vForm[i].text === '') {
+                    vForm[i].error = 'Ez is kell te....';
+                    valid = false;
+                } else {
+                    delete vForm[i].error;
+                }
+                if (vForm[i].variables) {
+                    for (let j in vForm[i].variables) {
+                        if (vForm[i].variables[j].hint === null || vForm[i].variables[j].hint === undefined || vForm[i].variables[j].hint === '') {
+                            vForm[i].variables[j].hintError = "Ez is kell";
+                            valid = false;
+                        } else {
+                            delete vForm[i].variables[j].hintError;
+                        }
+                        if (vForm[i].variables[j].type === 'number') {
+                            if (vForm[i].variables[j].min === null || vForm[i].variables[j].min === undefined || vForm[i].variables[j].min === '') {
+                                vForm[i].variables[j].minError = "Ez is kell";
+                                valid = false;
+                            } else {
+                                delete vForm[i].variables[j].minError;
+                            }
+                            if (vForm[i].variables[j].max === null || vForm[i].variables[j].max === undefined || vForm[i].variables[j].max === '') {
+                                vForm[i].variables[j].maxError = "Ez is kell";
+                                valid = false;
+                            } else {
+                                delete vForm[i].variables[j].maxError;
+                            }
+                        }
+                    }
+                    console.log(vForm[i].variables);
+                }
+            }
+        }
+        return {valid, vtInfo, vForm}
+    }
 
+
+    const saveTemplate = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const {valid, vtInfo, vForm} = validate();
+        if (valid === false) {
+            setTemplateInfo(vtInfo);
+            setForm(vForm);
+        } else {
+            const template = {
+                uuid: params.uuid,
+                name: templateInfo.name,
+                description: templateInfo.description,
+                language: '',
+                requiredDocuments: requiredDocuments.map((doc) => doc.name),
+                form: form
+            }
+            setLoading(true);
+            RequestTemplateService.saveTemplate(template)
+                .then((res) => {
+                    setLoading(false);
+                    setGoToTemplates(true);
+                }).catch((err) => {
+                setLoading(false);
+            });
+        }
+    }
+
+    if (goToTemplates) {
+        return (<Redirect to={
+            {
+                pathname: '/',
+                state: {
+                    from: ''
+                }
+            }
+        } />)
     }
 
     return (
-        <Container >
-            <LoadingModal show={loading} />
+        <Container>
+            <LoadingModal show={loading}/>
             <Form>
-                <Container fluid className="box">
-                    <Row className="justify-content-md-center">
-                        <Col md="auto">
-                            <Button variant="outline-danger">{t("page.requesTemplateEditor.templateButton1")}</Button>
+                <Container fluid className="noPadding">
+                    <Row className="align-items-center">
+                        <Col>
+                            <h1>Editor</h1>
                         </Col>
-                        <Col md="auto">
-                            <Button variant="outline-success" onClick={saveTemplate}>{t("page.requesTemplateEditor.templateButton2")}</Button>
+                        <Col>
+                            <Button variant="success" type={"submit"}
+                                    onClick={saveTemplate}>{t("page.requesTemplateEditor.templateButton2")}</Button>
+                        </Col>
+                        <Col xs="auto">
+                            <NavLink to="/"><Button variant="outline-info">Back</Button></NavLink>
                         </Col>
                     </Row>
                 </Container>
@@ -268,7 +374,9 @@ export default function RequestTemplateEditorPage() {
                             {t("page.requesTemplateEditor.templateName")}
                         </Form.Label>
                         <Col sm={10}>
-                            <Form.Control required type="text" placeholder={t("page.requesTemplateEditor.templateEG")} value={templateInfo.name} id="name" onChange={onTemplateInfoChange} />
+                            <Form.Control isInvalid={!!templateInfo.nameError} required type="text"
+                                          placeholder={t("page.requesTemplateEditor.templateEG")}
+                                          value={templateInfo.name} id="name" onChange={onTemplateInfoChange}/>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
@@ -276,7 +384,10 @@ export default function RequestTemplateEditorPage() {
                             {t("page.requesTemplateEditor.templateDescription")}
                         </Form.Label>
                         <Col sm={10}>
-                            <Form.Control required type="text" placeholder={t("page.requesTemplateEditor.templateGeneral")} value={templateInfo.description} id="description" onChange={onTemplateInfoChange} />
+                            <Form.Control isInvalid={!!templateInfo.descriptionError} required type="text"
+                                          placeholder={t("page.requesTemplateEditor.templateGeneral")}
+                                          value={templateInfo.description} id="description"
+                                          onChange={onTemplateInfoChange}/>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
@@ -288,10 +399,14 @@ export default function RequestTemplateEditorPage() {
                                 return (
                                     <Row key={doc.id} className="rowSpace">
                                         <Col sm={11}>
-                                            <Form.Control id={doc.id} onChange={onAttachmentChangeList} required type="text" placeholder="Kert csatolmany neve" value={doc.name} />
+                                            <Form.Control id={doc.id} onChange={onAttachmentChangeList} required
+                                                          type="text" placeholder="Kert csatolmany neve"
+                                                          value={doc.name}/>
                                         </Col>
                                         <Col sm={1}>
-                                            <Button variant="outline-danger" onClick={() => { deleteAttachment(doc.id) }}><i className="fas fa-minus"></i></Button>
+                                            <Button variant="outline-danger" onClick={() => {
+                                                deleteAttachment(doc.id)
+                                            }}><i className="fas fa-minus"></i></Button>
                                         </Col>
                                     </Row>
                                 )
@@ -299,7 +414,8 @@ export default function RequestTemplateEditorPage() {
                             }
                             <Row className="rowSpace">
                                 <Col>
-                                    <Button variant="outline-info" onClick={addNewAttachment}><i className="fas fa-plus"></i></Button>
+                                    <Button variant="outline-info" onClick={addNewAttachment}><i
+                                        className="fas fa-plus"></i></Button>
                                 </Col>
                             </Row>
                         </Col>
@@ -307,108 +423,149 @@ export default function RequestTemplateEditorPage() {
                 </Container>
                 <Container fluid className="box rowSpace">
                     {form.map((part) => {
-                        if (part.component === "title") {
+                        if (part.type === "title") {
                             return (
                                 <Row className="justify-content-md-center rowSpace">
-                                    <Col xs lg={4} >
+                                    <Col xs lg={4}>
                                         <Form.Group>
-                                            <Form.Control required id={part.id} type="text" placeholder={t("page.requesTemplateEditor.officialAddress")} style={{ 'textAlign': 'center' }} value={part.text} onChange={onFormChange} />
-                                            <Form.Control.Feedback type="invalid">A kérvény neve kötelező</Form.Control.Feedback>
+                                            <Form.Control isInvalid={!!part.error} required id={part.id} type="text"
+                                                          placeholder={t("page.requesTemplateEditor.officialAddress")}
+                                                          style={{'textAlign': 'center'}}
+                                                          value={part.text} onChange={onFormChange}/>
+                                            <Form.Control.Feedback type="invalid">{part.error}</Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
                                 </Row>
                             )
-                        } else if (part.component === "body") {
-                            if (part.type === 'text') {
-                                return (
-                                    <Container fluid className="rowSpace">
-                                        <Row>
-                                            <Col md="auto">
-                                                <Button variant="outline-danger" onClick={() => { removeFormPart(part.id) }}><i className="fas fa-minus"></i></Button>
-                                            </Col>
-                                            <Col>
-                                                <h3>{t("page.requesTemplateEditor.templateSablon")}</h3>
-                                            </Col>
-                                        </Row>
-                                        <Row className="rowSpace">
-                                            <Col>
-                                                <Form.Control required id={part.id} as="textarea" style={{ textIndent: '2rem' }} rows={3} value={part.text} onChange={onFormChange} />
-                                            </Col>
-                                        </Row>
-                                        <Row className="rowSpace">
-                                            {!!part.variables && part.variables.map((v) => {
-                                                return (<Col xs lg={4} className="box">
-                                                    <Form.Group>
-                                                        <Form.Label>{t("page.requesTemplateEditor.templateVariable")}</Form.Label>
-                                                        <Form.Control type="text" value={v.name} disabled />
-                                                    </Form.Group>
-                                                    <Form.Group>
-                                                        <Form.Label>Utalás</Form.Label>
-                                                        <Form.Control required id={v.id} data-partid={part.id} data-targetfield="hint" type="text" value={v.hint} onChange={onFormChange} />
-                                                    </Form.Group>
-                                                    <Form.Group>
-                                                        <Form.Label>Típus</Form.Label>
-                                                        <Form.Control required id={v.id} data-partid={part.id} data-targetfield="type" as="select" onChange={onFormChange} value={v.type}>
-                                                            <option value='text'>Szoveg</option>
-                                                            <option value='number'>Szam</option>
-                                                        </Form.Control>
-                                                    </Form.Group>
-                                                    {v.type === 'number' &&
-                                                        <Form.Row>
-                                                            <Form.Group as={Col}>
-                                                                <Form.Label>Min</Form.Label>
-                                                                <Form.Control required id={v.id} data-partid={part.id} data-targetfield="min" type="number" value={v.min} onChange={onFormChange} />
-                                                            </Form.Group>
-                                                            <Form.Group as={Col}>
-                                                                <Form.Label>Max</Form.Label>
-                                                                <Form.Control required id={v.id} data-partid={part.id} data-targetfield="max" type="number" value={v.max} onChange={onFormChange} />
-                                                            </Form.Group>
-                                                        </Form.Row>}
-                                                </Col>)
-                                            })}
-                                        </Row>
-                                    </Container>
-                                )
-                            } else if (part.type === 'customText') {
-                                return (
-                                    <Container fluid className="rowSpace">
-                                        <Row>
-                                            <Col md="auto">
-                                                <Button variant="outline-danger" onClick={() => { removeFormPart(part.id) }}><i className="fas fa-minus"></i></Button>
-                                            </Col>
-                                            <Col>
-                                                <h3>{t("page.requesTemplateEditor.templateCustomText")}</h3>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col>
-                                                <Form.Group as={Row}>
-                                                    <Form.Label column sm={2}>
-                                                        {t("page.requesTemplateEditor.templateReference")}
-                                                    </Form.Label>
-                                                    <Col sm={10}>
-                                                        <Form.Control required type="text" id={part.id} data-targetfield="hint" value={part.hint} onChange={onFormChange} />
-                                                    </Col>
+                        } else if (part.type === "text") {
+                            return (
+                                <Container fluid className="rowSpace">
+                                    <Row>
+                                        <Col md="auto">
+                                            <Button variant="outline-danger" onClick={() => {
+                                                removeFormPart(part.id)
+                                            }}><i className="fas fa-minus"></i></Button>
+                                        </Col>
+                                        <Col>
+                                            <h3>{t("page.requesTemplateEditor.templateSablon")}</h3>
+                                        </Col>
+                                    </Row>
+                                    <Row className="rowSpace">
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Control isInvalid={!!part.error} required id={part.id}
+                                                              as="textarea"
+                                                              style={{textIndent: '2rem'}} rows={3} value={part.text}
+                                                              onChange={onFormChange}/>
+                                                <Form.Control.Feedback
+                                                    type="invalid">{part.error}</Form.Control.Feedback>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                    <Row className="rowSpace">
+                                        {!!part.variables && part.variables.map((v) => {
+                                            return (<Col xs lg={4} className="box">
+                                                <Form.Group>
+                                                    <Form.Label>{t("page.requesTemplateEditor.templateVariable")}</Form.Label>
+                                                    <Form.Control type="text" value={v.name} disabled/>
                                                 </Form.Group>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col>
-                                                <Form.Control id={part.id} as="textarea" rows={2} disabled value={t("page.requesTemplateEditor.templatecomment")} />
-                                            </Col>
-                                        </Row>
-                                    </Container>
-                                )
-                            }
-                        } else if (part.component === "dateAndSignature") {
+                                                <Form.Group>
+                                                    <Form.Label>Utalás</Form.Label>
+                                                    <Form.Control isInvalid={!!v.hintError} required id={v.id}
+                                                                  data-partid={part.id} data-targetfield="hint"
+                                                                  type="text" value={v.hint} onChange={onFormChange}/>
+                                                    <Form.Control.Feedback
+                                                        type="invalid">{v.hintError}</Form.Control.Feedback>
+                                                </Form.Group>
+                                                <Form.Group>
+                                                    <Form.Label>Típus</Form.Label>
+                                                    <Form.Control required id={v.id} data-partid={part.id}
+                                                                  data-targetfield="type" as="select"
+                                                                  onChange={onFormChange} value={v.type}>
+                                                        <option value='text'>Szoveg</option>
+                                                        <option value='number'>Szam</option>
+                                                    </Form.Control>
+                                                </Form.Group>
+                                                {v.type === 'number' &&
+                                                <Form.Row>
+                                                    <Form.Group as={Col}>
+                                                        <Form.Label>Min</Form.Label>
+                                                        <Form.Control isInvalid={!!v.minError} required id={v.id}
+                                                                      data-partid={part.id} data-targetfield="min"
+                                                                      type="number" value={v.min}
+                                                                      onChange={onFormChange}/>
+                                                        <Form.Control.Feedback
+                                                            type="invalid">{v.minError}</Form.Control.Feedback>
+                                                    </Form.Group>
+                                                    <Form.Group as={Col}>
+                                                        <Form.Label>Max</Form.Label>
+                                                        <Form.Control isInvalid={!!v.maxError} required id={v.id}
+                                                                      data-partid={part.id} data-targetfield="max"
+                                                                      type="number" value={v.max}
+                                                                      onChange={onFormChange}/>
+                                                        <Form.Control.Feedback
+                                                            type="invalid">{v.maxError}</Form.Control.Feedback>
+                                                    </Form.Group>
+                                                </Form.Row>}
+                                            </Col>)
+                                        })}
+                                    </Row>
+                                </Container>)
+                        } else if (part.type === 'customText') {
+                            return (
+                                <Container fluid className="rowSpace">
+                                    <Row>
+                                        <Col md="auto">
+                                            <Button variant="outline-danger" onClick={() => {
+                                                removeFormPart(part.id)
+                                            }}><i className="fas fa-minus"></i></Button>
+                                        </Col>
+                                        <Col>
+                                            <h3>{t("page.requesTemplateEditor.templateCustomText")}</h3>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group as={Row}>
+                                                <Form.Label column sm={2}>
+                                                    {t("page.requesTemplateEditor.templateReference")}
+                                                </Form.Label>
+                                                <Col sm={10}>
+                                                    <Form.Control isInvalid={part.error} required type="text"
+                                                                  id={part.id} data-targetfield="hint" value={part.hint}
+                                                                  onChange={onFormChange}/>
+                                                    <Form.Control.Feedback
+                                                        type="invalid">{part.error}</Form.Control.Feedback>
+                                                </Col>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Form.Control id={part.id} as="textarea" rows={2} disabled
+                                                          value={t("page.requesTemplateEditor.templatecomment")}/>
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            )
+                        }
+                        if (part.component === "dateAndSignature") {
                             return (
                                 <Container fluid className="rowSpace">
                                     <Row className="justify-content-md-center">
                                         <Col md="auto">
-                                            <Button variant="outline-info" onClick={() => { addFormPart(text) }}><i className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateText")}</Button>
+                                            <Button variant="outline-info" onClick={() => {
+                                                addFormPart(text)
+                                            }}><i
+                                                className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateText")}
+                                            </Button>
                                         </Col>
                                         <Col md="auto">
-                                            <Button variant="outline-info" onClick={() => { addFormPart(customText) }}> <i className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateOneText")}</Button>
+                                            <Button variant="outline-info" onClick={() => {
+                                                addFormPart(customText)
+                                            }}> <i
+                                                className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateOneText")}
+                                            </Button>
                                         </Col>
                                     </Row>
                                     <Row className="rowSpace">
@@ -416,13 +573,20 @@ export default function RequestTemplateEditorPage() {
                                             <Row className="justify-content-md-center">
                                                 <Col xs lg={5}>
                                                     <Form.Group>
-                                                        <Form.Control id={part.id} data-targetfield="dateText" value={part.dateText} required type="text" placeholder={t("page.requesTemplateEditor.templateDate")} style={{ 'textAlign': 'center' }} onChange={onFormChange} />
-                                                        <Form.Control.Feedback type="invalid">{t("page.requesTemplateEditor.templateTemplateObligatory")}</Form.Control.Feedback>
+                                                        <Form.Control isInvalid={part.dateTextError} id={part.id}
+                                                                      data-targetfield="dateText" value={part.dateText}
+                                                                      required type="text"
+                                                                      placeholder={t("page.requesTemplateEditor.templateDate")}
+                                                                      style={{'textAlign': 'center'}}
+                                                                      onChange={onFormChange}/>
+                                                        <Form.Control.Feedback
+                                                            type="invalid">{t("page.requesTemplateEditor.templateTemplateObligatory")}</Form.Control.Feedback>
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
                                             <Row className="justify-content-md-center">
-                                                <Col xs lg={5} className="text-center" style={{ 'fontSize': '3rem', 'color': 'blue' }}>
+                                                <Col xs lg={5} className="text-center"
+                                                     style={{'fontSize': '3rem', 'color': 'blue'}}>
                                                     <i className="far fa-calendar-alt"></i>
                                                 </Col>
                                             </Row>
@@ -431,13 +595,20 @@ export default function RequestTemplateEditorPage() {
                                             <Row className="justify-content-md-center">
                                                 <Col xs lg={5}>
                                                     <Form.Group>
-                                                        <Form.Control id={part.id} data-targetfield="signatureText" required value={part.signatureText} type="text" placeholder={t("page.requesTemplateEditor.templateSignature")} style={{ 'textAlign': 'center' }} onChange={onFormChange} />
-                                                        <Form.Control.Feedback type="invalid">{t("page.requesTemplateEditor.templateSignature")}</Form.Control.Feedback>
+                                                        <Form.Control isInvalid={part.signatureTextError} id={part.id}
+                                                                      data-targetfield="signatureText" required
+                                                                      value={part.signatureText} type="text"
+                                                                      placeholder={t("page.requesTemplateEditor.templateSignature")}
+                                                                      style={{'textAlign': 'center'}}
+                                                                      onChange={onFormChange}/>
+                                                        <Form.Control.Feedback
+                                                            type="invalid">{t("page.requesTemplateEditor.templateSignature")}</Form.Control.Feedback>
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
                                             <Row className="justify-content-md-center">
-                                                <Col xs lg={5} className="text-center" style={{ 'fontSize': '3rem', 'color': 'blue' }}>
+                                                <Col xs lg={5} className="text-center"
+                                                     style={{'fontSize': '3rem', 'color': 'blue'}}>
                                                     <i className="fas fa-signature"></i>
                                                 </Col>
                                             </Row>
@@ -446,6 +617,7 @@ export default function RequestTemplateEditorPage() {
                                 </Container>
                             )
                         }
+                        return "";
                     })}
                 </Container>
             </Form>

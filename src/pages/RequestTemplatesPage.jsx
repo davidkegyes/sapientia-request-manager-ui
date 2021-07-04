@@ -46,7 +46,7 @@ export default function RequesTemplatesPage() {
                                         </Restricted>
                                         <Restricted permission="EDIT_APPLICATION_TEMPLATE">
                                             <Col>
-                                                <NavLink to={"/templateEditor/" + template.uuid}
+                                                <NavLink to={"/editTemplate/" + template.uuid}
                                                          className='btn btn-outline-primary'>Szerkesztés</NavLink>
                                             </Col>
                                         </Restricted>
@@ -76,7 +76,7 @@ export default function RequesTemplatesPage() {
         state,
     } = useTable({
         columns,
-        data,
+        data
     }, useGlobalFilter)
 
     useEffect(() => {
@@ -113,6 +113,11 @@ export default function RequesTemplatesPage() {
                 <Col>
                     <h1>{t("page.requestTemplates.title")}</h1>
                 </Col>
+                <Restricted permission='EDIT_APPLICATION_TEMPLATE' >
+                    <Col className='d-flex align-items-center'>
+                        <NavLink to="/createTemplate" className='btn btn-outline-info ml-auto'>Create template</NavLink>
+                    </Col>
+                </Restricted>
             </Row>
             <Row>
                 <Col>

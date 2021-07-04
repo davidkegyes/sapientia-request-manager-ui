@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { pdf, Document, Page, Text, Image, StyleSheet, View } from '@react-pdf/renderer'
 import { saveAs } from 'file-saver';
@@ -46,7 +45,9 @@ const getPDFDocument = (requestForm) => {
             elements = []
         }
 
-        if (part.type === 'text') {
+        if (part.type === 'title') {
+            elements.push((<Text style={styles.title}>{part.text}</Text>))
+        } else if (part.type === 'text') {
             let subElements = [];
             if (part.variables) {
                 subElements.push((<Text style={getStyle(part.style)}>{getPDFPart(part.variables, part.text)}</Text>));
@@ -90,6 +91,7 @@ const getPDFDocument = (requestForm) => {
         }
         wrapperMap[part.wrapper] = elements;
     }
+
     let finalElements = [];
     for (let k in wrapperMap) {
         finalElements.push(

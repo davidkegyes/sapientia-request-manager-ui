@@ -22,18 +22,20 @@ export default function RequestForm({ form, onChange }) {
                 wrapper = part.wrapper;
             }
             if (wrapper !== part.wrapper) {
-                htmlParts.push(<Row key={wrapper} className={wrapper + " rowSpace"}>{toBeWrapped}</Row>)
+                htmlParts.push(<Row key={wrapper} className="rowSpace">{toBeWrapped}</Row>)
                 toBeWrapped = []
                 wrapper = part.wrapper
             }
-            toBeWrapped.push(<Col key={wrapper + 'col' + index} className={part.style}>{getHTMLPart(part)}</Col>)
+            toBeWrapped.push(<Col key={wrapper + 'col' + index} className={part.type}>{getHTMLPart(part)}</Col>)
         })
         htmlParts.push(<Row key={wrapper} className={wrapper + " rowSpace"}>{toBeWrapped}</Row>)
         return htmlParts;
     }
 
     function getHTMLPart(part) {
-        if (part.type === 'text') {
+        if (part.type === 'title'){
+            return (<h3>{part.text}</h3>)
+        }else if (part.type === 'text') {
             return (<RequestFormTextComponent variables={part.variables} text={part.text} handleChange={handleChange} />)
         } else if (part.type === 'customText') {
             return (<textarea key={part.wrapper + part.name} style={{ width: '100%' }} name={part.name} value={part.value} onChange={handleChange} />)

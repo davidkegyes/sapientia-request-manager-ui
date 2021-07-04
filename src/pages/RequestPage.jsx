@@ -14,7 +14,6 @@ export default function RequestPage({ template, onClose }) {
     const [request, setRequest] = useState(template);
     const [referenceNumber, setReferenceNumber] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [step, setStep] = useState(1);
 
     const getValidatedRequest = () => {
         let hasErrors = false;
@@ -55,11 +54,6 @@ export default function RequestPage({ template, onClose }) {
                         .then((refNumber) => {
                             setReferenceNumber(refNumber);
                             setLoading(false);
-                            if (request.requiredDocuments !== null && request.requiredDocuments !== undefined && request.requiredDocuments.length > 0) {
-                                setStep(2);
-                            } else {
-                                setStep(3);
-                            }
                         })
                         .catch((error) => {
                             console.log(error);
@@ -67,7 +61,6 @@ export default function RequestPage({ template, onClose }) {
                             setRequest(tmpRequest);
                             setLoading(false);
                         });
-                    this.setState({ loading: true })
                 }).catch((error) => {
                     console.log(error)
                     tmpRequest.form.errors = ["Error during the pdf generation, please report this error."];
@@ -78,20 +71,15 @@ export default function RequestPage({ template, onClose }) {
             setRequest(tmpRequest);
         }
     }
-
-    const attachMentUploadFinished = () => {
-        setStep(3);
-    }
-
     return (
         <Container>
             <Row>
                 <Col><h2>{request.name}</h2></Col>
                 <Col md='auto'>
-                    <Button onClick={() => onClose()}>{t("page.requestPage.back")}</Button>
+                    <Button variant="outline-info" onClick={() => onClose()}>{t("page.requestPage.back")}</Button>
                 </Col>
             </Row>
-            {step === 1 &&
+            {referenceNumber === null &&
                 <>
                     <RequestForm form={request.form} onChange={handleFormChange} />
                     <Row className="rowSpace formMainControls">
@@ -100,28 +88,14 @@ export default function RequestPage({ template, onClose }) {
                     </Row>
                 </>
             }
-            {step === 2 &&
-                <>
-                    <Row>
-                        <Col>
-                        <Alert variant="info">
-                            <Alert.Heading>{t("request.requestUploadSuccessTitle")}</Alert.Heading>
-                            <p></p>
-                            <hr/>
-                            <p>{t("request.requestUploadedAttachmentUploadRequired")}</p>
-                        </Alert>
-                        </Col>
-                    </Row>
-                    <UploadComponent referenceNumber={referenceNumber} requiredDocuments={request.requiredDocuments} onUploadSuccess={attachMentUploadFinished} />
-                </>
-            }
-            {step === 3 &&
+            {referenceNumber &&
                 <Row>
                     <Col>
-                        <Alert variant="success">
+                        <Alert variant={request.requiredDocuments && request.requiredDocuments.length > 0 ? "warning":"success"}>
                             <Alert.Heading>
                                 {t("request.requestUploadSuccessTitle")}
                             </Alert.Heading>
+                            {request.requiredDocuments && request.requiredDocuments.length > 0 && <p>Upload required, go to request and upload the required files</p>}
                             <p>{t("request.requestUploadSuccessMessage")}</p>
                             <hr />
                             <NavLink to={"/inspect/" + referenceNumber} className='btn btn-outline-info ml-auto'>{t("request.navigateToRequestButton")}</NavLink>

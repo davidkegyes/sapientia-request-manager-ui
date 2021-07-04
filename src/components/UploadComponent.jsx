@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Container, Row, Col, Form } from 'react-bootstrap'
 import LoadingModal from './LoadingModal';
 import AttachmentService from '../services/AttachmentService'
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import config from '../config';
 import Restricted from './Restricted';
 
-export default function UploadComponent({ referenceNumber, requiredDocuments, onUpload, onUploadSuccess }) {
+export default function UploadComponent({ referenceNumber, requiredDocuments, onUpload, onUploadSuccess, disableAdditionalDocuments }) {
 
     const getFileList = () => {
         if (requiredDocuments !== undefined && requiredDocuments !== undefined && requiredDocuments.length > 0) {
@@ -22,7 +22,11 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
 
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
-    const [fileList, setFileList] = useState(getFileList());
+    const [fileList, setFileList] = useState([]);
+
+    useEffect(()=> {
+        setFileList(getFileList())
+    }, [requiredDocuments]);
 
     const removeFile = (file) => {
         if (fileList.length === 1) {
@@ -122,7 +126,7 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
                 {fileList.map((f) => (
                     <Container fluid>
                         <Row className="rowSpace">
-                            <Col lg={5}>
+                            <Col lg={f.required ? 6 : 5}>
                                 <Form.File custom
                                     key={f.id} id={f.id}>
                                     <Form.File.Input isInvalid={!!f.error} onChange={onFileAdd} accept=".jpg, .jpeg, .pdf" />
@@ -135,19 +139,19 @@ export default function UploadComponent({ referenceNumber, requiredDocuments, on
                             <Col lg={6}>
                                 <Form.Control placeholder={t("component.documentUpload.documentNamePlaceholder")} key={f.id} id={f.id} value={f.name} onChange={onFileNameChange} disabled={f.required} />
                             </Col>
-                            <Col lg={1}>
-                                {!f.required &&
-                                    <Button variant="danger" aria-label="Clear" onClick={() => { removeFile(f) }}>
-                                        <span aria-hidden="false">&times;</span>
-                                    </Button>
-                                }
-                            </Col>
+                            {!f.required &&
+                                <Col lg={1}>
+                                        <Button variant="danger" aria-label="Clear" onClick={() => { removeFile(f) }}>
+                                            <span aria-hidden="false">&times;</span>
+                                        </Button>
+                                </Col>
+                            }
                         </Row>
                     </Container>
                 ))}
                 <Restricted permission="UPLOAD_ATTACHMENT">
                     <Row className="rowSpace justify-content-center">
-                        <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>{t("component.documentUpload.addDocument")}</Button></Col>
+                        { disableAdditionalDocuments !== true && <Col xs="auto"><Button variant="outline-primary" onClick={addFile}>{t("component.documentUpload.addDocument")}</Button></Col> }
                         <Col xs="auto"><Button variant="outline-success" type="submit" disabled={referenceNumber === undefined}>{t("component.documentUpload.uploadDocument")}</Button></Col>
                     </Row>
                 </Restricted>

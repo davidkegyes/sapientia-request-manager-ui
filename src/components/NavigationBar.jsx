@@ -60,11 +60,6 @@ export default function NavigationBar({ handleLogout }) {
                             </Nav.Item>
                             <Restricted permission="ADMIN">
                                 <Nav.Item>
-                                    <Nav.Link as={NavLink} to="/templateEditor">{t("page.requesTemplateEditor.title")}</Nav.Link>
-                                </Nav.Item>
-                            </Restricted>
-                            <Restricted permission="ADMIN">
-                                <Nav.Item>
                                     <Nav.Link as={NavLink} to="/userManagement">UserManagement</Nav.Link>
                                 </Nav.Item>
                             </Restricted>
