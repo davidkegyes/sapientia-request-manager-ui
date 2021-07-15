@@ -3,6 +3,7 @@ import {useGlobalFilter, usePagination, useSortBy, useTable} from 'react-table'
 import {Col, Container, Form, Pagination, Row, Table} from 'react-bootstrap'
 import GlobalFilter from "./GlobalFilterComponent";
 import './TableComponent.css'
+import {useFlexLayout} from "react-table/src/plugin-hooks/useFlexLayout";
 
 export default function TableComponent({columns, data}) {
 
@@ -32,7 +33,7 @@ export default function TableComponent({columns, data}) {
                 hiddenColumns: columns.filter(col => col.show === false).map(col => col.accessor)
             },
         },
-        useGlobalFilter, useSortBy, usePagination
+        useFlexLayout, useGlobalFilter, useSortBy, usePagination
     )
 
     return (

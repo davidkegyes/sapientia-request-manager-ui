@@ -2,23 +2,21 @@ import React, {useEffect, useMemo, useState} from "react";
 import {Button, Card, CardColumns, Col, Container, Row} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
 import RequestTemplateService from '../services/RequestTemplateService';
-import RequestPage from './RequestPage';
 import {NavLink} from 'react-router-dom';
 import Restricted from "../components/Restricted";
 import {useGlobalFilter, useTable} from "react-table";
 import GlobalFilter from "../components/GlobalFilterComponent";
+import TableComponent from "../components/TableComponent";
 
 export default function RequesTemplatesPage() {
 
     const {t} = useTranslation();
     const [data, setData] = useState([]);
-    const [templateInUse, setTemplateInUse] = useState(undefined)
-
 
     const columns = useMemo(
         () => [
             {
-                Header: 'Hoppa',
+                id: 'requests',
                 accessor: (row) => row.name + " " + row.description + row.requiredDocuments.join(" "),
                 Cell: ({row}) => {
                     let template = row.original
@@ -36,28 +34,26 @@ export default function RequesTemplatesPage() {
                                         })}
                                     </ul>
                                 </div>}
-                                <Row>
-                                    <Col className="d-flex align-items-right justify-content-center">
-                                        <Restricted permission="UPLOAD_APPLICATION">
-                                            <Col md="auto">
-                                                <Button variant="outline-info"
-                                                        onClick={() => setTemplateInUse({template})}>{t("page.requestTemplates.useTemplate")}</Button>
-                                            </Col>
-                                        </Restricted>
-                                        <Restricted permission="EDIT_APPLICATION_TEMPLATE">
-                                            <Col>
-                                                <NavLink to={"/editTemplate/" + template.uuid}
-                                                         className='btn btn-outline-primary'>Szerkesztés</NavLink>
-                                            </Col>
-                                        </Restricted>
-                                        <Restricted permission="DELETE_APPLICATION_TEMPLATE">
-                                            <Col>
-                                                <Button variant="outline-danger" onClick={() => {
-                                                    deleteTemplate(template.uuid)
-                                                }}>Törlés</Button>
-                                            </Col>
-                                        </Restricted>
-                                    </Col>
+                                <Row className="justify-content-md-center">
+                                    <Restricted permission="UPLOAD_APPLICATION">
+                                        <Col xs="auto">
+                                            <NavLink to={"/request/" + template.uuid}
+                                                     className='btn btn-outline-primary'>{t("page.requestTemplates.useTemplate")}</NavLink>
+                                        </Col>
+                                    </Restricted>
+                                    <Restricted permission="EDIT_APPLICATION_TEMPLATE">
+                                        <Col xs="auto">
+                                            <NavLink to={"/editTemplate/" + template.uuid}
+                                                     className='btn btn-outline-primary'>Szerkesztés</NavLink>
+                                        </Col>
+                                    </Restricted>
+                                    <Restricted permission="DELETE_APPLICATION_TEMPLATE">
+                                        <Col xs="auto">
+                                            <Button variant="outline-danger" onClick={() => {
+                                                deleteTemplate(template.uuid)
+                                            }}>Törlés</Button>
+                                        </Col>
+                                    </Restricted>
                                 </Row>
                             </Card.Body>
                         </Card>
@@ -79,7 +75,7 @@ export default function RequesTemplatesPage() {
         data
     }, useGlobalFilter)
 
-    useEffect(() => {
+    const getTemplates = () => {
         RequestTemplateService.getRequestTemplates().then(templates => {
             if (templates) {
                 setData(templates)
@@ -87,24 +83,20 @@ export default function RequesTemplatesPage() {
                 setData([]);
             }
         });
-    }, [])
-
-    function closeRequestPage() {
-        setTemplateInUse(undefined);
-        return this;
     }
 
-    const deleteTemplate = (uuid) => {
+    useEffect(() => {
+        getTemplates();
+    }, [])
+
+
+    const deleteTemplate = async (uuid) => {
         try {
-            RequestTemplateService.deleteTemplate(uuid);
-            setData(data.filter(t => t.uuid !== uuid));
+            await RequestTemplateService.deleteTemplate(uuid);
+            getTemplates();
         } catch (err) {
             alert("hiba a torlesnel")
         }
-    }
-
-    if (templateInUse !== undefined) {
-        return (<RequestPage key={Math.random()} template={templateInUse.template} onClose={closeRequestPage}/>);
     }
 
     return (
@@ -113,7 +105,7 @@ export default function RequesTemplatesPage() {
                 <Col>
                     <h1>{t("page.requestTemplates.title")}</h1>
                 </Col>
-                <Restricted permission='EDIT_APPLICATION_TEMPLATE' >
+                <Restricted permission='EDIT_APPLICATION_TEMPLATE'>
                     <Col className='d-flex align-items-center'>
                         <NavLink to="/createTemplate" className='btn btn-outline-info ml-auto'>Create template</NavLink>
                     </Col>

@@ -20,7 +20,7 @@ export default function LoginPage(props) {
     const {t} = useTranslation();
 
     const checkUser = async () => {
-        // if (localStorage.getItem('token')) {
+        setLoading(true);
         getUserDetails()
             .then((user) => {
                 props.handleLogin(user);
@@ -37,9 +37,6 @@ export default function LoginPage(props) {
             }
             setLoading(false);
         });
-        // } else {
-        // setLoading(false);
-        // }
     }
 
 
@@ -78,7 +75,6 @@ export default function LoginPage(props) {
         console.log("succesResponseGoogle");
         AuthorizationService.storeToken(res.tokenId);
         refreshTokenSetup(res);
-        // setLoading(true);
         checkUser();
     }
 
@@ -113,7 +109,7 @@ export default function LoginPage(props) {
                             onSuccess={succesResponseGoogle}
                             onFailure={errorResponseGoogle}
                             cookiePolicy={'single_host_origin'}
-                            isSignedIn = {true}
+                            isSignedIn={true}
                         />
                     </p>
                 </Col>

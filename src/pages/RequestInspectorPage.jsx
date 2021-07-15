@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useState, useEffect, useCallback, useContext} from 'react';
 import { Container, Row, Col, Button, Alert, Badge } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import LoadingModal from '../components/LoadingModal'
 import RequestService from '../services/RequestService'
 import DocumentViewComponent from '../components/DocumentViewComponent';
@@ -10,6 +9,7 @@ import UploadComponent from '../components/UploadComponent';
 import { useTranslation } from 'react-i18next';
 import Restricted from '../components/Restricted';
 import { saveAs } from 'file-saver';
+import {UserContext} from "../App";
 
 const splitRequestObject = (request) => {
     let info = { ...request };
@@ -23,6 +23,8 @@ export default function RequestInspectorPage() {
 
     const params = useParams();
 
+    let history = useHistory();
+    const userContext = useContext(UserContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [requestInfo, setRequestInfo] = useState(null);
@@ -39,7 +41,6 @@ export default function RequestInspectorPage() {
     })
 
     useEffect(()=> {
-        console.log("effect upload", requiredDocuments)
         if (requiredDocuments != null && requestInfo.requiredDocuments != null) {
             const uploadList = [];
             const uploaded = requiredDocuments.map(rd => rd.name);
@@ -116,33 +117,38 @@ export default function RequestInspectorPage() {
                 <Col>
                     <Button variant='outline-primary' onClick={downloadRequest}>Download</Button>
                 </Col>
-                <Col className='d-flex align-items-center'>
-                    <NavLink to="/myRequests" className='btn btn-outline-info ml-auto'>{t("page.requestInspector.button.backToMyRequests")}</NavLink>
+                <Col md="auto" className='d-flex align-items-center noPadding'>
+                    <Button variant="outline-info" onClick={()=> history.goBack()}>Go Back</Button>
                 </Col>
             </Row>
             {requestInfo.status === "NEW" &&
                 <Container fluid>
                     {documentUpload && documentUpload.length > 0 &&
-                    <Row className="rowSpace">
-                        <Col>
-                            <UploadComponent requiredDocuments={documentUpload}
-                                             referenceNumber={requestInfo.referenceNumber} onUpload={onUpload}
-                                             disableAdditionalDocuments={true}/>
-                        </Col>
-                    </Row>
+                        <Row className="rowSpace">
+                            <Col>
+                                <UploadComponent requiredDocuments={documentUpload}
+                                                 referenceNumber={requestInfo.referenceNumber} onUpload={onUpload}
+                                                 disableAdditionalDocuments={true}/>
+                            </Col>
+                        </Row>
                     }
-                    <Row className="rowSpace justify-content-center">
-                        <Restricted permission="REJECT_APPLICATION">
-                            <Col md='auto'>
-                                <Button variant="danger" onClick={() => setAction({ type: "REJECT" })}>{t("page.requestInspector.button.reject")}</Button>
-                            </Col>
-                        </Restricted>
-                        <Restricted permission="APPROVE_APPLICATION">
-                            <Col md='auto'>
-                                <Button variant="success" onClick={() => { setAction({ type: 'APPROVE' }) }}>{t("page.requestInspector.button.approve")}</Button>
-                            </Col>
-                        </Restricted>
-                    </Row>
+                    {userContext.user.email !== requestInfo.user.email &&
+                        <Row className="rowSpace justify-content-center">
+                            <Restricted permission="REJECT_APPLICATION">
+                                <Col md='auto'>
+                                    <Button variant="danger"
+                                            onClick={() => setAction({type: "REJECT"})}>{t("page.requestInspector.button.reject")}</Button>
+                                </Col>
+                            </Restricted>
+                            <Restricted permission="APPROVE_APPLICATION">
+                                <Col md='auto'>
+                                    <Button variant="success" onClick={() => {
+                                        setAction({type: 'APPROVE'})
+                                    }}>{t("page.requestInspector.button.approve")}</Button>
+                                </Col>
+                            </Restricted>
+                        </Row>
+                    }
                 </Container>
             }
             {error &&

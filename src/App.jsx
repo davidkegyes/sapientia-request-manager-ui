@@ -6,6 +6,8 @@ import RequestTemplatesPage from './pages/RequestTemplatesPage'
 import LoginPage from './pages/LoginPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import MyRequestsPage from './pages/MyRequestsPage'
+import RequestsPage from './pages/RequestsPage'
+import RequestPage from "./pages/RequestPage";
 import RequestInspectorPage from './pages/RequestInspectorPage'
 import CustomRequestPage from './pages/CustomRequestPage'
 import RequestTemplateEditorPage from './pages/RequestTemplateEditorPage'
@@ -45,9 +47,11 @@ export default function App() {
               <Route path="/login" component={() => <LoginPage handleLogin={handleLogin} />} />
               <ProtectedRoute exact path="/" component={RequestTemplatesPage} />
               <ProtectedRoute path="/editTemplate/:uuid" component={RequestTemplateEditorPage} />
+              <ProtectedRoute path="/request/:uuid" component={RequestPage} />
               <ProtectedRoute path="/createTemplate" component={RequestTemplateEditorPage} />
               <ProtectedRoute path="/customRequest" component={CustomRequestPage} />
               <ProtectedRoute path="/myRequests" component={MyRequestsPage} />
+              <ProtectedRoute path="/AllRequests" component={RequestsPage} />
               <ProtectedRoute path="/inspect/:ref" component={RequestInspectorPage} />
               <ProtectedRoute path="/userManagement" permission="ADMIN" component={UserManagementPage} />
               <Route component={NotFoundPage} />

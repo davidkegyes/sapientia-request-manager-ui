@@ -5,14 +5,13 @@ import {NavLink} from 'react-router-dom';
 import RequestServices from '../services/RequestService';
 import TableComponent from "../components/TableComponent";
 
-
 export default function MyRequestsPage(props) {
 
     let [myRequests, setMyRequests] = useState(undefined);
     const {t} = useTranslation();
 
     useEffect(() => {
-        RequestServices.getRequestInfoList().then((res) => setMyRequests(res));
+        RequestServices.getAllRequestRequestInfoList().then((res) => setMyRequests(res));
     }, [])
 
     const getValuesString = (obj) => {
@@ -38,7 +37,6 @@ export default function MyRequestsPage(props) {
         () => [
             {
                 Header: 'Created',
-                width: 80,
                 accessor: (row) => new Date(row.createDateTime),
                 sortType: 'datetime',
                 Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
@@ -56,32 +54,42 @@ export default function MyRequestsPage(props) {
                 Cell: ({row}) => {
                     const request = row.original;
                     return (
-                        <>
-                            <h4>{request.name}</h4>
-                            {request.status !== 'NEW' &&
-                            (<Row>
-                                <Col>
-                                    {request.status === 'APPROVED' && <strong>Approved by</strong>}
-                                    {request.status === 'REJECTED' && <strong>Rejected by</strong>}
+                        <Container>
+                            <Row>
+                                <Col className="box">
+                                    <h4>{request.name}</h4>
+                                    <Row>
+                                        <Col><strong>Uploaded by:</strong></Col>
+                                        <Col>{request.user.firstname + " " + request.user.lastname}</Col>
+                                    </Row>
+                                    <Row>
+                                        <Col><strong>Neptun Code</strong></Col>
+                                        <Col>{request.user.neptunCode}</Col>
+                                    </Row>
+                                    {request.status !== 'NEW' &&
+                                    (<Row>
+                                        <Col>
+                                            {request.status === 'APPROVED' && <strong>Approved by</strong>}
+                                            {request.status === 'REJECTED' && <strong>Rejected by</strong>}
+                                        </Col>
+                                        <Col>
+                                            {request.inspectorUser ? (request.inspectorUser.firstname + " " + request.inspectorUser.lastname) : ""}
+                                        </Col>
+                                    </Row>)
+                                    }
+                                    <p>{t("request.referenceNumber")}: {request.referenceNumber}</p>
                                 </Col>
-                                <Col>
-                                    { request.inspectorUser ? (request.inspectorUser.firstname + " " + request.inspectorUser.lastname) : ""}
-                                </Col>
-                            </Row>)
-                            }
-                            <p>{t("request.referenceNumber")}: {request.referenceNumber}</p>
-                        </>)
+                            </Row>
+                        </Container>)
                 }
             },
             {
                 Header: 'RegNumber',
-                width: 80,
                 accessor: 'officialReferenceNumber'
             },
             {
                 Header: 'Status',
                 accessor: 'status',
-                width: 80,
                 Cell: ({row}) => {
                     const request = row.original;
                     return (
@@ -96,10 +104,9 @@ export default function MyRequestsPage(props) {
                 }
             },
             {
-                Header: 'Controls',
+                Header: ' ',
                 disableFilters: true,
                 disableGlobalFilter: true,
-                width: 80,
                 Cell: ({row}) => {
                     const request = row.original;
                     return (<NavLink to={{
