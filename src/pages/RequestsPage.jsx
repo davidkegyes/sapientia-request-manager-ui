@@ -37,6 +37,7 @@ export default function MyRequestsPage(props) {
         () => [
             {
                 Header: 'Created',
+                width: 100,
                 accessor: (row) => new Date(row.createDateTime),
                 sortType: 'datetime',
                 Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
@@ -51,12 +52,13 @@ export default function MyRequestsPage(props) {
             {
                 Header: 'Details',
                 accessor: (row) => getValuesString(row),
+                minWidth: 300,
                 Cell: ({row}) => {
                     const request = row.original;
                     return (
-                        <Container>
-                            <Row>
-                                <Col className="box">
+                        <Container fluid>
+                             <Row>
+                                 <Col className="noPadding">
                                     <h4>{request.name}</h4>
                                     <Row>
                                         <Col><strong>Uploaded by:</strong></Col>
@@ -80,16 +82,18 @@ export default function MyRequestsPage(props) {
                                     <p>{t("request.referenceNumber")}: {request.referenceNumber}</p>
                                 </Col>
                             </Row>
-                        </Container>)
+                        </Container >)
                 }
             },
             {
                 Header: 'RegNumber',
+                width: 80,
                 accessor: 'officialReferenceNumber'
             },
             {
                 Header: 'Status',
                 accessor: 'status',
+                width: 80,
                 Cell: ({row}) => {
                     const request = row.original;
                     return (
@@ -104,9 +108,10 @@ export default function MyRequestsPage(props) {
                 }
             },
             {
-                Header: ' ',
+                Header: 'Controls',
                 disableFilters: true,
                 disableGlobalFilter: true,
+                width: 80,
                 Cell: ({row}) => {
                     const request = row.original;
                     return (<NavLink to={{

@@ -1,4 +1,3 @@
-.rowSpace {
-    margin-top: 1rem;
-  }
-  
+.react-pdf__Page {
+    margin-bottom: 1rem;
+}

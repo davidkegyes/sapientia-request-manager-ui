@@ -38,7 +38,7 @@ export default function MyRequestsPage(props) {
         () => [
             {
                 Header: 'Created',
-                width: 80,
+                width: 100,
                 accessor: (row) => new Date(row.createDateTime),
                 sortType: 'datetime',
                 Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
@@ -52,6 +52,7 @@ export default function MyRequestsPage(props) {
             // },
             {
                 Header: 'Details',
+                minWidth: 300,
                 accessor: (row) => getValuesString(row),
                 Cell: ({row}) => {
                     const request = row.original;
