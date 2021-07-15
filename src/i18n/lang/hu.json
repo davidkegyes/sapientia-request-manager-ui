@@ -11,11 +11,23 @@
         "myRequests": {
             "title": "Kérvényeim",
             "noRequestFound": "Nincsenek kervények.",
-            "openRequest": "Megnyitás"
+            "openRequest": "Megnyitás",
+            "table": {
+                "header": {
+                    "created" : "Feltöltve",
+                    "description" : "Kérvény",
+                    "regNumber" : "Iktatószám",
+                    "status" : "Státusz",
+                    "controls" : "Müveletek"
+                }
+            }
         },
         "requestTemplates": {
             "title": "Kérvények",
-            "useTemplate": "Kitöltés"
+            "useTemplate": "Kitöltés",
+            "editTemplate": "Szerkesztés",
+            "deleteTemplate": "Törlés",
+            "createTemplate": "Sablon létrehozás"
         },
         "requestInspector": {
             "button": {
@@ -85,6 +97,14 @@
             "selectedFileSizeError" : "A megadott dokumentum meghaladja a maximum {{sizeLimit}} méretet.",
             "browseFiles" : "Keresés",
             "uploadSuccessTitle" : "Sikeres feltöltés"
+        },
+        "table": {
+            "searchLabel" : "Keresés",
+            "searchPlaceHolder" : "{{count}} találat...",
+            "pagination" : {
+                "show" : "{{count}} / oldal",
+                "page" : "{{current}} / {{total}}"
+            }
         }
     },
     "request": {

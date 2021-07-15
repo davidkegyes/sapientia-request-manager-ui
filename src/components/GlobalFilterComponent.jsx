@@ -1,8 +1,11 @@
 import React, {useState} from "react";
 import {useAsyncDebounce} from "react-table";
 import {Col, Form, Row} from "react-bootstrap";
+import {useTranslation} from "react-i18next";
 
 export default function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
+
+    const {t} = useTranslation()
     const count = preGlobalFilteredRows.length
     const [value, setValue] = useState(globalFilter)
     const onChange = useAsyncDebounce(value => {
@@ -13,7 +16,7 @@ export default function GlobalFilter({ preGlobalFilteredRows, globalFilter, setG
         <Form>
             <Form.Group as={Row} controlId="globalFilterControl">
                 <Form.Label column sm={2}>
-                    Kereses
+                    {t("component.table.searchLabel")}
                 </Form.Label>
                 <Col sm={10}>
                     <Form.Control type="text" value={value || ""}
@@ -21,7 +24,7 @@ export default function GlobalFilter({ preGlobalFilteredRows, globalFilter, setG
                                       setValue(e.target.value);
                                       onChange(e.target.value);
                                   }}
-                                  placeholder={`${count} records...`}/>
+                                  placeholder={t("component.table.searchPlaceHolder", {count: count})}/>
                 </Col>
             </Form.Group>
         </Form>

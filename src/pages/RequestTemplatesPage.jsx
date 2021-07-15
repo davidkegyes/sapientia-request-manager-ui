@@ -6,7 +6,6 @@ import {NavLink} from 'react-router-dom';
 import Restricted from "../components/Restricted";
 import {useGlobalFilter, useTable} from "react-table";
 import GlobalFilter from "../components/GlobalFilterComponent";
-import TableComponent from "../components/TableComponent";
 
 export default function RequesTemplatesPage() {
 
@@ -23,35 +22,41 @@ export default function RequesTemplatesPage() {
                     return (
                         <Card className="box">
                             <Card.Body>
-                                <Card.Title>{template.name}</Card.Title>
-                                <Card.Text>{template.description}</Card.Text>
-                                {(template.requiredDocuments && template.requiredDocuments.length > 0) &&
-                                <div>
-                                    <Card.Text>{t("request.requiredDocuments")}:</Card.Text>
-                                    <ul>
-                                        {template.requiredDocuments.map((doc, i) => {
-                                            return (<li key={i}>{doc}</li>)
-                                        })}
-                                    </ul>
-                                </div>}
-                                <Row className="justify-content-md-center">
-                                    <Restricted permission="UPLOAD_APPLICATION">
-                                        <Col xs="auto">
-                                            <NavLink to={"/request/" + template.uuid}
-                                                     className='btn btn-outline-primary'>{t("page.requestTemplates.useTemplate")}</NavLink>
-                                        </Col>
-                                    </Restricted>
+                                <Row>
+                                    <Col className="noPadding">
+                                        <Card.Title>{template.name}</Card.Title>
+                                        <Card.Text>{template.description}</Card.Text>
+                                        {(template.requiredDocuments && template.requiredDocuments.length > 0) &&
+                                        <div>
+                                            <Card.Text>{t("request.requiredDocuments")}:</Card.Text>
+                                            <ul>
+                                                {template.requiredDocuments.map((doc, i) => {
+                                                    return (<li key={i}>{doc}</li>)
+                                                })}
+                                            </ul>
+                                        </div>}
+                                    </Col>
+                                </Row>
+                                <Row className="justify-content-md-center rowSpace">
                                     <Restricted permission="EDIT_APPLICATION_TEMPLATE">
                                         <Col xs="auto">
                                             <NavLink to={"/editTemplate/" + template.uuid}
-                                                     className='btn btn-outline-primary'>Szerkesztés</NavLink>
+                                                     className='btn btn-outline-info'>{t("page.requestTemplates.editTemplate")}</NavLink>
                                         </Col>
                                     </Restricted>
                                     <Restricted permission="DELETE_APPLICATION_TEMPLATE">
                                         <Col xs="auto">
                                             <Button variant="outline-danger" onClick={() => {
                                                 deleteTemplate(template.uuid)
-                                            }}>Törlés</Button>
+                                            }}>{t("page.requestTemplates.deleteTemplate")}</Button>
+                                        </Col>
+                                    </Restricted>
+                                </Row>
+                                <Row className="justify-content-md-center rowSpace">
+                                    <Restricted permission="UPLOAD_APPLICATION">
+                                        <Col xs="auto">
+                                            <NavLink to={"/request/" + template.uuid}
+                                                     className='btn btn-outline-success'>{t("page.requestTemplates.useTemplate")}</NavLink>
                                         </Col>
                                     </Restricted>
                                 </Row>
@@ -107,7 +112,7 @@ export default function RequesTemplatesPage() {
                 </Col>
                 <Restricted permission='EDIT_APPLICATION_TEMPLATE'>
                     <Col className='d-flex align-items-center'>
-                        <NavLink to="/createTemplate" className='btn btn-outline-info ml-auto'>Create template</NavLink>
+                        <NavLink to="/createTemplate" className='btn btn-outline-info ml-auto'>{t("page.requestTemplates.createTemplate")}</NavLink>
                     </Col>
                 </Restricted>
             </Row>

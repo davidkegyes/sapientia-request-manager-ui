@@ -9,7 +9,7 @@ import TableComponent from "../components/TableComponent";
 export default function MyRequestsPage(props) {
 
     let [myRequests, setMyRequests] = useState(undefined);
-    const {t} = useTranslation();
+    const {t, i18n} = useTranslation();
 
     useEffect(() => {
         RequestServices.getRequestInfoList().then((res) => setMyRequests(res));
@@ -37,7 +37,7 @@ export default function MyRequestsPage(props) {
     const columns = useMemo(
         () => [
             {
-                Header: 'Created',
+                Header: t("page.myRequests.table.header.created"),
                 width: 100,
                 accessor: (row) => new Date(row.createDateTime),
                 sortType: 'datetime',
@@ -51,7 +51,7 @@ export default function MyRequestsPage(props) {
             //     Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
             // },
             {
-                Header: 'Details',
+                Header: t("page.myRequests.table.header.description"),
                 minWidth: 300,
                 accessor: (row) => getValuesString(row),
                 Cell: ({row}) => {
@@ -75,12 +75,12 @@ export default function MyRequestsPage(props) {
                 }
             },
             {
-                Header: 'RegNumber',
+                Header: t("page.myRequests.table.header.regNumber"),
                 width: 80,
                 accessor: 'officialReferenceNumber'
             },
             {
-                Header: 'Status',
+                Header: t("page.myRequests.table.header.status"),
                 accessor: 'status',
                 width: 80,
                 Cell: ({row}) => {
@@ -97,7 +97,7 @@ export default function MyRequestsPage(props) {
                 }
             },
             {
-                Header: 'Controls',
+                Header: t("page.myRequests.table.header.controls"),
                 disableFilters: true,
                 disableGlobalFilter: true,
                 width: 80,
@@ -112,7 +112,7 @@ export default function MyRequestsPage(props) {
                 }
             }
         ],
-        []
+        [i18n]
     )
 
     return (

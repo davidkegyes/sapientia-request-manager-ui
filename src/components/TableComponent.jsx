@@ -4,8 +4,11 @@ import {Col, Container, Form, Pagination, Row, Table} from 'react-bootstrap'
 import GlobalFilter from "./GlobalFilterComponent";
 import './TableComponent.css'
 import {useFlexLayout} from "react-table/src/plugin-hooks/useFlexLayout";
+import {useTranslation} from "react-i18next";
 
 export default function TableComponent({columns, data}) {
+
+    const {t} = useTranslation();
 
     const {
         getTableProps,
@@ -86,7 +89,7 @@ export default function TableComponent({columns, data}) {
             <Row className="justify-content-md-center">
                 <Col>
                     <label>
-                        {pageIndex + 1} of {pageOptions.length}
+                        {t("component.table.pagination.page", {current: pageIndex + 1, total: pageOptions.length})}
                     </label>
                 </Col>
                 <Col>
@@ -107,7 +110,7 @@ export default function TableComponent({columns, data}) {
                                           }}>
                                 {[10, 20, 30, 40, 50].map(pageSize => (
                                     <option key={pageSize} value={pageSize}>
-                                        Show {pageSize}
+                                        {t("component.table.pagination.show", {count: pageSize})}
                                     </option>
                                 ))}
                             </Form.Control>

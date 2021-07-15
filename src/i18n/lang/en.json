@@ -11,11 +11,23 @@
     "myRequests": {
       "title": "My Requests",
       "noRequestFound": "No request found.",
-      "openRequest": "Open"
+      "openRequest": "Open",
+      "table": {
+        "header": {
+          "created" : "Uploaded",
+          "description" : "Request",
+          "regNumber" : "Registered",
+          "status" : "Status",
+          "controls" : "Controls"
+        }
+      }
     },
     "requestTemplates": {
       "title": "Request Templates",
-      "useTemplate": "Fill"
+      "useTemplate": "Fill",
+      "editTemplate": "Edit",
+      "deleteTemplate" : "Delete",
+      "createTemplate": "Create Template"
     },
     "requestInspector": {
       "button": {
@@ -49,8 +61,7 @@
       "templateGeneral": "General description",
       "templateButton1": "Cancel",
       "templateButton2": "Save"
-    },
-    "customRequest": {
+    },"customRequest": {
       "title": "Custom request",
       "description": "Upload an individual request. Use this feature if you have not found a suitable request template.",
       "requestName": "Request Name",
@@ -62,7 +73,7 @@
       "noSelectedFileError": "Please select a document to upload!",
       "selectedFileSizeError": "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
       "browseFiles": "Search",
-      "uploadButton": "Uploading",
+      "uploadButton": "Upload",
       "attachmentUploadTitle": "Attachment upload"
     }
   },
@@ -84,6 +95,14 @@
       "selectedFileSizeError": "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
       "browseFiles": "Search",
       "uploadSuccessTitle": "Upload successful"
+    },
+    "table": {
+      "searchLabel" : "Search",
+      "searchPlaceHolder" : "{{count}} records...",
+      "pagination" : {
+        "show" : "Show {{count}}",
+        "page" : "{{current}} / {{total}}"
+      }
     }
   },
   "request": {

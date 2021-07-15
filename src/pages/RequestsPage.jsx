@@ -36,7 +36,7 @@ export default function MyRequestsPage(props) {
     const columns = useMemo(
         () => [
             {
-                Header: 'Created',
+                Header: t("page.myRequests.table.header.created"),
                 width: 100,
                 accessor: (row) => new Date(row.createDateTime),
                 sortType: 'datetime',
@@ -50,7 +50,7 @@ export default function MyRequestsPage(props) {
             //     Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
             // },
             {
-                Header: 'Details',
+                Header: t("page.myRequests.table.header.description"),
                 accessor: (row) => getValuesString(row),
                 minWidth: 300,
                 Cell: ({row}) => {
@@ -86,12 +86,12 @@ export default function MyRequestsPage(props) {
                 }
             },
             {
-                Header: 'RegNumber',
+                Header: t("page.myRequests.table.header.regNumber"),
                 width: 80,
                 accessor: 'officialReferenceNumber'
             },
             {
-                Header: 'Status',
+                Header: t("page.myRequests.table.header.status"),
                 accessor: 'status',
                 width: 80,
                 Cell: ({row}) => {
@@ -108,7 +108,7 @@ export default function MyRequestsPage(props) {
                 }
             },
             {
-                Header: 'Controls',
+                Header: t("page.myRequests.table.header.controls"),
                 disableFilters: true,
                 disableGlobalFilter: true,
                 width: 80,
