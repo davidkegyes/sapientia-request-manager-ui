@@ -9,3 +9,7 @@
 .fullwidth {
     width: 100%;
 }
+
+input:invalid {
+    border: 1px solid red;
+}

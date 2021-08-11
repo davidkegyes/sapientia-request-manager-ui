@@ -8,6 +8,12 @@
       "hint": "Login with the provided email from the Universisty",
       "button": "Login with Google"
     },
+    "usermanagement" : {
+      "title" : "Users"
+    },
+    "requests" : {
+      "title" : "Requests"
+    },
     "myRequests": {
       "title": "My Requests",
       "noRequestFound": "No request found.",
@@ -117,9 +123,10 @@
     "lastUpdate": "Updated {{date, YYYY/MM/DD, hh:mm:ss}}",
     "requiredDocuments": "Required documents",
     "requestUploadSuccessTitle": "Upload successful",
-    "requestUploadSuccessMessage": "Your request has been successfully registered and will be processed shortly.",
-    "navigateToRequestButton": "Kérését ide kattintva megtekintheti.",
-    "requestUploadedAttachmentUploadRequired": "A következő dokumentumok szükségesek a kérvény elfogadásához.",
-    "requestAttachmentUploadRequired": ""
+    "requestUploadSuccessMessage": "Your request has been successfully registered and will be reviewed after you finish uploading the required documents.",
+    "navigateToRequestButton": "Go to the request.",
+    "requestUploadedAttachmentUploadRequired": "The following documents needs to be provided.",
+    "requestAttachmentUploadRequired": "",
+    "validationNumberRangeInput" : "The input value must be between {{min}} and {{max}}. Current value: {{current}}"
   }
 }

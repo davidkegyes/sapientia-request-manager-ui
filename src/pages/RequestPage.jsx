@@ -60,7 +60,13 @@ export default function RequestPage() {
                 for (let j in tmpRequest.form[i].variables) {
                     if (tmpRequest.form[i].variables[j].value === undefined) {
                         tmpRequest.form.errors.push(tmpRequest.form[i].variables[j].hint);
+                        tmpRequest.form[i].variables[j].error = "Hibas";
                         hasErrors = true;
+                    } else if (tmpRequest.form[i].variables[j].type === 'number') {                        
+                        tmpRequest.form.errors.push(tmpRequest.form[i].variables[j].hint + ', ' + t('request.validationNumberRangeInput', {min: tmpRequest.form[i].variables[j].min, max: tmpRequest.form[i].variables[j].max, current:  tmpRequest.form[i].variables[j].value}));
+                        tmpRequest.form[i].variables[j].error = "Hibas";
+                        hasErrors = true;
+                        console.log("Number");
                     }
                 }
             }
@@ -108,8 +114,6 @@ export default function RequestPage() {
             setRequest(tmpRequest);
         }
     }
-
-    console.log(request)
     return (
         <Container>
             <Row>
@@ -138,8 +142,7 @@ export default function RequestPage() {
                             {t("request.requestUploadSuccessTitle")}
                         </Alert.Heading>
                         {request.requiredDocuments && request.requiredDocuments.length > 0 &&
-                        <p>Upload required, go to request and upload the required files</p>}
-                        <p>{t("request.requestUploadSuccessMessage")}</p>
+                        <p>{t("request.requestUploadSuccessMessage")}</p>}
                         <hr/>
                         <NavLink to={"/inspect/" + referenceNumber}
                                  className='btn btn-outline-info ml-auto'>{t("request.navigateToRequestButton")}</NavLink>

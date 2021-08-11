@@ -50,7 +50,7 @@ export default function LoginPage(props) {
     if (userContext.user !== null) {
         return <Redirect to={
             {
-                pathname: history.location.state ? history.location.state.from.pathname : '',
+                pathname: history.location.state ? history.location.state.from : '',
                 state: {
                     from: props.location
                 }

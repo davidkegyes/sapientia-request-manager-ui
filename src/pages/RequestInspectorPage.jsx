@@ -66,11 +66,11 @@ export default function RequestInspectorPage() {
                         setRequiredDocuments(await AttachmentService.getListForRequestReferenceNumber(params.ref));
                         break;
                     case "APPROVE":
-                        await RequestService.approve(params.ref);
+                        console.log(await RequestService.approve(params.ref));
                         setRequestInfo(await RequestService.getRequestInfo(params.ref));
                         break;
                     case "REJECT":
-                        await RequestService.reject(params.ref);
+                        console.log(await RequestService.reject(params.ref));
                         setRequestInfo(await RequestService.getRequestInfo(params.ref));
                         break;
                     case "DELETE_ATTACHMENT":
@@ -118,7 +118,7 @@ export default function RequestInspectorPage() {
                     <Button variant='outline-primary' onClick={downloadRequest}>Download</Button>
                 </Col>
                 <Col md="auto" className='d-flex align-items-center noPadding'>
-                    <Button variant="outline-info" onClick={()=> history.goBack()}>Go Back</Button>
+                    <Button variant="outline-info" onClick={()=> {console.log(history); history.goBack(); }}>Go Back</Button>
                 </Col>
             </Row>
             {requestInfo.status === "NEW" &&

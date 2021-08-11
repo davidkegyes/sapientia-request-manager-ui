@@ -8,6 +8,12 @@
             "hint": "Bejelentkezéshez használja az egyetemtől kapott emailcímet.",
             "button": "Bejelentkezés Google fiokkal"
         },
+        "usermanagement" : {
+            "title" : "Felhasználók"
+          },
+        "requests" : {
+            "title" : "Kérvények"
+        },
         "myRequests": {
             "title": "Kérvényeim",
             "noRequestFound": "Nincsenek kervények.",
@@ -119,9 +125,10 @@
         "lastUpdate": "Módositva {{date, YYYY/MM/DD, hh:mm:ss}}",
         "requiredDocuments": "Szükséges dokumentumok",
         "requestUploadSuccessTitle" : "Sikeres feltöltés",
-        "requestUploadSuccessMessage": "Kérését sikeresen regisztráltuk, hamarosan elbírálásra kerül.",
+        "requestUploadSuccessMessage": "Kérését sikeresen regisztráltuk. Kérjük töltse fel a kért dokumentumokat a keres elbirálása érdekében.",
         "navigateToRequestButton" : "Kérését ide kattintva megtekintheti.",
         "requestUploadedAttachmentUploadRequired" : "A következő dokumentumok szükségesek a kérvény elfogadásához.",
-        "requestAttachmentUploadRequired" : ""
+        "requestAttachmentUploadRequired" : "",
+        "validationNumberRangeInput" : "Az érték {{min}} és {{max}} között kelle legyen. Aktuális érték : {{current}}"
     }
 }

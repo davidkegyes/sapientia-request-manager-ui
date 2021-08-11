@@ -33,12 +33,7 @@ export default class RequestFormTextComponent extends Component {
         if (iv.type === 'date') {
             return (<input type={iv.type} value={iv.value === undefined ? '' : iv.value} name={iv.name} key={iv.name} ></input>);
         }
-        if (iv.placeholder !== undefined) {
-            return (
-                <input type={iv.type} value={iv.value === undefined ? '': iv.value} name={iv.name} key={iv.name} onChange={this.props.handleChange} placeholder={iv.placeholder}></input>
-            )
-        }
-        return (<input type={iv.type} value={iv.value === undefined ? '': iv.value} name={iv.name} key={iv.name} onChange={this.props.handleChange}></input>);
+        return (<input required aria-invalid={!!iv.error} type={iv.type} value={iv.value === undefined ? '': iv.value} name={iv.name} key={iv.name} onChange={this.props.handleChange} placeholder={iv.placeholder !== null || iv.placeholder !== undefined ? iv.placeholder : ''}></input>);
     }
 
     render() {

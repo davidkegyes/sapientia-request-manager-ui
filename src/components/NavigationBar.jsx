@@ -61,12 +61,12 @@ export default function NavigationBar({handleLogout}) {
                             </Nav.Item>
                             <Restricted permission="VIEW_ALL_APPLICATIONS">
                                 <Nav.Item>
-                                    <Nav.Link as={NavLink} to="/allRequests">Kervenyek</Nav.Link>
+                                    <Nav.Link as={NavLink} to="/allRequests">{t('page.requests.title')}</Nav.Link>
                                 </Nav.Item>
                             </Restricted>
                             <Restricted permission="ADMIN">
                                 <Nav.Item>
-                                    <Nav.Link as={NavLink} to="/userManagement">UserManagement</Nav.Link>
+                                    <Nav.Link as={NavLink} to="/userManagement">{t('page.usermanagement.title')}</Nav.Link>
                                 </Nav.Item>
                             </Restricted>
                         </Nav>
