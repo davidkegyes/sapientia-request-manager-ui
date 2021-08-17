@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { Container, Row, Col, Button, Alert, Badge } from 'react-bootstrap';
 import { useParams, useHistory } from 'react-router-dom';
 import LoadingModal from '../components/LoadingModal'
@@ -9,7 +9,7 @@ import UploadComponent from '../components/UploadComponent';
 import { useTranslation } from 'react-i18next';
 import Restricted from '../components/Restricted';
 import { saveAs } from 'file-saver';
-import {UserContext} from "../App";
+import { UserContext } from "../App";
 
 const splitRequestObject = (request) => {
     let info = { ...request };
@@ -40,12 +40,12 @@ export default function RequestInspectorPage() {
         setLoading(false);
     })
 
-    useEffect(()=> {
+    useEffect(() => {
         if (requiredDocuments != null && requestInfo.requiredDocuments != null) {
             const uploadList = [];
             const uploaded = requiredDocuments.map(rd => rd.name);
             for (const d in requestInfo.requiredDocuments) {
-                if (!uploaded.includes(requestInfo.requiredDocuments[d])){
+                if (!uploaded.includes(requestInfo.requiredDocuments[d])) {
                     uploadList.push(requestInfo.requiredDocuments[d]);
                 }
             }
@@ -97,7 +97,7 @@ export default function RequestInspectorPage() {
     const downloadRequest = async () => {
         const base64Response = await fetch(`data:${requestDocument.documentType};base64,${requestDocument.document.toString('base64')}`);
         const blob = await base64Response.blob();
-        saveAs(blob, `${requestInfo.name}.${requestDocument.documentType.startsWith('image') ? 'jpg': 'pdf'}`)
+        saveAs(blob, `${requestInfo.name}.${requestDocument.documentType.startsWith('image') ? 'jpg' : 'pdf'}`)
     }
 
     return (
@@ -108,6 +108,7 @@ export default function RequestInspectorPage() {
                     <h3>
                         {requestInfo.status === 'NEW' && <Badge variant="primary">{t("request.status.new")}</Badge>}
                         {requestInfo.status === 'REJECTED' && <Badge variant="danger">{t("request.status.rejected")}</Badge>}
+                        {requestInfo.status === 'INCOMPLETE' && <Badge variant="warning">{t("request.status.incomplete")}</Badge>}
                         {requestInfo.status === 'APPROVED' && <Badge variant="success">{t("request.status.approved")}</Badge>}
                     </h3>
                 </Col>
@@ -118,39 +119,39 @@ export default function RequestInspectorPage() {
                     <Button variant='outline-primary' onClick={downloadRequest}>Download</Button>
                 </Col>
                 <Col md="auto" className='d-flex align-items-center noPadding'>
-                    <Button variant="outline-info" onClick={()=> {console.log(history); history.goBack(); }}>Go Back</Button>
+                    <Button variant="outline-info" onClick={() => { console.log(history); history.goBack(); }}>Go Back</Button>
                 </Col>
             </Row>
-            {requestInfo.status === "NEW" &&
-                <Container fluid>
-                    {documentUpload && documentUpload.length > 0 &&
-                        <Row className="rowSpace">
-                            <Col>
-                                <UploadComponent requiredDocuments={documentUpload}
-                                                 referenceNumber={requestInfo.referenceNumber} onUpload={onUpload}
-                                                 disableAdditionalDocuments={true}/>
+            <Container fluid>
+                {requestInfo.status === "INCOMPLETE" &&
+                    documentUpload && documentUpload.length > 0 &&
+                    <Row className="rowSpace">
+                        <Col>
+                            <UploadComponent requiredDocuments={documentUpload}
+                                referenceNumber={requestInfo.referenceNumber} onUpload={onUpload}
+                                disableAdditionalDocuments={true} />
+                        </Col>
+                    </Row>
+                }
+s
+                {requestInfo.status === "NEW" && userContext.user.email !== requestInfo.user.email &&
+                    <Row className="rowSpace justify-content-center">
+                        <Restricted permission="REJECT_APPLICATION">
+                            <Col md='auto'>
+                                <Button variant="danger"
+                                    onClick={() => setAction({ type: "REJECT" })}>{t("page.requestInspector.button.reject")}</Button>
                             </Col>
-                        </Row>
-                    }
-                    {userContext.user.email !== requestInfo.user.email &&
-                        <Row className="rowSpace justify-content-center">
-                            <Restricted permission="REJECT_APPLICATION">
-                                <Col md='auto'>
-                                    <Button variant="danger"
-                                            onClick={() => setAction({type: "REJECT"})}>{t("page.requestInspector.button.reject")}</Button>
-                                </Col>
-                            </Restricted>
-                            <Restricted permission="APPROVE_APPLICATION">
-                                <Col md='auto'>
-                                    <Button variant="success" onClick={() => {
-                                        setAction({type: 'APPROVE'})
-                                    }}>{t("page.requestInspector.button.approve")}</Button>
-                                </Col>
-                            </Restricted>
-                        </Row>
-                    }
-                </Container>
-            }
+                        </Restricted>
+                        <Restricted permission="APPROVE_APPLICATION">
+                            <Col md='auto'>
+                                <Button variant="success" onClick={() => {
+                                    setAction({ type: 'APPROVE' })
+                                }}>{t("page.requestInspector.button.approve")}</Button>
+                            </Col>
+                        </Restricted>
+                    </Row>
+                }
+            </Container>
             {error &&
                 <Row>
                     <Col>

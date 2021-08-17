@@ -3,6 +3,12 @@
     "title": "Sapientia Erdélyi Magyar Tudományegyetem",
     "loading": "...Betöltés",
     "date": "{{date, YYYY/MM/DD, hh:mm:ss}}",
+    "role" : {
+        "student" : "Hallgató",
+        "admin" : "Adminisztrátor",
+        "secretary" : "Titkár"
+        
+    },
     "page": {
         "login": {
             "hint": "Bejelentkezéshez használja az egyetemtől kapott emailcímet.",
@@ -29,11 +35,12 @@
             }
         },
         "requestTemplates": {
-            "title": "Kérvények",
+            "title": "Kérvény Sablonok",
             "useTemplate": "Kitöltés",
             "editTemplate": "Szerkesztés",
             "deleteTemplate": "Törlés",
-            "createTemplate": "Sablon létrehozás"
+            "createTemplate": "Sablon létrehozás",
+            "downloadTemplate" : "Letőltés"
         },
         "requestInspector": {
             "button": {
@@ -62,7 +69,7 @@
         "requestPage" : {
             "back" : "Vissza a kérvényekhez"
         },
-        "requesTemplateEditor" : {
+        "requestTemplateEditor" : {
             "title" : "Sablon szerkesztés",
             "templateName" : "Kérvény Név",
             "templateDescription" : "Leírás",
@@ -74,14 +81,20 @@
             "templateReference" : "Utalás",
             "templatecomment" : "A kitöltő hozzáfűzést tehet a kérvényhez",
             "templateTemplateText" : "Sablon szöveg",
-            "templateTemplateOneText" :"Egyéni szövegbevitel",
-            "templateTemplateObligatory": "A kérvény neve kötelező",
             "templateDate" : "Dátum címke",
             "templateSignature" : "Aláírás Címke",
             "templateEG" : "Átsorolási kérelem",
             "templateGeneral" : "Általános leírás",
-            "templateButton1" : "Mégse",
-            "templateButton2" : "Mentés"
+            "cancelButton" : "Mégse",
+            "saveButton" : "Mentés",
+            "requiredToFill" : "A mező kitöltése kötelező!",
+            "hint" : "Utalás",
+            "variableType": "Típus",
+            "variable": {
+              "number": "Szám",
+              "text": "Szöveg"
+            },
+            "requestedDocumentName" : "A kért csatolmány neve"
 
         }
     },
@@ -117,7 +130,8 @@
         "status": {
             "approved": "Elfogadva",
             "rejected": "Elutasítva",
-            "new": "Új"
+            "new": "Új",
+            "incomplete" : "Híányos"
         },
         "referenceNumber": "Referencia szám",
         "officialReferenceNumber": "Iktatószám",
@@ -129,6 +143,7 @@
         "navigateToRequestButton" : "Kérését ide kattintva megtekintheti.",
         "requestUploadedAttachmentUploadRequired" : "A következő dokumentumok szükségesek a kérvény elfogadásához.",
         "requestAttachmentUploadRequired" : "",
-        "validationNumberRangeInput" : "Az érték {{min}} és {{max}} között kelle legyen. Aktuális érték : {{current}}"
+        "validationNumberRangeInput" : "Az érték {{min}} és {{max}} között kelle legyen. Aktuális érték : {{current}}",
+        "missingSignature" : "Az aláírás kötelező."
     }
 }

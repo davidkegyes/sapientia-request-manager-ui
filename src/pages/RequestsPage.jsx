@@ -99,10 +99,9 @@ export default function MyRequestsPage(props) {
                     return (
                         <h5>
                             {request.status === 'NEW' && <Badge variant="primary">{t("request.status.new")}</Badge>}
-                            {request.status === 'REJECTED' &&
-                            <Badge variant="danger">{t("request.status.rejected")}</Badge>}
-                            {request.status === 'APPROVED' &&
-                            <Badge variant="success">{t("request.status.approved")}</Badge>}
+                            {request.status === 'REJECTED' && <Badge variant="danger">{t("request.status.rejected")}</Badge>}
+                            {request.status === 'INCOMPLETE' && <Badge variant="warning">{t("request.status.incomplete")}</Badge>}
+                            {request.status === 'APPROVED' && <Badge variant="success">{t("request.status.approved")}</Badge>}
                         </h5>
                     )
                 }

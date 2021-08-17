@@ -62,7 +62,9 @@ export default function RequestPage() {
                         tmpRequest.form.errors.push(tmpRequest.form[i].variables[j].hint);
                         tmpRequest.form[i].variables[j].error = "Hibas";
                         hasErrors = true;
-                    } else if (tmpRequest.form[i].variables[j].type === 'number') {                        
+                    } else if (tmpRequest.form[i].variables[j].type === 'number' 
+                        && ( tmpRequest.form[i].variables[j].min > tmpRequest.form[i].variables[j].value  
+                            || tmpRequest.form[i].variables[j].max < tmpRequest.form[i].variables[j].value )) {                        
                         tmpRequest.form.errors.push(tmpRequest.form[i].variables[j].hint + ', ' + t('request.validationNumberRangeInput', {min: tmpRequest.form[i].variables[j].min, max: tmpRequest.form[i].variables[j].max, current:  tmpRequest.form[i].variables[j].value}));
                         tmpRequest.form[i].variables[j].error = "Hibas";
                         hasErrors = true;
@@ -71,7 +73,7 @@ export default function RequestPage() {
                 }
             }
             if (tmpRequest.form[i].type === 'dateAndSignature' && tmpRequest.form[i].signatureValue === undefined) {
-                tmpRequest.form.errors.push("The request must be signed!");
+                tmpRequest.form.errors.push(t('request.missingSignature'));
                 hasErrors = true;
             }
 

@@ -1,15 +1,17 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {Button, Card, CardColumns, Col, Container, Row} from "react-bootstrap";
-import {useTranslation} from "react-i18next";
+import React, { useEffect, useMemo, useState } from "react";
+import { Button, Card, CardColumns, Col, Container, Row, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import RequestTemplateService from '../services/RequestTemplateService';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Restricted from "../components/Restricted";
-import {useGlobalFilter, useTable} from "react-table";
+import { useGlobalFilter, useTable } from "react-table";
+import {downloadPdf} from '../services/RequestPDFService';
 import GlobalFilter from "../components/GlobalFilterComponent";
+import "./RequestTemplatesPage.css"
 
 export default function RequesTemplatesPage() {
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [data, setData] = useState([]);
 
     const columns = useMemo(
@@ -17,7 +19,7 @@ export default function RequesTemplatesPage() {
             {
                 id: 'requests',
                 accessor: (row) => row.name + " " + row.description + row.requiredDocuments.join(" "),
-                Cell: ({row}) => {
+                Cell: ({ row }) => {
                     let template = row.original
                     return (
                         <Card className="box">
@@ -27,36 +29,72 @@ export default function RequesTemplatesPage() {
                                         <Card.Title>{template.name}</Card.Title>
                                         <Card.Text>{template.description}</Card.Text>
                                         {(template.requiredDocuments && template.requiredDocuments.length > 0) &&
-                                        <div>
-                                            <Card.Text>{t("request.requiredDocuments")}:</Card.Text>
-                                            <ul>
-                                                {template.requiredDocuments.map((doc, i) => {
-                                                    return (<li key={i}>{doc}</li>)
-                                                })}
-                                            </ul>
-                                        </div>}
+                                            <div>
+                                                <Card.Text>{t("request.requiredDocuments")}:</Card.Text>
+                                                <ul>
+                                                    {template.requiredDocuments.map((doc, i) => {
+                                                        return (<li key={i}>{doc}</li>)
+                                                    })}
+                                                </ul>
+                                            </div>}
                                     </Col>
                                 </Row>
                                 <Row className="justify-content-md-center rowSpace">
                                     <Restricted permission="EDIT_APPLICATION_TEMPLATE">
                                         <Col xs="auto">
-                                            <NavLink to={"/editTemplate/" + template.uuid}
-                                                     className='btn btn-outline-info'>{t("page.requestTemplates.editTemplate")}</NavLink>
+                                            <OverlayTrigger
+                                                placement='bottom'
+                                                overlay={
+                                                    <Tooltip>
+                                                        {t('page.requestTemplates.editTemplate')}
+                                                    </Tooltip>
+                                                }
+                                            >
+                                                <NavLink to={"/editTemplate/" + template.uuid}
+                                                    className='btn btn-outline-info template-button'><i class="fas fa-wrench"></i></NavLink>
+                                            </OverlayTrigger>
                                         </Col>
                                     </Restricted>
                                     <Restricted permission="DELETE_APPLICATION_TEMPLATE">
                                         <Col xs="auto">
-                                            <Button variant="outline-danger" onClick={() => {
+                                        <OverlayTrigger
+                                                placement='bottom'
+                                                overlay={
+                                                    <Tooltip>
+                                                        {t('page.requestTemplates.deleteTemplate')}
+                                                    </Tooltip>
+                                                }
+                                            >
+                                            <Button variant="outline-danger" className="template-button" onClick={() => {
                                                 deleteTemplate(template.uuid)
-                                            }}>{t("page.requestTemplates.deleteTemplate")}</Button>
+                                            }}><i class="far fa-trash-alt"></i></Button></OverlayTrigger>
                                         </Col>
                                     </Restricted>
-                                </Row>
-                                <Row className="justify-content-md-center rowSpace">
+                                    <Col xs="auto">
+                                    <OverlayTrigger
+                                                placement='bottom'
+                                                overlay={
+                                                    <Tooltip>
+                                                        {t('page.requestTemplates.downloadTemplate')}
+                                                    </Tooltip>
+                                                }
+                                            >
+                                        <Button variant="outline-primary" onClick={() => downloadPdf(template.form, template.name)} className="template-button"><i class="fas fa-file-download"></i></Button>
+                                        </OverlayTrigger>
+                                    </Col>
                                     <Restricted permission="UPLOAD_APPLICATION">
                                         <Col xs="auto">
+                                        <OverlayTrigger
+                                                placement='bottom'
+                                                overlay={
+                                                    <Tooltip>
+                                                        {t('page.requestTemplates.useTemplate')}
+                                                    </Tooltip>
+                                                }
+                                            >
                                             <NavLink to={"/request/" + template.uuid}
-                                                     className='btn btn-outline-success'>{t("page.requestTemplates.useTemplate")}</NavLink>
+                                                className='btn btn-outline-success template-button'><i class="fas fa-edit"></i></NavLink>
+                                                </OverlayTrigger>
                                         </Col>
                                     </Restricted>
                                 </Row>
@@ -106,15 +144,22 @@ export default function RequesTemplatesPage() {
 
     return (
         <Container fluid className="noPadding">
-            <Row>
+            <Row className="align-items-md-centers">
                 <Col>
                     <h1>{t("page.requestTemplates.title")}</h1>
                 </Col>
-                <Restricted permission='EDIT_APPLICATION_TEMPLATE'>
-                    <Col className='d-flex align-items-center'>
-                        <NavLink to="/createTemplate" className='btn btn-outline-info ml-auto'>{t("page.requestTemplates.createTemplate")}</NavLink>
-                    </Col>
-                </Restricted>
+                <Col md="auto">
+                    <Row>
+                        <Col md="auto">
+                            <Restricted permission='EDIT_APPLICATION_TEMPLATE'>
+                                <NavLink to="/createTemplate" className='btn btn-outline-info'>{t("page.requestTemplates.createTemplate")}</NavLink>
+                            </Restricted>
+                        </Col>
+                        <Col md="auto">
+                            <NavLink to="/customRequest" className='btn btn-outline-info'>{t("page.customRequest.title")}</NavLink>
+                        </Col>
+                    </Row>
+                </Col>
             </Row>
             <Row>
                 <Col>

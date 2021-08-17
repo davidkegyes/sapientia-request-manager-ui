@@ -10,7 +10,11 @@ const ProtectedRoute = ({ component: Component, user, permission, ...rest }) => 
     <Route {...rest} render={
       props => {
         if (context.user) {
-          return <Component {...rest} {...props} />
+          if (permission === undefined || context.user.role.name === permission || context.user.role.permissions.includes(permission)) {
+            return <Component {...rest} {...props} />
+          } else {
+            return <Redirect to='/'/>
+          }
         } else {
           return <Redirect to={
             {

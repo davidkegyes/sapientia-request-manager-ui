@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import RequestService from "../services/RequestService";
 import config from "../config";
@@ -65,6 +65,9 @@ export default function CustomRequestPage() {
       <Row>
         <Col>
           <h1>{t("page.customRequest.title")}</h1>
+        </Col>
+        <Col md='auto'>
+          <Link className="btn btn-outline-info" to="/">{t("page.requestPage.back")}</Link>
         </Col>
       </Row>
       {step === 1 && (
@@ -146,7 +149,7 @@ export default function CustomRequestPage() {
                   {t("request.requestUploadSuccessTitle")}
                 </Alert.Heading>
                 <p>{t("request.requestUploadSuccessMessage")}</p>
-                <hr/>
+                <hr />
                 <NavLink to={"/inspect/" + referenceNumber} className='btn btn-outline-info ml-auto'>{t("request.navigateToRequestButton")}</NavLink>
               </Alert>
             </Col>

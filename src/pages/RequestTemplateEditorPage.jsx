@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react'
-import {NavLink, Redirect} from 'react-router-dom';
-import {Button, Col, Container, Form, Row} from 'react-bootstrap'
-import {useParams} from 'react-router-dom';
-import {v4 as uuid} from 'uuid';
-import {useTranslation} from "react-i18next";
+import React, { useEffect, useState } from 'react'
+import { NavLink, Redirect } from 'react-router-dom';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import { useParams } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
+import { useTranslation } from "react-i18next";
 import RequestTemplateService from '../services/RequestTemplateService';
 import LoadingModal from '../components/LoadingModal';
 export default function RequestTemplateEditorPage() {
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const params = useParams();
 
@@ -78,7 +78,7 @@ export default function RequestTemplateEditorPage() {
         }
     ];
 
-    const emptyInfo = {name: '', description: '', language: ''};
+    const emptyInfo = { name: '', description: '', language: '' };
 
     const [templateInfo, setTemplateInfo] = useState(emptyInfo)
     const [form, setForm] = useState(empty);
@@ -114,7 +114,7 @@ export default function RequestTemplateEditorPage() {
         let dl = [];
         if (docs) {
             for (let i in docs) {
-                dl.push({id: uuid(), name: docs[i]});
+                dl.push({ id: uuid(), name: docs[i] });
             }
         }
         return dl;
@@ -125,7 +125,7 @@ export default function RequestTemplateEditorPage() {
         setLoading(true);
         try {
             const rt = await RequestTemplateService.getTemplateByUuid(tuuId);
-            setTemplateInfo({name: rt.name, description: rt.description, language: rt.language});
+            setTemplateInfo({ name: rt.name, description: rt.description, language: rt.language });
             setForm(addIdIfMisingToForm(rt.form));
             setRequiredDocuments(prepRequiredDocuments(rt.requiredDocuments));
         } catch (err) {
@@ -154,7 +154,7 @@ export default function RequestTemplateEditorPage() {
                         break;
                     }
                 }
-                let newVar = {...variable};
+                let newVar = { ...variable };
                 newVar.id = uuid();
                 newVar.name = variableNames[index].slice(1, -1);
                 newVariables.splice(index, 0, newVar);
@@ -164,8 +164,8 @@ export default function RequestTemplateEditorPage() {
     }
 
     const onFormChange = (event) => {
-        const {id, value} = event.target;
-        const {targetfield, partid} = event.target.dataset;
+        const { id, value } = event.target;
+        const { targetfield, partid } = event.target.dataset;
         console.log(id);
         let tmp = [...form];
         let variableId = partid === undefined ? undefined : id;
@@ -196,7 +196,7 @@ export default function RequestTemplateEditorPage() {
     }
 
     const onAttachmentChangeList = (event) => {
-        const {id, value} = event.target;
+        const { id, value } = event.target;
         let tmp = [...requiredDocuments];
         for (let i in tmp) {
             if (tmp[i].id === id) {
@@ -209,7 +209,7 @@ export default function RequestTemplateEditorPage() {
 
     const addNewAttachment = () => {
         if (requiredDocuments.length < 6) {
-            setRequiredDocuments([...requiredDocuments, {id: uuid(), name: ''}]);
+            setRequiredDocuments([...requiredDocuments, { id: uuid(), name: '' }]);
         }
     }
 
@@ -223,7 +223,7 @@ export default function RequestTemplateEditorPage() {
 
     const addFormPart = (part) => {
         let tmp = [...form];
-        let ct = {...part};
+        let ct = { ...part };
         ct.id = uuid();
         ct.wrapper = ct.id;
         tmp.splice(tmp.length - 1, 0, ct);
@@ -231,23 +231,23 @@ export default function RequestTemplateEditorPage() {
     }
 
     const onTemplateInfoChange = (event) => {
-        const {id, value} = event.target;
-        let tmp = {...templateInfo};
+        const { id, value } = event.target;
+        let tmp = { ...templateInfo };
         tmp[id] = value;
         setTemplateInfo(tmp);
     }
 
     const validate = () => {
         let valid = true;
-        let vtInfo = {...templateInfo};
+        let vtInfo = { ...templateInfo };
         if (vtInfo.name === undefined || vtInfo.name === null || vtInfo.name === '') {
-            vtInfo.nameError = "Ez kell";
+            vtInfo.nameError = t('page.requestTemplateEditor.requiredToFill');
             valid = false;
         } else {
             delete vtInfo.nameError;
         }
         if (vtInfo.description === undefined || vtInfo.description === null || vtInfo.description === '') {
-            vtInfo.descriptionError = "Ez kell";
+            vtInfo.descriptionError = t('page.requestTemplateEditor.requiredToFill');
             valid = false;
         } else {
             delete vtInfo.descriptionError;
@@ -256,27 +256,27 @@ export default function RequestTemplateEditorPage() {
         for (let i in vForm) {
             if (vForm[i].type === 'dateAndSignature') {
                 if (vForm[i].signatureText === null || vForm[i].signatureText === undefined || vForm[i].signatureText === '') {
-                    vForm[i].signatureTextError = 'Ez is kell te....';
+                    vForm[i].signatureTextError = t('page.requestTemplateEditor.requiredToFill');
                     valid = false;
                 } else {
                     delete vForm[i].signatureTextError;
                 }
                 if (vForm[i].dateText === null || vForm[i].dateText === undefined || vForm[i].dateText === '') {
-                    vForm[i].dateTextError = 'Ez is kell te....';
+                    vForm[i].dateTextError = t('page.requestTemplateEditor.requiredToFill');
                     valid = false;
                 } else {
                     delete vForm[i].dateTextError;
                 }
             } else if (vForm[i].type === 'customText') {
                 if (vForm[i].hint === null || vForm[i].hint === undefined || vForm[i].hint === '') {
-                    vForm[i].error = 'Ez is kell te....';
+                    vForm[i].error = t('page.requestTemplateEditor.requiredToFill');
                     valid = false;
                 } else {
                     delete vForm[i].error;
                 }
             } else {
                 if (vForm[i].text === null || vForm[i].text === undefined || vForm[i].text === '') {
-                    vForm[i].error = 'Ez is kell te....';
+                    vForm[i].error = t('page.requestTemplateEditor.requiredToFill');
                     valid = false;
                 } else {
                     delete vForm[i].error;
@@ -284,20 +284,20 @@ export default function RequestTemplateEditorPage() {
                 if (vForm[i].variables) {
                     for (let j in vForm[i].variables) {
                         if (vForm[i].variables[j].hint === null || vForm[i].variables[j].hint === undefined || vForm[i].variables[j].hint === '') {
-                            vForm[i].variables[j].hintError = "Ez is kell";
+                            vForm[i].variables[j].hintError = t('page.requestTemplateEditor.requiredToFill');
                             valid = false;
                         } else {
                             delete vForm[i].variables[j].hintError;
                         }
                         if (vForm[i].variables[j].type === 'number') {
                             if (vForm[i].variables[j].min === null || vForm[i].variables[j].min === undefined || vForm[i].variables[j].min === '') {
-                                vForm[i].variables[j].minError = "Ez is kell";
+                                vForm[i].variables[j].minError = t('page.requestTemplateEditor.requiredToFill');
                                 valid = false;
                             } else {
                                 delete vForm[i].variables[j].minError;
                             }
                             if (vForm[i].variables[j].max === null || vForm[i].variables[j].max === undefined || vForm[i].variables[j].max === '') {
-                                vForm[i].variables[j].maxError = "Ez is kell";
+                                vForm[i].variables[j].maxError = t('page.requestTemplateEditor.requiredToFill');
                                 valid = false;
                             } else {
                                 delete vForm[i].variables[j].maxError;
@@ -308,14 +308,14 @@ export default function RequestTemplateEditorPage() {
                 }
             }
         }
-        return {valid, vtInfo, vForm}
+        return { valid, vtInfo, vForm }
     }
 
 
     const saveTemplate = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        const {valid, vtInfo, vForm} = validate();
+        const { valid, vtInfo, vForm } = validate();
         if (valid === false) {
             setTemplateInfo(vtInfo);
             setForm(vForm);
@@ -334,8 +334,8 @@ export default function RequestTemplateEditorPage() {
                     setLoading(false);
                     setGoToTemplates(true);
                 }).catch((err) => {
-                setLoading(false);
-            });
+                    setLoading(false);
+                });
         }
     }
 
@@ -352,7 +352,7 @@ export default function RequestTemplateEditorPage() {
 
     return (
         <Container>
-            <LoadingModal show={loading}/>
+            <LoadingModal show={loading} />
             <Form>
                 <Container fluid className="noPadding">
                     <Row className="align-items-center">
@@ -361,7 +361,7 @@ export default function RequestTemplateEditorPage() {
                         </Col>
                         <Col>
                             <Button variant="success" type={"submit"}
-                                    onClick={saveTemplate}>{t("page.requesTemplateEditor.templateButton2")}</Button>
+                                onClick={saveTemplate}>{t("page.requestTemplateEditor.saveButton")}</Button>
                         </Col>
                         <Col xs="auto">
                             <NavLink to="/"><Button variant="outline-info">Back</Button></NavLink>
@@ -371,28 +371,34 @@ export default function RequestTemplateEditorPage() {
                 <Container fluid className="box rowSpace">
                     <Form.Group as={Row}>
                         <Form.Label column sm={2}>
-                            {t("page.requesTemplateEditor.templateName")}
+                            {t("page.requestTemplateEditor.templateName")}
                         </Form.Label>
                         <Col sm={10}>
-                            <Form.Control isInvalid={!!templateInfo.nameError} required type="text"
-                                          placeholder={t("page.requesTemplateEditor.templateEG")}
-                                          value={templateInfo.name} id="name" onChange={onTemplateInfoChange}/>
+                            <Form.Group>
+                                <Form.Control isInvalid={!!templateInfo.nameError} required type="text"
+                                    placeholder={t("page.requestTemplateEditor.templateEG")}
+                                    value={templateInfo.name} id="name" onChange={onTemplateInfoChange} />
+                                <Form.Control.Feedback type="invalid">{templateInfo.nameError}</Form.Control.Feedback>
+                            </Form.Group>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Form.Label column sm={2}>
-                            {t("page.requesTemplateEditor.templateDescription")}
+                            {t("page.requestTemplateEditor.templateDescription")}
                         </Form.Label>
                         <Col sm={10}>
-                            <Form.Control isInvalid={!!templateInfo.descriptionError} required type="text"
-                                          placeholder={t("page.requesTemplateEditor.templateGeneral")}
-                                          value={templateInfo.description} id="description"
-                                          onChange={onTemplateInfoChange}/>
+                            <Form.Group>
+                                <Form.Control isInvalid={!!templateInfo.descriptionError} required type="text"
+                                    placeholder={t("page.requestTemplateEditor.templateGeneral")}
+                                    value={templateInfo.description} id="description"
+                                    onChange={onTemplateInfoChange} />
+                                <Form.Control.Feedback type="invalid">{templateInfo.descriptionError}</Form.Control.Feedback>
+                            </Form.Group>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Form.Label column sm={2} className="rowSpace">
-                            {t("page.requesTemplateEditor.attachmentList")}
+                            {t("page.requestTemplateEditor.attachmentList")}
                         </Form.Label>
                         <Col sm={10}>
                             {requiredDocuments.map((doc) => {
@@ -400,8 +406,8 @@ export default function RequestTemplateEditorPage() {
                                     <Row key={doc.id} className="rowSpace">
                                         <Col sm={11}>
                                             <Form.Control id={doc.id} onChange={onAttachmentChangeList} required
-                                                          type="text" placeholder="Kert csatolmany neve"
-                                                          value={doc.name}/>
+                                                type="text" placeholder={t("page.requestTemplateEditor.requestedDocumentName")}
+                                                value={doc.name} />
                                         </Col>
                                         <Col sm={1}>
                                             <Button variant="outline-danger" onClick={() => {
@@ -429,9 +435,9 @@ export default function RequestTemplateEditorPage() {
                                     <Col xs lg={4}>
                                         <Form.Group>
                                             <Form.Control isInvalid={!!part.error} required id={part.id} type="text"
-                                                          placeholder={t("page.requesTemplateEditor.officialAddress")}
-                                                          style={{'textAlign': 'center'}}
-                                                          value={part.text} onChange={onFormChange}/>
+                                                placeholder={t("page.requestTemplateEditor.officialAddress")}
+                                                style={{ 'textAlign': 'center' }}
+                                                value={part.text} onChange={onFormChange} />
                                             <Form.Control.Feedback type="invalid">{part.error}</Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
@@ -447,16 +453,16 @@ export default function RequestTemplateEditorPage() {
                                             }}><i className="fas fa-minus"></i></Button>
                                         </Col>
                                         <Col>
-                                            <h3>{t("page.requesTemplateEditor.templateSablon")}</h3>
+                                            <h3>{t("page.requestTemplateEditor.templateSablon")}</h3>
                                         </Col>
                                     </Row>
                                     <Row className="rowSpace">
                                         <Col>
                                             <Form.Group>
                                                 <Form.Control isInvalid={!!part.error} required id={part.id}
-                                                              as="textarea"
-                                                              style={{textIndent: '2rem'}} rows={3} value={part.text}
-                                                              onChange={onFormChange}/>
+                                                    as="textarea"
+                                                    style={{ textIndent: '2rem' }} rows={3} value={part.text}
+                                                    onChange={onFormChange} />
                                                 <Form.Control.Feedback
                                                     type="invalid">{part.error}</Form.Control.Feedback>
                                             </Form.Group>
@@ -466,47 +472,47 @@ export default function RequestTemplateEditorPage() {
                                         {!!part.variables && part.variables.map((v) => {
                                             return (<Col xs lg={4} className="box">
                                                 <Form.Group>
-                                                    <Form.Label>{t("page.requesTemplateEditor.templateVariable")}</Form.Label>
-                                                    <Form.Control type="text" value={v.name} disabled/>
+                                                    <Form.Label>{t("page.requestTemplateEditor.templateVariable")}</Form.Label>
+                                                    <Form.Control type="text" value={v.name} disabled />
                                                 </Form.Group>
                                                 <Form.Group>
-                                                    <Form.Label>Utalás</Form.Label>
+                                                    <Form.Label>{t('page.requestTemplateEditor.hint')}</Form.Label>
                                                     <Form.Control isInvalid={!!v.hintError} required id={v.id}
-                                                                  data-partid={part.id} data-targetfield="hint"
-                                                                  type="text" value={v.hint} onChange={onFormChange}/>
+                                                        data-partid={part.id} data-targetfield="hint"
+                                                        type="text" value={v.hint} onChange={onFormChange} />
                                                     <Form.Control.Feedback
                                                         type="invalid">{v.hintError}</Form.Control.Feedback>
                                                 </Form.Group>
                                                 <Form.Group>
-                                                    <Form.Label>Típus</Form.Label>
+                                                    <Form.Label>{t('page.requestTemplateEditor.variableType')}</Form.Label>
                                                     <Form.Control required id={v.id} data-partid={part.id}
-                                                                  data-targetfield="type" as="select"
-                                                                  onChange={onFormChange} value={v.type}>
-                                                        <option value='text'>Szoveg</option>
-                                                        <option value='number'>Szam</option>
+                                                        data-targetfield="type" as="select"
+                                                        onChange={onFormChange} value={v.type}>
+                                                        <option value='text'>{t('page.requestTemplateEditor.variable.text')}</option>
+                                                        <option value='number'>{t('page.requestTemplateEditor.variable.number')}</option>
                                                     </Form.Control>
                                                 </Form.Group>
                                                 {v.type === 'number' &&
-                                                <Form.Row>
-                                                    <Form.Group as={Col}>
-                                                        <Form.Label>Min</Form.Label>
-                                                        <Form.Control isInvalid={!!v.minError} required id={v.id}
-                                                                      data-partid={part.id} data-targetfield="min"
-                                                                      type="number" value={v.min}
-                                                                      onChange={onFormChange}/>
-                                                        <Form.Control.Feedback
-                                                            type="invalid">{v.minError}</Form.Control.Feedback>
-                                                    </Form.Group>
-                                                    <Form.Group as={Col}>
-                                                        <Form.Label>Max</Form.Label>
-                                                        <Form.Control isInvalid={!!v.maxError} required id={v.id}
-                                                                      data-partid={part.id} data-targetfield="max"
-                                                                      type="number" value={v.max}
-                                                                      onChange={onFormChange}/>
-                                                        <Form.Control.Feedback
-                                                            type="invalid">{v.maxError}</Form.Control.Feedback>
-                                                    </Form.Group>
-                                                </Form.Row>}
+                                                    <Form.Row>
+                                                        <Form.Group as={Col}>
+                                                            <Form.Label>Min</Form.Label>
+                                                            <Form.Control isInvalid={!!v.minError} required id={v.id}
+                                                                data-partid={part.id} data-targetfield="min"
+                                                                type="number" value={v.min}
+                                                                onChange={onFormChange} />
+                                                            <Form.Control.Feedback
+                                                                type="invalid">{v.minError}</Form.Control.Feedback>
+                                                        </Form.Group>
+                                                        <Form.Group as={Col}>
+                                                            <Form.Label>Max</Form.Label>
+                                                            <Form.Control isInvalid={!!v.maxError} required id={v.id}
+                                                                data-partid={part.id} data-targetfield="max"
+                                                                type="number" value={v.max}
+                                                                onChange={onFormChange} />
+                                                            <Form.Control.Feedback
+                                                                type="invalid">{v.maxError}</Form.Control.Feedback>
+                                                        </Form.Group>
+                                                    </Form.Row>}
                                             </Col>)
                                         })}
                                     </Row>
@@ -521,19 +527,19 @@ export default function RequestTemplateEditorPage() {
                                             }}><i className="fas fa-minus"></i></Button>
                                         </Col>
                                         <Col>
-                                            <h3>{t("page.requesTemplateEditor.templateCustomText")}</h3>
+                                            <h3>{t("page.requestTemplateEditor.templateCustomText")}</h3>
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col>
                                             <Form.Group as={Row}>
                                                 <Form.Label column sm={2}>
-                                                    {t("page.requesTemplateEditor.templateReference")}
+                                                    {t("page.requestTemplateEditor.templateReference")}
                                                 </Form.Label>
                                                 <Col sm={10}>
                                                     <Form.Control isInvalid={part.error} required type="text"
-                                                                  id={part.id} data-targetfield="hint" value={part.hint}
-                                                                  onChange={onFormChange}/>
+                                                        id={part.id} data-targetfield="hint" value={part.hint}
+                                                        onChange={onFormChange} />
                                                     <Form.Control.Feedback
                                                         type="invalid">{part.error}</Form.Control.Feedback>
                                                 </Col>
@@ -543,7 +549,7 @@ export default function RequestTemplateEditorPage() {
                                     <Row>
                                         <Col>
                                             <Form.Control id={part.id} as="textarea" rows={2} disabled
-                                                          value={t("page.requesTemplateEditor.templatecomment")}/>
+                                                value={t("page.requestTemplateEditor.templatecomment")} />
                                         </Col>
                                     </Row>
                                 </Container>
@@ -557,14 +563,14 @@ export default function RequestTemplateEditorPage() {
                                             <Button variant="outline-info" onClick={() => {
                                                 addFormPart(text)
                                             }}><i
-                                                className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateText")}
+                                                className="fas fa-plus"></i> {t("page.requestTemplateEditor.templateTemplateText")}
                                             </Button>
                                         </Col>
                                         <Col md="auto">
                                             <Button variant="outline-info" onClick={() => {
                                                 addFormPart(customText)
                                             }}> <i
-                                                className="fas fa-plus"></i> {t("page.requesTemplateEditor.templateTemplateOneText")}
+                                                className="fas fa-plus"></i> {t("page.requestTemplateEditor.templateCustomText")}
                                             </Button>
                                         </Col>
                                     </Row>
@@ -574,19 +580,19 @@ export default function RequestTemplateEditorPage() {
                                                 <Col xs lg={5}>
                                                     <Form.Group>
                                                         <Form.Control isInvalid={part.dateTextError} id={part.id}
-                                                                      data-targetfield="dateText" value={part.dateText}
-                                                                      required type="text"
-                                                                      placeholder={t("page.requesTemplateEditor.templateDate")}
-                                                                      style={{'textAlign': 'center'}}
-                                                                      onChange={onFormChange}/>
+                                                            data-targetfield="dateText" value={part.dateText}
+                                                            required type="text"
+                                                            placeholder={t("page.requestTemplateEditor.templateDate")}
+                                                            style={{ 'textAlign': 'center' }}
+                                                            onChange={onFormChange} />
                                                         <Form.Control.Feedback
-                                                            type="invalid">{t("page.requesTemplateEditor.templateTemplateObligatory")}</Form.Control.Feedback>
+                                                            type="invalid">{t("page.requestTemplateEditor.requiredToFill")}</Form.Control.Feedback>
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
                                             <Row className="justify-content-md-center">
                                                 <Col xs lg={5} className="text-center"
-                                                     style={{'fontSize': '3rem', 'color': 'blue'}}>
+                                                    style={{ 'fontSize': '3rem', 'color': 'blue' }}>
                                                     <i className="far fa-calendar-alt"></i>
                                                 </Col>
                                             </Row>
@@ -596,19 +602,19 @@ export default function RequestTemplateEditorPage() {
                                                 <Col xs lg={5}>
                                                     <Form.Group>
                                                         <Form.Control isInvalid={part.signatureTextError} id={part.id}
-                                                                      data-targetfield="signatureText" required
-                                                                      value={part.signatureText} type="text"
-                                                                      placeholder={t("page.requesTemplateEditor.templateSignature")}
-                                                                      style={{'textAlign': 'center'}}
-                                                                      onChange={onFormChange}/>
+                                                            data-targetfield="signatureText" required
+                                                            value={part.signatureText} type="text"
+                                                            placeholder={t("page.requestTemplateEditor.templateSignature")}
+                                                            style={{ 'textAlign': 'center' }}
+                                                            onChange={onFormChange} />
                                                         <Form.Control.Feedback
-                                                            type="invalid">{t("page.requesTemplateEditor.templateSignature")}</Form.Control.Feedback>
+                                                            type="invalid">{t("page.requestTemplateEditor.requiredToFill")}</Form.Control.Feedback>
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
                                             <Row className="justify-content-md-center">
                                                 <Col xs lg={5} className="text-center"
-                                                     style={{'fontSize': '3rem', 'color': 'blue'}}>
+                                                    style={{ 'fontSize': '3rem', 'color': 'blue' }}>
                                                     <i className="fas fa-signature"></i>
                                                 </Col>
                                             </Row>

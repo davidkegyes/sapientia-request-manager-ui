@@ -3,16 +3,21 @@
   "title": "Sapientia Erdélyi Magyar Tudományegyetem",
   "loading": "...Loading",
   "date": "{{date, YYYY/MM/DD, hh:mm:ss}}",
+  "role": {
+    "student": "Student",
+    "admin": "Admin",
+    "secretary": "Secretary"
+  },
   "page": {
     "login": {
       "hint": "Login with the provided email from the Universisty",
       "button": "Login with Google"
     },
-    "usermanagement" : {
-      "title" : "Users"
+    "usermanagement": {
+      "title": "Users"
     },
-    "requests" : {
-      "title" : "Requests"
+    "requests": {
+      "title": "Requests"
     },
     "myRequests": {
       "title": "My Requests",
@@ -20,11 +25,11 @@
       "openRequest": "Open",
       "table": {
         "header": {
-          "created" : "Uploaded",
-          "description" : "Request",
-          "regNumber" : "Registered",
-          "status" : "Status",
-          "controls" : "Controls"
+          "created": "Uploaded",
+          "description": "Request",
+          "regNumber": "Registered",
+          "status": "Status",
+          "controls": "Controls"
         }
       }
     },
@@ -32,7 +37,7 @@
       "title": "Request Templates",
       "useTemplate": "Fill",
       "editTemplate": "Edit",
-      "deleteTemplate" : "Delete",
+      "deleteTemplate": "Delete",
       "createTemplate": "Create Template"
     },
     "requestInspector": {
@@ -47,7 +52,7 @@
     "requestPage": {
       "back": "Back to requests"
     },
-    "requesTemplateEditor": {
+    "requestTemplateEditor": {
       "title": "Edit templates",
       "templateName": "Template Name",
       "templateDescription": "Template Description",
@@ -59,15 +64,22 @@
       "templateReference": "Reference",
       "templatecomment": "Add comment for the request.",
       "templateTemplateText": "Add template text",
-      "templateTemplateOneText": "Add custom input text",
-      "templateTemplateObligatory": "The name for request is mandatory.",
       "templateDate": "Date",
       "templateSignature": "Signature",
       "templateEG": "E.G: Reclassification request",
       "templateGeneral": "General description",
-      "templateButton1": "Cancel",
-      "templateButton2": "Save"
-    },"customRequest": {
+      "cancelButton": "Cancel",
+      "saveButton": "Save",
+      "requiredToFill": "This input must be filled!",
+      "hint": "Hint",
+      "variableType": "Type",
+      "variable": {
+        "number": "Number",
+        "text": "Text"
+      },
+      "requestedDocumentName": "Requested document name"
+    },
+    "customRequest": {
       "title": "Custom request",
       "description": "Upload an individual request. Use this feature if you have not found a suitable request template.",
       "requestName": "Request Name",
@@ -103,11 +115,11 @@
       "uploadSuccessTitle": "Upload successful"
     },
     "table": {
-      "searchLabel" : "Search",
-      "searchPlaceHolder" : "{{count}} records...",
-      "pagination" : {
-        "show" : "Show {{count}}",
-        "page" : "{{current}} / {{total}}"
+      "searchLabel": "Search",
+      "searchPlaceHolder": "{{count}} records...",
+      "pagination": {
+        "show": "Show {{count}}",
+        "page": "{{current}} / {{total}}"
       }
     }
   },
@@ -115,7 +127,8 @@
     "status": {
       "approved": "Approved",
       "rejected": "Rejected",
-      "new": "New"
+      "new": "New",
+      "incomplete" : "Incomplete"
     },
     "referenceNumber": "Reference number",
     "officialReferenceNumber": "Official reference number",
@@ -127,6 +140,7 @@
     "navigateToRequestButton": "Go to the request.",
     "requestUploadedAttachmentUploadRequired": "The following documents needs to be provided.",
     "requestAttachmentUploadRequired": "",
-    "validationNumberRangeInput" : "The input value must be between {{min}} and {{max}}. Current value: {{current}}"
+    "validationNumberRangeInput": "The input value must be between {{min}} and {{max}}. Current value: {{current}}",
+    "missingSignature" : "The request must be signed before sending."
   }
 }

@@ -142,11 +142,11 @@ const getVariable = (variable) => {
         return variable.value;
     } else {
         if (variable.type === 'text') {
-            return "____________________________";
+            return "____________________";
         } else if (variable.type === 'date') {
             return "__________";
         } else if (variable.type === 'number') {
-            return "____";
+            return "_____";
         }
     }
 }

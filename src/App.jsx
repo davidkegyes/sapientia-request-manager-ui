@@ -46,13 +46,13 @@ export default function App() {
             <Switch>
               <Route path="/login" component={() => <LoginPage handleLogin={handleLogin} />} />
               <ProtectedRoute exact path="/" component={RequestTemplatesPage} />
-              <ProtectedRoute path="/editTemplate/:uuid" component={RequestTemplateEditorPage} />
+              <ProtectedRoute path="/editTemplate/:uuid" component={RequestTemplateEditorPage} permission='EDIT_APPLICATION_TEMPLATE' />
+              <ProtectedRoute path="/createTemplate" component={RequestTemplateEditorPage} permission='EDIT_APPLICATION_TEMPLATE' />
               <ProtectedRoute path="/request/:uuid" component={RequestPage} />
-              <ProtectedRoute path="/createTemplate" component={RequestTemplateEditorPage} />
-              <ProtectedRoute path="/customRequest" component={CustomRequestPage} />
-              <ProtectedRoute path="/myRequests" component={MyRequestsPage} />
-              <ProtectedRoute path="/AllRequests" component={RequestsPage} />
-              <ProtectedRoute path="/inspect/:ref" component={RequestInspectorPage} />
+              <ProtectedRoute path="/customRequest" component={CustomRequestPage} permission='UPLOAD_APPLICATION' />
+              <ProtectedRoute path="/myRequests" component={MyRequestsPage} permission='STUDENT'/>
+              <ProtectedRoute path="/AllRequests" component={RequestsPage} permission='VIEW_ALL_APPLICATIONS' />
+              <ProtectedRoute path="/inspect/:ref" component={RequestInspectorPage} permission='VIEW_APPLICATION' />
               <ProtectedRoute path="/userManagement" permission="ADMIN" component={UserManagementPage} />
               <Route component={NotFoundPage} />
             </Switch>

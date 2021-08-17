@@ -81,6 +81,7 @@ export default function LoginPage(props) {
     function errorResponseGoogle(res) {
         console.log("errorResponseGoogle");
         console.log(res);
+        setError("Hiba a Google bejelentkezes soran!")
     }
 
     if (loading && localStorage.getItem('token')) {
