@@ -133,6 +133,7 @@
             "new": "Új",
             "incomplete" : "Híányos"
         },
+        "uploadedBy" : "Feltöltő",
         "referenceNumber": "Referencia szám",
         "officialReferenceNumber": "Iktatószám",
         "creationDate": "Létrehozva {{date, YYYY/MM/DD, hh:mm:ss}}",

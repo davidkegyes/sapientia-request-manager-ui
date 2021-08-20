@@ -66,12 +66,10 @@ export default function RequestInspectorPage() {
                         setRequiredDocuments(await AttachmentService.getListForRequestReferenceNumber(params.ref));
                         break;
                     case "APPROVE":
-                        console.log(await RequestService.approve(params.ref));
-                        setRequestInfo(await RequestService.getRequestInfo(params.ref));
+                        setRequestInfo(await RequestService.approve(params.ref));
                         break;
                     case "REJECT":
-                        console.log(await RequestService.reject(params.ref));
-                        setRequestInfo(await RequestService.getRequestInfo(params.ref));
+                        setRequestInfo(await RequestService.reject(params.ref));
                         break;
                     case "DELETE_ATTACHMENT":
                         await AttachmentService.delete(action.value);
@@ -101,9 +99,13 @@ export default function RequestInspectorPage() {
     }
 
     return (
-        <Container>
+        <Container fluid className="noPadding">
             <LoadingModal show={loading} />
-            <Row className='align-items-center'>
+
+            <Row className='align-items-center noPadding'>
+                <Col>
+                    <h2>{requestInfo.name}</h2>
+                </Col>
                 <Col md="auto">
                     <h3>
                         {requestInfo.status === 'NEW' && <Badge variant="primary">{t("request.status.new")}</Badge>}
@@ -113,15 +115,27 @@ export default function RequestInspectorPage() {
                     </h3>
                 </Col>
                 <Col md="auto">
-                    <h2>{requestInfo.name}</h2>
-                </Col>
-                <Col>
                     <Button variant='outline-primary' onClick={downloadRequest}>Download</Button>
                 </Col>
-                <Col md="auto" className='d-flex align-items-center noPadding'>
+                <Col md="auto" className='d-flex align-items-center'>
                     <Button variant="outline-info" onClick={() => { console.log(history); history.goBack(); }}>Go Back</Button>
                 </Col>
             </Row>
+            {userContext.user.email !== requestInfo.user.email && 
+                <Container fluid>
+                    <Row className="box">
+                        <Col md={2}>
+                            {t('request.uploadedBy')}
+                        </Col>
+                        <Col>
+                            {requestInfo.user.firstname + " " + requestInfo.user.lastname}
+                        </Col>
+                        <Col>
+                            <a href={"mailto:" + requestInfo.user.email} >{requestInfo.user.email}</a>
+                        </Col>
+                    </Row>
+                </Container>
+            }
             <Container fluid>
                 {requestInfo.status === "INCOMPLETE" &&
                     documentUpload && documentUpload.length > 0 &&
@@ -133,8 +147,7 @@ export default function RequestInspectorPage() {
                         </Col>
                     </Row>
                 }
-s
-                {requestInfo.status === "NEW" && userContext.user.email !== requestInfo.user.email &&
+                {(userContext.user.role.name === 'ADMIN' || requestInfo.status === "NEW" && userContext.user.email !== requestInfo.user.email) &&
                     <Row className="rowSpace justify-content-center">
                         <Restricted permission="REJECT_APPLICATION">
                             <Col md='auto'>

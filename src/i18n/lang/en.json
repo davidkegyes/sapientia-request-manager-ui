@@ -130,6 +130,7 @@
       "new": "New",
       "incomplete" : "Incomplete"
     },
+    "uploadedBy" : "Uploaded by",
     "referenceNumber": "Reference number",
     "officialReferenceNumber": "Official reference number",
     "creationDate": "Created {{date, YYYY/MM/DD, hh:mm:ss}}",
