@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Container, Button, Modal, Form, Alert } from 'react-bootstrap'
+import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap'
 import TableComponent from '../components/TableComponent'
 import LoadingModal from '../components/LoadingModal'
 import { getUsers, saveUser } from '../services/UserService';
@@ -57,6 +57,20 @@ export default function UserManagementPage() {
 
     const columns = useMemo(
         () => [
+            {
+                Header: "User",
+                Cell: ({ row }) => {
+                    let user = row.original;
+                    return (
+                        <Container fluid className="noPadding">
+                            <Row>
+                                <Col>Firstname</Col>
+                                <Col>{user.firstname}</Col>
+                            </Row>
+                        </Container>
+                    )
+                }
+            },
 
             {
                 Header: 'First Name',
@@ -80,7 +94,7 @@ export default function UserManagementPage() {
             },
             {
                 Header: 'Controls',
-                disableFilters : true,
+                disableFilters: true,
                 disableGlobalFilter: true,
                 Cell: ({ row }) => (<Button variant="outline-primary" onClick={() => editRow(row)}>Edit</Button>)
             }
@@ -120,7 +134,7 @@ export default function UserManagementPage() {
 
     const saveChanges = async () => {
         setLoading(true);
-        const userToBeSaved = {...editedUser};
+        const userToBeSaved = { ...editedUser };
         userToBeSaved.roleId = userToBeSaved.role.id;
         delete userToBeSaved.role;
         setEditedUser(null);

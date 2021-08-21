@@ -101,8 +101,8 @@ export default function RequestForm({ form, onChange }) {
     return (
         <Container>
             {form.errors && form.errors.map((error, index) => (
-                <Row key={error} className="rowSpace">
-                    <Col>
+                <Row key={error}>
+                    <Col className="noPadding">
                         <Alert key={error + '-' + index} variant='danger'>{error}</Alert>
                     </Col>
                 </Row>

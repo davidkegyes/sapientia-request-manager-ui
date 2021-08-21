@@ -117,7 +117,7 @@ export default function RequestPage() {
         }
     }
     return (
-        <Container>
+        <Container fluid className="noPadding">
             <Row>
                 <Col><h2>{request.name}</h2></Col>
                 <Col md='auto'>
@@ -128,10 +128,9 @@ export default function RequestPage() {
             <>
                 <RequestForm form={request.form} onChange={handleFormChange}/>
                 <Row className="rowSpace formMainControls">
-                    <Col><Button variant="primary" onClick={() => downloadPdf(request.form, request.name)}>Kérvény
-                        Letöltése küldés nélkül</Button></Col>
+                    <Col><Button variant="primary" onClick={() => downloadPdf(request.form, request.name)}>{t("page.requestPage.download")}</Button></Col>
                     <Col xs="auto"><Button variant="success"
-                                           onClick={(e) => uploadRequest(request)}>Küldés</Button></Col>
+                                           onClick={(e) => uploadRequest(request)}>{t("page.requestPage.send")}</Button></Col>
                 </Row>
             </>
             }

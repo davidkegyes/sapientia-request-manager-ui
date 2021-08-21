@@ -37,6 +37,9 @@ export default function RequestInspectorPage() {
     const onUpload = useCallback(async () => {
         setLoading(true);
         setRequiredDocuments(await AttachmentService.getListForRequestReferenceNumber(params.ref));
+        if (requiredDocuments === null || requiredDocuments === undefined || requiredDocuments.length === 0) {
+            setAction({type : "INIT"});
+        }
         setLoading(false);
     })
 
@@ -70,10 +73,6 @@ export default function RequestInspectorPage() {
                         break;
                     case "REJECT":
                         setRequestInfo(await RequestService.reject(params.ref));
-                        break;
-                    case "DELETE_ATTACHMENT":
-                        await AttachmentService.delete(action.value);
-                        setRequiredDocuments(requiredDocuments.filter((o) => o.uuid !== action.value))
                         break;
                     default:
                         setLoading(false);
@@ -121,31 +120,38 @@ export default function RequestInspectorPage() {
                     <Button variant="outline-info" onClick={() => { console.log(history); history.goBack(); }}>Go Back</Button>
                 </Col>
             </Row>
-            {userContext.user.email !== requestInfo.user.email && 
-                <Container fluid>
-                    <Row className="box">
+            {userContext.user.email !== requestInfo.user.email &&
+                <Container fluid className="box">
+                    <Row>
                         <Col md={2}>
                             {t('request.uploadedBy')}
                         </Col>
                         <Col>
                             {requestInfo.user.firstname + " " + requestInfo.user.lastname}
                         </Col>
-                        <Col>
+                        <Col md="auto">
                             <a href={"mailto:" + requestInfo.user.email} >{requestInfo.user.email}</a>
                         </Col>
                     </Row>
                 </Container>
             }
-            <Container fluid>
+            <Container fluid className="rowSpace noPadding">
                 {requestInfo.status === "INCOMPLETE" &&
                     documentUpload && documentUpload.length > 0 &&
-                    <Row className="rowSpace">
-                        <Col>
-                            <UploadComponent requiredDocuments={documentUpload}
-                                referenceNumber={requestInfo.referenceNumber} onUpload={onUpload}
-                                disableAdditionalDocuments={true} />
-                        </Col>
-                    </Row>
+                    <>
+                        <Row>
+                            <Col>
+                                <Alert variant="warning">{t('request.incomplete')}</Alert>
+                            </Col>
+                        </Row>
+                        <Row >
+                            <Col>
+                                <UploadComponent requiredDocuments={documentUpload}
+                                    referenceNumber={requestInfo.referenceNumber} onUpload={onUpload}
+                                    disableAdditionalDocuments={true} />
+                            </Col>
+                        </Row>
+                    </>
                 }
                 {(userContext.user.role.name === 'ADMIN' || requestInfo.status === "NEW" && userContext.user.email !== requestInfo.user.email) &&
                     <Row className="rowSpace justify-content-center">
@@ -175,12 +181,12 @@ export default function RequestInspectorPage() {
             {requestDocument &&
                 <Row>
                     <Col>
-                        <DocumentViewComponent documentType={requestDocument.documentType} document={requestDocument.document} />
+                        <DocumentViewComponent className="box" documentType={requestDocument.documentType} document={requestDocument.document} />
                     </Col>
                 </Row>
             }
             {requestInfo.requiredDocuments && requestInfo.requiredDocuments.length > 0 && requiredDocuments &&
-                <Container fluid>
+                <Container fluid className="noPadding">
                     <Row>
                         <Col><h3>{t("page.requestInspector.attachmentsTitle")}</h3></Col>
                     </Row>
@@ -191,15 +197,8 @@ export default function RequestInspectorPage() {
                     }
                     {requiredDocuments.map((att) => {
                         return (
-                            <Container fluid className="box rowSpace">
+                            <Container fluid className="rowSpace">
                                 <Row className="rowSpace">
-                                    {requestInfo.status === "NEW" &&
-                                        <Restricted permission="DELETE_ATTACHMENT" >
-                                            <Col md='auto'>
-                                                <Button variant="outline-danger" onClick={() => { setAction({ type: "DELETE_ATTACHMENT", value: att.uuid }) }}>Törlés</Button>
-                                            </Col>
-                                        </Restricted>
-                                    }
                                     <Col md='auto'>
                                         <h4>{att.name}</h4>
                                     </Col>

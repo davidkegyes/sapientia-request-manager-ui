@@ -3,16 +3,23 @@
     "title": "Sapientia Erdélyi Magyar Tudományegyetem",
     "loading": "...Betöltés",
     "date": "{{date, YYYY/MM/DD, hh:mm:ss}}",
-    "role" : {
-        "student" : "Hallgató",
-        "admin" : "Adminisztrátor",
-        "secretary" : "Titkár"
-        
+    "role": {
+        "student": "Hallgató",
+        "admin": "Adminisztrátor",
+        "secretary": "Titkár"
     },
     "page": {
+        "notFound" : {
+            "title" : "404",
+            "description" : "Az oldal amit keres nem található.",
+            "backToHome" : "Vissza a főoldalra"
+          },
         "login": {
             "hint": "Bejelentkezéshez használja az egyetemtől kapott emailcímet.",
-            "button": "Bejelentkezés Google fiokkal"
+            "button": "Bejelentkezés Google fiokkal",
+            "networkError" : "Hálózati hiba történt!",
+            "accessDenied" : "Nincs hozzáférése!",
+            "unexpectedError" : "Váratlan hiba történt a bejelentkezés során!"
         },
         "usermanagement" : {
             "title" : "Felhasználók"
@@ -66,8 +73,10 @@
             "uploadButton" : "Feltöltés",
             "attachmentUploadTitle" : "Csatolmáy feltöltés"
         },
-        "requestPage" : {
-            "back" : "Vissza a kérvényekhez"
+        "requestPage": {
+            "back": "Vissza a kérvényekhez",
+            "send" : "Küldés",
+            "download" : "Letöltés"
         },
         "requestTemplateEditor" : {
             "title" : "Sablon szerkesztés",
@@ -95,7 +104,6 @@
               "text": "Szöveg"
             },
             "requestedDocumentName" : "A kért csatolmány neve"
-
         }
     },
     "component" : {
@@ -145,6 +153,9 @@
         "requestUploadedAttachmentUploadRequired" : "A következő dokumentumok szükségesek a kérvény elfogadásához.",
         "requestAttachmentUploadRequired" : "",
         "validationNumberRangeInput" : "Az érték {{min}} és {{max}} között kelle legyen. Aktuális érték : {{current}}",
-        "missingSignature" : "Az aláírás kötelező."
+        "missingSignature" : "Az aláírás kötelező.",
+        "incomplete" : "Kérése csak a következő dokumentumok feltöltése után kerül feldolgozásra.",
+        "approvedBy" : "Elfogadta",
+        "rejectedBy" : "Elutasította"
     }
 }

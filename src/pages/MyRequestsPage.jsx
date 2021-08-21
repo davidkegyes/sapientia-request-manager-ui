@@ -43,13 +43,6 @@ export default function MyRequestsPage(props) {
                 sortType: 'datetime',
                 Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
             },
-            // {
-            //     Header: 'Updated',
-            //     accessor: (row) => new Date(row.updateDateTime),
-            //     sortType: 'datetime',
-            //     show: false,
-            //     Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
-            // },
             {
                 Header: t("page.myRequests.table.header.description"),
                 minWidth: 300,
@@ -62,8 +55,8 @@ export default function MyRequestsPage(props) {
                             {request.status !== 'NEW' &&
                             (<Row>
                                 <Col>
-                                    {request.status === 'APPROVED' && <strong>Approved by</strong>}
-                                    {request.status === 'REJECTED' && <strong>Rejected by</strong>}
+                                    {request.status === 'APPROVED' && <strong>{t("request.approvedBy")}</strong>}
+                                    {request.status === 'REJECTED' && <strong>{t("request.rejectedBy")}</strong>}
                                 </Col>
                                 <Col>
                                     { request.inspectorUser ? (request.inspectorUser.firstname + " " + request.inspectorUser.lastname) : ""}

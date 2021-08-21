@@ -5,7 +5,7 @@ import RequestTemplateService from '../services/RequestTemplateService';
 import { NavLink } from 'react-router-dom';
 import Restricted from "../components/Restricted";
 import { useGlobalFilter, useTable } from "react-table";
-import {downloadPdf} from '../services/RequestPDFService';
+import { downloadPdf } from '../services/RequestPDFService';
 import GlobalFilter from "../components/GlobalFilterComponent";
 import "./RequestTemplatesPage.css"
 
@@ -57,7 +57,7 @@ export default function RequesTemplatesPage() {
                                     </Restricted>
                                     <Restricted permission="DELETE_APPLICATION_TEMPLATE">
                                         <Col xs="auto">
-                                        <OverlayTrigger
+                                            <OverlayTrigger
                                                 placement='bottom'
                                                 overlay={
                                                     <Tooltip>
@@ -65,26 +65,26 @@ export default function RequesTemplatesPage() {
                                                     </Tooltip>
                                                 }
                                             >
-                                            <Button variant="outline-danger" className="template-button" onClick={() => {
-                                                deleteTemplate(template.uuid)
-                                            }}><i class="far fa-trash-alt"></i></Button></OverlayTrigger>
+                                                <Button variant="outline-danger" className="template-button" onClick={() => {
+                                                    deleteTemplate(template.uuid)
+                                                }}><i class="far fa-trash-alt"></i></Button></OverlayTrigger>
                                         </Col>
                                     </Restricted>
                                     <Col xs="auto">
-                                    <OverlayTrigger
-                                                placement='bottom'
-                                                overlay={
-                                                    <Tooltip>
-                                                        {t('page.requestTemplates.downloadTemplate')}
-                                                    </Tooltip>
-                                                }
-                                            >
-                                        <Button variant="outline-primary" onClick={() => downloadPdf(template.form, template.name)} className="template-button"><i class="fas fa-file-download"></i></Button>
+                                        <OverlayTrigger
+                                            placement='bottom'
+                                            overlay={
+                                                <Tooltip>
+                                                    {t('page.requestTemplates.downloadTemplate')}
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <Button variant="outline-primary" onClick={() => downloadPdf(template.form, template.name)} className="template-button"><i class="fas fa-file-download"></i></Button>
                                         </OverlayTrigger>
                                     </Col>
-                                    <Restricted permission="UPLOAD_APPLICATION">
+                                    <Restricted permission="STUDENT">
                                         <Col xs="auto">
-                                        <OverlayTrigger
+                                            <OverlayTrigger
                                                 placement='bottom'
                                                 overlay={
                                                     <Tooltip>
@@ -92,9 +92,9 @@ export default function RequesTemplatesPage() {
                                                     </Tooltip>
                                                 }
                                             >
-                                            <NavLink to={"/request/" + template.uuid}
-                                                className='btn btn-outline-success template-button'><i class="fas fa-edit"></i></NavLink>
-                                                </OverlayTrigger>
+                                                <NavLink to={"/request/" + template.uuid}
+                                                    className='btn btn-outline-success template-button'><i class="fas fa-edit"></i></NavLink>
+                                            </OverlayTrigger>
                                         </Col>
                                     </Restricted>
                                 </Row>
@@ -150,14 +150,16 @@ export default function RequesTemplatesPage() {
                 </Col>
                 <Col md="auto">
                     <Row>
-                        <Col md="auto">
-                            <Restricted permission='EDIT_APPLICATION_TEMPLATE'>
+                        <Restricted permission='EDIT_APPLICATION_TEMPLATE'>
+                            <Col md="auto">
                                 <NavLink to="/createTemplate" className='btn btn-outline-info'>{t("page.requestTemplates.createTemplate")}</NavLink>
-                            </Restricted>
-                        </Col>
-                        <Col md="auto">
-                            <NavLink to="/customRequest" className='btn btn-outline-info'>{t("page.customRequest.title")}</NavLink>
-                        </Col>
+                            </Col>
+                        </Restricted>
+                        <Restricted permission='STUDENT'>
+                            <Col md="auto">
+                                <NavLink to="/customRequest" className='btn btn-outline-info'>{t("page.customRequest.title")}</NavLink>
+                            </Col>
+                        </Restricted>
                     </Row>
                 </Col>
             </Row>

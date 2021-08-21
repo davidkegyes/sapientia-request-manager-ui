@@ -9,9 +9,17 @@
     "secretary": "Secretary"
   },
   "page": {
+    "notFound" : {
+      "title" : "404",
+      "description" : "The page you are looking for was not found.",
+      "backToHome" : "Back to Home"
+    },
     "login": {
       "hint": "Login with the provided email from the Universisty",
-      "button": "Login with Google"
+      "button": "Login with Google",
+      "networkError" : "Network error!",
+      "accessDenied" : "Access Denied!",
+      "unexpectedError" : "Unexcpected error occured during login!"
     },
     "usermanagement": {
       "title": "Users"
@@ -38,7 +46,8 @@
       "useTemplate": "Fill",
       "editTemplate": "Edit",
       "deleteTemplate": "Delete",
-      "createTemplate": "Create Template"
+      "createTemplate": "Create Template",
+      "downloadTemplate" : "Download Template"
     },
     "requestInspector": {
       "button": {
@@ -49,9 +58,26 @@
       "attachmentsTitle": "Attachments",
       "noAttachments": "No attachment found"
     },
-    "requestPage": {
-      "back": "Back to requests"
+    "customRequest": {
+      "title": "Custom request",
+      "description": "Upload an individual request. Use this feature if you have not found a suitable request template.",
+      "requestName": "Request Name",
+      "requestNameError": "Please add a request name.",
+      "requestNamePlaceholder": "E.g: Application for the issuance of a certificate certifying the University's legal relationship",
+      "requestNameInfo": "The name of the submitted application helps to identify the uploaded application.",
+      "requestFileInfo": "The document to be uploaded must be clearly legible and include today's date and signature. File type: .jpeg/.jpg, .pdf",
+      "noSelectedFile": "No selected file.",
+      "noSelectedFileError": "Please select a document to upload!",
+      "selectedFileSizeError": "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
+      "browseFiles": "Search",
+      "uploadButton": "Upload",
+      "attachmentUploadTitle": "Attachment upload"
     },
+    "requestPage": {
+      "back": "Back to requests",
+      "send" : "Send",
+      "download" : "Download without sending"
+    }, 
     "requestTemplateEditor": {
       "title": "Edit templates",
       "templateName": "Template Name",
@@ -78,21 +104,6 @@
         "text": "Text"
       },
       "requestedDocumentName": "Requested document name"
-    },
-    "customRequest": {
-      "title": "Custom request",
-      "description": "Upload an individual request. Use this feature if you have not found a suitable request template.",
-      "requestName": "Request Name",
-      "requestNameError": "Please add a request name.",
-      "requestNamePlaceholder": "E.g: Application for the issuance of a certificate certifying the University's legal relationship",
-      "requestNameInfo": "The name of the submitted application helps to identify the uploaded application.",
-      "requestFileInfo": "The document to be uploaded must be clearly legible and include today's date and signature. File type: .jpeg/.jpg, .pdf",
-      "noSelectedFile": "No selected file.",
-      "noSelectedFileError": "Please select a document to upload!",
-      "selectedFileSizeError": "The specified document exceeds the maximum size of {{sizeLimit}} size limit.",
-      "browseFiles": "Search",
-      "uploadButton": "Upload",
-      "attachmentUploadTitle": "Attachment upload"
     }
   },
   "component": {
@@ -142,6 +153,9 @@
     "requestUploadedAttachmentUploadRequired": "The following documents needs to be provided.",
     "requestAttachmentUploadRequired": "",
     "validationNumberRangeInput": "The input value must be between {{min}} and {{max}}. Current value: {{current}}",
-    "missingSignature" : "The request must be signed before sending."
+    "missingSignature" : "The request must be signed before sending.",
+    "incomplete" : "Your request will not be processed until the following documents are not provided.",
+    "approvedBy" : "Approved By",
+    "rejectedBy" : "Rejected By"
   }
 }

@@ -27,13 +27,13 @@ export default function LoginPage(props) {
             }).catch((error) => {
             console.log(error);
             if (error.message === 'Network Error') {
-                setError("Kommunikacios problema, a bejelentkezes nem lehetseges");
+                setError(t("page.login.networkError"));
             } else if (error.response && error.response.status === 403) {
-                setError("Sajnos nincs hozzaferese");
+                setError(t("page.login.accessDenied"));
                 localStorage.clear();
                 sessionStorage.clear();
             } else {
-                setError("Hiba tortent, a bejelentkezes nem lehetseges");
+                setError(t("page.login.unexpectedError"));
             }
             setLoading(false);
         });

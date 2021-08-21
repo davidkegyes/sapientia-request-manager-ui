@@ -154,16 +154,6 @@ export default function CustomRequestPage() {
               </Alert>
             </Col>
           </Row>
-          {/* <Row>
-            <Col>
-              <h3>{t("page.customRequest.attachmentUploadTitle")}</h3>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <UploadComponent referenceNumber={referenceNumber} />
-            </Col>
-          </Row> */}
         </>
       )}
     </Container>

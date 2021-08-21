@@ -61,7 +61,7 @@ export default function MyRequestsPage(props) {
                                  <Col className="noPadding">
                                     <h4>{request.name}</h4>
                                     <Row>
-                                        <Col><strong>Uploaded by:</strong></Col>
+                                        <Col><strong>{t("request.uploadedBy")}</strong></Col>
                                         <Col>{request.user.firstname + " " + request.user.lastname}</Col>
                                     </Row>
                                     <Row>
@@ -71,8 +71,8 @@ export default function MyRequestsPage(props) {
                                     {request.status !== 'NEW' &&
                                     (<Row>
                                         <Col>
-                                            {request.status === 'APPROVED' && <strong>Approved by</strong>}
-                                            {request.status === 'REJECTED' && <strong>Rejected by</strong>}
+                                            {request.status === 'APPROVED' && <strong>{t("request.approvedBy")}</strong>}
+                                            {request.status === 'REJECTED' && <strong>{t("request.rejectedBy")}</strong>}
                                         </Col>
                                         <Col>
                                             {request.inspectorUser ? (request.inspectorUser.firstname + " " + request.inspectorUser.lastname) : ""}
