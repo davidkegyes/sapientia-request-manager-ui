@@ -161,6 +161,7 @@
     "validationNumberRangeInput": "The input value must be between {{min}} and {{max}}. Current value: {{current}}",
     "missingSignature" : "The request must be signed before sending.",
     "incomplete" : "Your request will not be processed until the following documents are not provided.",
+    "neptunCode" : "Neptun Code",
     "approvedBy" : "Approved By",
     "rejectedBy" : "Rejected By"
   }

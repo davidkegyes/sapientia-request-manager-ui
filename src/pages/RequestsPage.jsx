@@ -61,7 +61,7 @@ export default function MyRequestsPage(props) {
                                         <Col>{request.user.firstname + " " + request.user.lastname}</Col>
                                     </Row>
                                     <Row>
-                                        <Col><strong>Neptun Code</strong></Col>
+                                        <Col><strong>{t("request.neptunCode")}</strong></Col>
                                         <Col>{request.user.neptunCode}</Col>
                                     </Row>
                                     {request.status !== 'NEW' &&

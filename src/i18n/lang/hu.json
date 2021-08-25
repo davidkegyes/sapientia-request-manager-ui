@@ -161,6 +161,7 @@
         "validationNumberRangeInput" : "Az érték {{min}} és {{max}} között kelle legyen. Aktuális érték : {{current}}",
         "missingSignature" : "Az aláírás kötelező.",
         "incomplete" : "Kérése csak a következő dokumentumok feltöltése után kerül feldolgozásra.",
+        "neptunCode" : "Neptun Kód",
         "approvedBy" : "Elfogadta",
         "rejectedBy" : "Elutasította"
     }
