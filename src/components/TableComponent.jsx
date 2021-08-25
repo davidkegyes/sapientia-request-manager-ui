@@ -53,7 +53,7 @@ export default function TableComponent({columns, data}) {
             <Row>
                 <Col>
                     <Table striped hover responsive className="tableStyle" {...getTableProps()}>
-                        <thead>
+                        <thead >
                         {headerGroups.map(headerGroup => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map(column => (

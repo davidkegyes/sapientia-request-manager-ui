@@ -4,9 +4,12 @@ import TableComponent from '../components/TableComponent'
 import LoadingModal from '../components/LoadingModal'
 import { getUsers, saveUser } from '../services/UserService';
 import RoleSelectComponent from '../components/RoleSelectComponent'
+import { useTranslation } from 'react-i18next';
+import ReactTable from "react-table";
 
 function UserEditForm(props) {
     const { user, onHide, onChange, onSave } = props;
+
     if (user === null) {
         return ("");
     }
@@ -50,56 +53,51 @@ function UserEditForm(props) {
 
 export default function UserManagementPage() {
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const [editedUser, setEditedUser] = useState(null);
     const [error, setError] = useState(null);
+    const { t , i18n} = useTranslation();
+    const [lang, setLang] = useState("en");
+
+    i18n.on('languageChanged', function(lng) {setLang(lng)});
 
     const columns = useMemo(
         () => [
             {
-                Header: "User",
-                Cell: ({ row }) => {
-                    let user = row.original;
-                    return (
-                        <Container fluid className="noPadding">
-                            <Row>
-                                <Col>Firstname</Col>
-                                <Col>{user.firstname}</Col>
-                            </Row>
-                        </Container>
-                    )
-                }
-            },
-
-            {
-                Header: 'First Name',
-                accessor: 'firstname',
+                Header: t('page.usermanagement.controls'),
+                width: 90,
+                disableFilters: true,
+                disableGlobalFilter: true,
+                Cell: ({ row }) => (<Button variant="outline-primary" onClick={() => editRow(row)}><i class="fas fa-user-edit"></i></Button>)
             },
             {
-                Header: 'Last Name',
-                accessor: 'lastname',
-            },
-            {
-                Header: 'Mail',
-                accessor: 'email',
-            },
-            {
-                Header: 'NeptunCode',
-                accessor: 'neptunCode',
-            },
-            {
-                Header: 'Role',
+                width: 100,
+                Header: t('page.usermanagement.role'),
                 accessor: 'role.name'
             },
             {
-                Header: 'Controls',
-                disableFilters: true,
-                disableGlobalFilter: true,
-                Cell: ({ row }) => (<Button variant="outline-primary" onClick={() => editRow(row)}>Edit</Button>)
-            }
+                width: 100,
+                Header: t('page.usermanagement.neptunCode'),
+                accessor: 'neptunCode',
+            },
+            {
+                Header: t('page.usermanagement.firstname'),
+                width: 100,
+                accessor: 'firstname',
+            },
+            {
+                width: 100,
+                Header: t('page.usermanagement.lastname'),
+                accessor: 'lastname',
+            },
+            {
+                minWidth: 300,
+                Header: t('page.usermanagement.email'),
+                accessor: 'email'
+            },
         ],
-        []
+        [lang]
     )
 
     useEffect(() => {

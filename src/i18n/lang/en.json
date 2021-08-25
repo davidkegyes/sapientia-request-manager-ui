@@ -22,7 +22,13 @@
       "unexpectedError" : "Unexcpected error occured during login!"
     },
     "usermanagement": {
-      "title": "Users"
+      "title": "Users",
+      "firstname" : "Firstname",
+      "lastname" : "Lastname",
+      "email" : "Email",
+      "neptunCode" : "Neptun Code",
+      "controls" : "Edit",
+      "role" : "Role"
     },
     "requests": {
       "title": "Requests"

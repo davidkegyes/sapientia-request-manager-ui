@@ -9,7 +9,10 @@ import TableComponent from "../components/TableComponent";
 export default function MyRequestsPage(props) {
 
     let [myRequests, setMyRequests] = useState(undefined);
-    const {t, i18n} = useTranslation();
+    const { t , i18n} = useTranslation();
+    const [lang, setLang] = useState("en");
+
+    i18n.on('languageChanged', function(lng) {setLang(lng)});
 
     useEffect(() => {
         RequestServices.getRequestInfoList().then((res) => setMyRequests(res));
@@ -104,7 +107,7 @@ export default function MyRequestsPage(props) {
                 }
             }
         ],
-        [i18n]
+        [lang]
     )
 
     return (

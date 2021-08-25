@@ -22,7 +22,13 @@
             "unexpectedError" : "Váratlan hiba történt a bejelentkezés során!"
         },
         "usermanagement" : {
-            "title" : "Felhasználók"
+            "title" : "Felhasználók",
+            "firstname" : "Keresztnév",
+            "lastname" : "Családnév",
+            "email" : "Email",
+            "neptunCode" : "Neptun Kód",
+            "controls" : "Szerkesztés",
+            "role" : "Szerep"
           },
         "requests" : {
             "title" : "Kérvények"

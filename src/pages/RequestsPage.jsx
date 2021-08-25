@@ -8,7 +8,10 @@ import TableComponent from "../components/TableComponent";
 export default function MyRequestsPage(props) {
 
     let [myRequests, setMyRequests] = useState(undefined);
-    const {t} = useTranslation();
+    const { t , i18n} = useTranslation();
+    const [lang, setLang] = useState("en");
+
+    i18n.on('languageChanged', function(lng) {setLang(lng)});
 
     useEffect(() => {
         RequestServices.getAllRequestRequestInfoList().then((res) => setMyRequests(res));
@@ -42,13 +45,6 @@ export default function MyRequestsPage(props) {
                 sortType: 'datetime',
                 Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
             },
-            // {
-            //     Header: 'Updated',
-            //     accessor: (row) => new Date(row.updateDateTime),
-            //     sortType: 'datetime',
-            //     show: false,
-            //     Cell: ({cell: {value}}) => <span>{t('date', {date: value})}</span>
-            // },
             {
                 Header: t("page.myRequests.table.header.description"),
                 accessor: (row) => getValuesString(row),
@@ -122,7 +118,7 @@ export default function MyRequestsPage(props) {
                 }
             }
         ],
-        []
+        [lang]
     )
 
     return (
