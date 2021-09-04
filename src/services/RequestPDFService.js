@@ -17,11 +17,8 @@ const styles = StyleSheet.create({
     },
     text: {
         textIndent: 15,
-        margin: 12,
-        fontSize: 14,
         textAlign: 'justify',
         fontFamily: 'Times-Roman',
-        paddingBottom: 15
     }
 });
 const getStyle = (style) => {
@@ -58,13 +55,18 @@ const getPDFDocument = (requestForm) => {
                 <Text key={'text' + i} style={getStyle(part.style)}>{subElements}</Text>
             );
         } else if (part.type === 'customText') {
-            elements.push(
-                <Text style={getStyle(part.style)}>{part.value}</Text>
-            );
+            if (part.value) {
+                elements.push(<Text style={getStyle(part.style)}>{part.value}</Text>);
+            } else {
+                var l = Array(76).join("_");
+                for (var nl=0; nl < 3; nl++){
+                    elements.push(<Text>{l}</Text>);
+                }
+            }
         } else if (part.type === 'dateAndSignature') {
             if (part.signatureValue) {
                 elements.push(
-                    <View  style={{ flexDirection: 'row' }}>
+                    <View  style={{ flexDirection: 'row', paddingTop: 20 }}>
                         <View key='signatureDateView' style={{ flex: '1', flexDirection: 'column', textAlign: 'center' }}>
                             <Text>{part.dateText}</Text>
                             <Text>{part.dateValue}</Text>
@@ -77,7 +79,7 @@ const getPDFDocument = (requestForm) => {
                 );
             } else {
                 elements.push(
-                    <View  style={{ flexDirection: 'row' }}>
+                    <View  style={{ flexDirection: 'row', paddingTop: 20 }}>
                         <View key='signatureDateView' style={{ flex: '1', flexDirection: 'column', textAlign: 'center' }}>
                             <Text>{part.dateText}</Text>
                             <Text>{"___________"}</Text>

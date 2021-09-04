@@ -26,11 +26,11 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 .requestForm input[type=number] {
   -moz-appearance: textfield;
-  width: 40px;
+  width: 70px;
 }
 
 .requestForm input[type=date] {
-    width: 150px;
+    width: 200px;
 }
 
 .requestForm .body .title {

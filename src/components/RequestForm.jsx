@@ -38,7 +38,8 @@ export default function RequestForm({ form, onChange }) {
         }else if (part.type === 'text') {
             return (<RequestFormTextComponent variables={part.variables} text={part.text} handleChange={handleChange} />)
         } else if (part.type === 'customText') {
-            return (<textarea key={part.wrapper + part.name} style={{ width: '100%' }} name={part.name} value={part.value} onChange={handleChange} />)
+            console.log(part);
+            return (<textarea key={part.wrapper + part.name} style={{ width: '100%' }} id={part.id} name={part.name} value={part.value} onChange={handleChange} />)
         } else if (part.type === 'dateAndSignature') {
             return (
                 <Row className="justify-content-center">
@@ -66,14 +67,15 @@ export default function RequestForm({ form, onChange }) {
     }
 
     function handleChange(event) {
-        const { name, value, type } = event.target;
+        const { id, name, value, type } = event.target;
         let tmpForm = [...requestForm];
         for (let i in tmpForm) {
+            console.log(id)
             if (type === 'dateAndSignature' && tmpForm[i].type === type) {
                 tmpForm[i].signatureValue = value;
                 tmpForm[i].dateValue = moment().format("YYYY-MM-DD");
                 break;
-            } else if (type === 'textarea' && tmpForm[i].type === 'customText' && tmpForm[i].name === name) {
+            } else if (type === 'textarea' && tmpForm[i].type === 'customText' && tmpForm[i].id === id) {
                 tmpForm[i].value = value;
                 break;
             } else {
