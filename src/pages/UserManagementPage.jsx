@@ -74,7 +74,8 @@ export default function UserManagementPage() {
             {
                 width: 100,
                 Header: t('page.usermanagement.role'),
-                accessor: 'role.name'
+                accessor: 'role.name',
+                Cell : ({row}) => (<span>{t('role.'+ row.original.role.name.toLowerCase())}</span>)
             },
             {
                 width: 100,

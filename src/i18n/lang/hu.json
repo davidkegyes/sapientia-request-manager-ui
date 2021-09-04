@@ -28,7 +28,7 @@
             "email" : "Email",
             "neptunCode" : "Neptun Kód",
             "controls" : "Szerkesztés",
-            "role" : "Szerep"
+            "role" : "Szerepkör"
           },
         "requests" : {
             "title" : "Kérvények"
