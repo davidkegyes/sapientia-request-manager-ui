@@ -1,14 +1,15 @@
 import React from 'react'
-import { pdf, Document, Page, Text, Image, StyleSheet, View } from '@react-pdf/renderer'
+import font from '../font/Roboto-Light.ttf'
+import { pdf, Document, Page, Text, Image, StyleSheet, View, Font } from '@react-pdf/renderer'
 import { saveAs } from 'file-saver';
-
+Font.register({ family: 'Roboto', src: font, fontStyle: 'normal', fontWeight: '400' })
 const styles = StyleSheet.create({
     page: {
         paddingTop: 65,
         paddingBottom: 65,
         paddingHorizontal: 35,
         fontSize: 14,
-        fontFamily: 'Times-Roman'
+        fontFamily: 'Roboto'
     },
     title: {
         fontSize: 24,
@@ -17,8 +18,7 @@ const styles = StyleSheet.create({
     },
     text: {
         textIndent: 15,
-        textAlign: 'justify',
-        fontFamily: 'Times-Roman',
+        textAlign: 'justify'
     }
 });
 const getStyle = (style) => {
@@ -58,7 +58,7 @@ const getPDFDocument = (requestForm) => {
             if (part.value) {
                 elements.push(<Text style={getStyle(part.style)}>{part.value}</Text>);
             } else {
-                var l = Array(76).join("_");
+                var l = Array(90).join("_");
                 for (var nl=0; nl < 3; nl++){
                     elements.push(<Text>{l}</Text>);
                 }
@@ -144,11 +144,11 @@ const getVariable = (variable) => {
         return variable.value;
     } else {
         if (variable.type === 'text') {
-            return "____________________";
+            return "______________________";
         } else if (variable.type === 'date') {
-            return "__________";
+            return "____________";
         } else if (variable.type === 'number') {
-            return "_____";
+            return "_______";
         }
     }
 }
